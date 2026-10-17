@@ -13,7 +13,7 @@ with sync_playwright() as p:
     ctx.route("**/fonts.googleapis.com/**", lambda r: r.abort())
     pg = ctx.new_page(); errs = []
     pg.on("pageerror", lambda e: errs.append(str(e)))
-    pg.goto(PATH); pg.wait_for_timeout(400)
+    pg.goto(PATH); pg.wait_for_timeout(300); pg.evaluate("App.go('landing')"); pg.wait_for_timeout(400)
     ev = lambda js: pg.evaluate(js)
     modal = lambda k: pg.click(f".modal [data-modal='{k}']")
     def nav(page): pg.click(f".nav [data-go='{page}']"); pg.wait_for_timeout(120)
@@ -209,7 +209,7 @@ Inglês — Básico"""
 
     # ---------- celular, tema, armazenamento bloqueado ----------
     m = b.new_context(viewport={"width": 390, "height": 844}); m.route("**/fonts.googleapis.com/**", lambda r: r.abort()); mp = m.new_page(); merr = []
-    mp.on("pageerror", lambda e: merr.append(str(e))); mp.goto(PATH); mp.wait_for_timeout(300)
+    mp.on("pageerror", lambda e: merr.append(str(e))); mp.goto(PATH); mp.wait_for_timeout(300); mp.evaluate("App.go('landing')"); mp.wait_for_timeout(300)
     widths = {"landing": mp.evaluate("document.documentElement.scrollWidth")}
     mp.click("text=Entrar >> nth=0"); widths["login"] = mp.evaluate("document.documentElement.scrollWidth")
     mp.click("[data-act=demoLogin][data-v=candidate]"); mp.wait_for_timeout(250)
@@ -224,12 +224,12 @@ Inglês — Básico"""
     check("MOB-1", "Celular 390px: nenhuma página com rolagem horizontal", not over, over)
     check("MOB-2", "Celular: menu abre e fecha", opened and closed)
     check("MOB-3", "Celular: sem erros", not merr, merr[:1])
-    dk = b.new_context(viewport={"width": 1366, "height": 900}, color_scheme="dark"); dk.route("**/fonts.googleapis.com/**", lambda r: r.abort()); dp = dk.new_page(); dp.goto(PATH); dp.wait_for_timeout(200)
+    dk = b.new_context(viewport={"width": 1366, "height": 900}, color_scheme="dark"); dk.route("**/fonts.googleapis.com/**", lambda r: r.abort()); dp = dk.new_page(); dp.goto(PATH); dp.wait_for_timeout(300); dp.evaluate("App.go('landing')"); dp.wait_for_timeout(200)
     dp.click("text=Entrar >> nth=0"); dp.click("[data-act=demoLogin][data-v=candidate]"); dp.wait_for_timeout(250); dp.evaluate("App.go('cand.resume')"); dp.click("[data-act=resumeTab][data-v=diag]"); dp.screenshot(path="d_diag.png")
     bg = dp.evaluate("getComputedStyle(document.body).backgroundColor")
     check("THEME-1", "Tema escuro aplica fundo escuro", bg != "rgb(244, 246, 241)", bg)
     bl = b.new_context(); bl.route("**/fonts.googleapis.com/**", lambda r: r.abort()); bp = bl.new_page(); berr = []; bp.on("pageerror", lambda e: berr.append(str(e)))
-    bp.add_init_script("Object.defineProperty(window,'localStorage',{get(){throw new Error('blocked')}})"); bp.goto(PATH); bp.wait_for_timeout(500)
+    bp.add_init_script("Object.defineProperty(window,'localStorage',{get(){throw new Error('blocked')}})"); bp.goto(PATH); bp.wait_for_timeout(300); bp.evaluate("App.go('landing')"); bp.wait_for_timeout(500)
     bp.click("text=Entrar >> nth=0"); bp.click("[data-act=demoLogin][data-v=candidate]"); bp.wait_for_timeout(250)
     check("STO-1", "Armazenamento bloqueado: app funciona e avisa", bp.evaluate("!!App.session()") and not berr and "bloqueou" in bp.inner_text("#toasts"), berr[:1])
     b.close()

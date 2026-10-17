@@ -1,9 +1,8 @@
-# Manda Vaga SaaS — testes ponta a ponta
+# Manda Vaga — testes ponta a ponta
 
-**Data:** 17/10/2026 · Chromium real (Playwright), desktop 1366 px, celular 390 px, tema escuro e armazenamento bloqueado.
-**Resultado:** 59 de 59 critérios aprovados, sem erro de JavaScript.
+**Resultado:** 63 de 63 critérios aprovados (Chromium; desktop, celular 390 px, tema escuro, armazenamento bloqueado).
 
-Como rodar de novo: `python3 build.py` (gera o HTML) e `python3 teste_ponta_a_ponta.py`.
+Rodar: `cd app && python3 build.py && python3 ../tests/e2e.py`
 
 | ID | Critério | OK |
 |---|---|---|
@@ -39,6 +38,10 @@ Como rodar de novo: `python3 build.py` (gera o HTML) e `python3 teste_ponta_a_po
 | APP-2 | Marcar enviada sem confirmação e evidência é bloqueado | ✅ |
 | APP-3 | Com confirmação + evidência vira enviada confirmada | ✅ |
 | APP-4 | Avançar o status mantém a contagem de enviadas | ✅ |
+| DASH-1 | Dashboard abre com o assistente e a pergunta do próximo passo | ✅ |
+| DASH-2 | “Ampliar a lista” reduz a aderência mínima e explica | ✅ |
+| DASH-3 | Desfazer restaura a aderência mínima | ✅ |
+| DASH-4 | Pergunta livre mostra vagas dentro da conversa | ✅ |
 | APP-5 | Entrevista exige data | ✅ |
 | APP-6 | Entrevista registrada com data, hora e local; histórico guardado | ✅ |
 | PLAN-2 | Troca de plano simulada | ✅ |

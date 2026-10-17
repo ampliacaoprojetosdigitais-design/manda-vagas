@@ -26,6 +26,7 @@ cd app && python3 build.py          # gera dist/index.html
 pip install playwright && python3 ../tests/e2e.py   # testes
 ```
 Contas de demonstração (tela de login): candidata com currículo, candidato novo e administrador. Senha: `demo1234`.
+Atalhos sem senha (só contas demo): `/app/#entrar-admin`, `/app/#entrar-candidato`, `/app/#entrar-novo`. Remover quando o login real entrar.
 
 ## Pagamentos (Asaas)
 O servidor cria cliente e assinatura mensal na Asaas, devolve o link de pagamento e ativa o plano quando a Asaas avisa pelo webhook. O preço é definido no servidor (`payments/asaas.js`).

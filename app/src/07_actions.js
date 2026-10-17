@@ -281,5 +281,8 @@ async function boot() {
   const underApp = /\/app(\/|$)/.test(location.pathname); // no site, a landing fica em "/" e o app em "/app/"
   App.route = { page: Repo.data.session ? "home" : (underApp ? "login" : "landing"), params: {} };
   applyTheme(); App.render();
+  // atalhos de demonstração: /app/#entrar-admin e /app/#entrar-candidato entram sem senha (só contas demo)
+  const quick = { "#entrar-admin": "admin@demo.mandavaga", "#entrar-candidato": "camila@demo.mandavaga", "#entrar-novo": "rafael@demo.mandavaga" }[location.hash];
+  if (quick) { const u = Repo.one("users", x => x.email === quick); history.replaceState(null, "", location.pathname + location.search); if (u) { if (Repo.data.session && Repo.data.session !== u.id) { Repo.data.session = null; App.ui = {}; } startSession(u); } }
 }
 boot();

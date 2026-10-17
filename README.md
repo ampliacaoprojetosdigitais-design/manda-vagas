@@ -16,10 +16,18 @@ Protótipo funcional **local-first** (fases 3 a 10 do PRD). Tudo roda no navegad
 
 ## Rodar
 ```bash
+npm start                           # abre em http://localhost:3000 (sem dependências)
+```
+
+Para desenvolver:
+```bash
 cd app && python3 build.py          # gera dist/index.html
 pip install playwright && python3 ../tests/e2e.py   # testes
 ```
 Contas de demonstração (tela de login): candidata com currículo, candidato novo e administrador. Senha: `demo1234`.
+
+## Publicar na Hostinger (Node.js)
+Importe este repositório, branch `main`. Comando de início: `npm start`. A porta vem da variável `PORT`. Não é preciso rodar build: `app/dist/index.html` já vai no repositório.
 
 ## Próximas fases
 1. Banco, autenticação e armazenamento (ex.: Supabase).

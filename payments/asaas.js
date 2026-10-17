@@ -17,7 +17,9 @@ const CYCLES = {
   trimestral: { asaas: "QUARTERLY", months: 3, discount: 0.2, label: "trimestral" },
   semestral: { asaas: "SEMIANNUALLY", months: 6, discount: 0.3, label: "semestral" },
 };
-const priceFor = (plan, cycle) => Math.round(PLANS[plan].value * CYCLES[cycle].months * (1 - CYCLES[cycle].discount) * 100) / 100;
+// Arredonda para cima até o próximo valor terminado em ,90 (ex.: 47,76 → 47,90)
+const round90 = v => Math.round((Math.ceil(v - 0.9 - 1e-9) + 0.9) * 100) / 100;
+const priceFor = (plan, cycle) => { const c = CYCLES[cycle]; return c.months === 1 ? PLANS[plan].value : round90(PLANS[plan].value * c.months * (1 - c.discount)); };
 const ACTIVE_EVENTS = new Set(["PAYMENT_CONFIRMED", "PAYMENT_RECEIVED"]);
 const OVERDUE_EVENTS = new Set(["PAYMENT_OVERDUE"]);
 const CANCEL_EVENTS = new Set(["PAYMENT_DELETED", "PAYMENT_REFUNDED", "PAYMENT_CHARGEBACK_REQUESTED", "SUBSCRIPTION_DELETED", "SUBSCRIPTION_INACTIVATED"]);

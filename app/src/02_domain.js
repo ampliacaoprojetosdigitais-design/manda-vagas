@@ -325,7 +325,9 @@ const CYCLES = [
 ];
 const Plans = {
   cycle(key) { return CYCLES.find(c => c.key === key) || CYCLES[0]; },
-  total(p, cycleKey) { const c = Plans.cycle(cycleKey); return Math.round(p.price * c.months * (1 - c.discount) * 100) / 100; },
+  // valor do ciclo sempre termina em ,90 (arredondado para cima); o mensal fica como está
+  total(p, cycleKey) { const c = Plans.cycle(cycleKey); if (c.months === 1) return p.price; const v = p.price * c.months * (1 - c.discount); return Math.round((Math.ceil(v - 0.9 - 1e-9) + 0.9) * 100) / 100; },
+  saving(p, cycleKey) { const c = Plans.cycle(cycleKey); return c.months === 1 ? 0 : Math.round((1 - Plans.total(p, cycleKey) / (p.price * c.months)) * 100); },
   perMonth(p, cycleKey) { const c = Plans.cycle(cycleKey); return Math.round(Plans.total(p, cycleKey) / c.months * 100) / 100; },
   list() { const saved = Repo.setting("plans_v2", PLANS_DEFAULT); return PLANS_DEFAULT.map(d => ({ ...d, ...(saved.find(x => x.key === d.key) || {}), features: d.features || [] })); },
   pitch(p) {

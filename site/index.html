@@ -369,7 +369,7 @@ footer .fin{grid-column:1/-1;border-top:1px solid rgba(255,255,255,.1);padding-t
         <article class="pcard pl"><h3>Plus</h3><div class="price" data-base="29.90">R$ 29,90<small>/mês</small></div><p class="cyc" data-base="29.90" hidden></p><p class="perday"><b>Receba até 200 vagas de uma vez.</b></p><ul><li>Tudo do Inicial</li><li>O dobro de vagas</li></ul><a class="btn btn-ghost" href="app/" target="_self" rel="noopener">Escolher Plus</a></article>
         <article class="pcard pl featured"><span class="badge">Mais completo</span><h3>Max</h3><div class="price" data-base="59.90">R$ 59,90<small>/mês</small></div><p class="cyc" data-base="59.90" hidden></p><p class="perday"><b>Receba até 500 vagas de uma vez</b> e deixe o envio e as respostas com a gente.</p><ul><li>Tudo do Plus</li><li><b>Envio facilitado</b> para as empresas: mensagem pronta para cada vaga e envio pelo seu e‑mail</li><li><b>Central de Respostas</b>: convites, pedidos e recusas organizados por vaga, com sugestão de resposta</li><li>Gestão de entrevistas e próximos passos</li></ul><a class="btn btn-lime" href="app/" target="_self" rel="noopener">Escolher Max</a></article>
       </div>
-      <p class="note">Os preços por mês do trimestral e do semestral são o valor total dividido pelo número de meses; a cobrança é feita de uma vez a cada ciclo. As quantidades são o máximo do plano por mês. O número que chega depende de quantas vagas compatíveis com o seu currículo existem na sua região e área. Vaga repetida ou encerrada não conta. Nos portais que não permitem robôs, o clique final de envio é seu.</p>
+      <p class="note">No trimestral e no semestral, a cobrança é feita de uma vez a cada ciclo. As quantidades são o máximo do plano por mês. O número que chega depende de quantas vagas compatíveis com o seu currículo existem na sua região e área. Vaga repetida ou encerrada não conta. Nos portais que não permitem robôs, o clique final de envio é seu.</p>
     </div>
   </section>
 
@@ -437,8 +437,10 @@ footer .fin{grid-column:1/-1;border-top:1px solid rgba(255,255,255,.1);padding-t
     b.addEventListener("click", function () {
       var m = +b.dataset.cycle, off = +b.dataset.off;
       document.querySelectorAll(".cycles button").forEach(function (x) { x.classList.toggle("on", x === b); x.setAttribute("aria-selected", x === b); });
-      document.querySelectorAll(".price[data-base]").forEach(function (el) { var base = +el.dataset.base, total = Math.round(base * m * (1 - off) * 100) / 100; el.innerHTML = brl(Math.round(total / m * 100) / 100) + "<small>/mês</small>"; });
-      document.querySelectorAll(".cyc[data-base]").forEach(function (el) { var base = +el.dataset.base, total = Math.round(base * m * (1 - off) * 100) / 100; el.hidden = m === 1; el.textContent = m === 1 ? "" : brl(total) + " a cada " + m + " meses · economize " + Math.round(off * 100) + "%"; });
+      var tot = function (base) { if (m === 1) return base; var v = base * m * (1 - off); return Math.round((Math.ceil(v - 0.9 - 1e-9) + 0.9) * 100) / 100; };
+      var unit = { 1: "/mês", 3: "/trimestre", 6: "/semestre" }[m];
+      document.querySelectorAll(".price[data-base]").forEach(function (el) { el.innerHTML = brl(tot(+el.dataset.base)) + "<small>" + unit + "</small>"; });
+      document.querySelectorAll(".cyc[data-base]").forEach(function (el) { var base = +el.dataset.base, t = tot(base); el.hidden = m === 1; el.textContent = m === 1 ? "" : "Equivale a " + brl(Math.round(t / m * 100) / 100) + " por mês · economize " + Math.round((1 - t / (base * m)) * 100) + "%"; });
     });
   });
   $("demo-run").addEventListener("click", function () { render(analyze($("demo-text").value)); });

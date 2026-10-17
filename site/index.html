@@ -171,7 +171,12 @@ section.block{padding-block:clamp(64px,8vw,110px)}
 .mini-job small{display:block;color:var(--on-dark-muted);font-size:12px}
 .phone .demo-tag{font-size:11px;color:var(--on-dark-muted);text-align:center}
 
-.pricing .plans{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin-top:40px}
+.pricing .plans{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin-top:22px}
+.cycles{display:inline-flex;gap:4px;margin-top:32px;background:var(--white);border:1px solid var(--line);border-radius:99px;padding:5px;flex-wrap:wrap}
+.cycles button{border:0;background:none;border-radius:99px;padding:10px 18px;font:700 14.5px var(--f-body);color:var(--muted);cursor:pointer}
+.cycles button b{color:var(--green)}
+.cycles button.on{background:var(--deep);color:#fff}.cycles button.on b{color:var(--lime)}
+.pl .cyc{font-size:13.5px;color:var(--green);font-weight:700;margin-top:-6px}.pl.featured .cyc{color:var(--lime)}
 .pl .perday{font-size:15.5px;color:var(--ink)}.pl.featured .perday{color:#fff}.pl .perday b{color:inherit}
 .pcard.pl{gap:14px}
 .pl .price{font:800 40px/1 var(--f-display);letter-spacing:-.03em}
@@ -357,13 +362,14 @@ footer .fin{grid-column:1/-1;border-top:1px solid rgba(255,255,255,.1);padding-t
   <section class="block pricing" id="planos" aria-labelledby="pr-title">
     <div class="wrap">
       <div class="sec-head"><span class="eyebrow">Planos</span><h2 id="pr-title">O currículo é grátis. As vagas chegam de uma vez.</h2><p>Comece arrumando o currículo sem pagar nada. Quando assinar, você recebe de uma vez todas as vagas compatíveis com o seu currículo, até o limite do plano, e personaliza o currículo para cada uma.</p></div>
+      <div class="cycles" role="tablist" aria-label="Ciclo de pagamento"><button type="button" class="on" data-cycle="1" data-off="0" aria-selected="true">Mensal</button><button type="button" data-cycle="3" data-off="0.2" aria-selected="false">Trimestral <b>−20%</b></button><button type="button" data-cycle="6" data-off="0.3" aria-selected="false">Semestral <b>−30%</b></button></div>
       <div class="plans">
         <article class="pcard pl"><h3>Grátis</h3><div class="price">R$ 0</div><p>Para deixar o currículo pronto.</p><ul><li>Diagnóstico completo do currículo</li><li>Sugestões com antes e depois</li><li>Pronto para recrutadores e sistemas de IA</li><li>Exportação do currículo</li></ul><a class="btn btn-ghost" href="app/" target="_self" rel="noopener">Começar grátis</a></article>
-        <article class="pcard pl"><h3>Inicial</h3><div class="price">R$ 19,90<small>/mês</small></div><p class="perday"><b>Receba até 100 vagas de uma vez.</b></p><ul><li>Vagas escolhidas pelo seu currículo</li><li>No seu painel e no seu e‑mail</li><li>Currículo personalizado para cada vaga</li><li>Painel de candidaturas</li></ul><a class="btn btn-ghost" href="app/" target="_self" rel="noopener">Escolher Inicial</a></article>
-        <article class="pcard pl"><h3>Plus</h3><div class="price">R$ 29,90<small>/mês</small></div><p class="perday"><b>Receba até 200 vagas de uma vez.</b></p><ul><li>Tudo do Inicial</li><li>O dobro de vagas</li></ul><a class="btn btn-ghost" href="app/" target="_self" rel="noopener">Escolher Plus</a></article>
-        <article class="pcard pl featured"><span class="badge">Mais completo</span><h3>Max</h3><div class="price">R$ 59,90<small>/mês</small></div><p class="perday"><b>Receba até 500 vagas de uma vez</b> e deixe o envio e as respostas com a gente.</p><ul><li>Tudo do Plus</li><li><b>Envio facilitado</b> para as empresas: mensagem pronta para cada vaga e envio pelo seu e‑mail</li><li><b>Central de Respostas</b>: convites, pedidos e recusas organizados por vaga, com sugestão de resposta</li><li>Gestão de entrevistas e próximos passos</li></ul><a class="btn btn-lime" href="app/" target="_self" rel="noopener">Escolher Max</a></article>
+        <article class="pcard pl"><h3>Inicial</h3><div class="price" data-base="19.90">R$ 19,90<small>/mês</small></div><p class="cyc" data-base="19.90" hidden></p><p class="perday"><b>Receba até 100 vagas de uma vez.</b></p><ul><li>Vagas escolhidas pelo seu currículo</li><li>No seu painel e no seu e‑mail</li><li>Currículo personalizado para cada vaga</li><li>Painel de candidaturas</li></ul><a class="btn btn-ghost" href="app/" target="_self" rel="noopener">Escolher Inicial</a></article>
+        <article class="pcard pl"><h3>Plus</h3><div class="price" data-base="29.90">R$ 29,90<small>/mês</small></div><p class="cyc" data-base="29.90" hidden></p><p class="perday"><b>Receba até 200 vagas de uma vez.</b></p><ul><li>Tudo do Inicial</li><li>O dobro de vagas</li></ul><a class="btn btn-ghost" href="app/" target="_self" rel="noopener">Escolher Plus</a></article>
+        <article class="pcard pl featured"><span class="badge">Mais completo</span><h3>Max</h3><div class="price" data-base="59.90">R$ 59,90<small>/mês</small></div><p class="cyc" data-base="59.90" hidden></p><p class="perday"><b>Receba até 500 vagas de uma vez</b> e deixe o envio e as respostas com a gente.</p><ul><li>Tudo do Plus</li><li><b>Envio facilitado</b> para as empresas: mensagem pronta para cada vaga e envio pelo seu e‑mail</li><li><b>Central de Respostas</b>: convites, pedidos e recusas organizados por vaga, com sugestão de resposta</li><li>Gestão de entrevistas e próximos passos</li></ul><a class="btn btn-lime" href="app/" target="_self" rel="noopener">Escolher Max</a></article>
       </div>
-      <p class="note">As quantidades são o máximo do plano por mês. O número que chega depende de quantas vagas compatíveis com o seu currículo existem na sua região e área. Vaga repetida ou encerrada não conta. Nos portais que não permitem robôs, o clique final de envio é seu.</p>
+      <p class="note">Os preços por mês do trimestral e do semestral são o valor total dividido pelo número de meses; a cobrança é feita de uma vez a cada ciclo. As quantidades são o máximo do plano por mês. O número que chega depende de quantas vagas compatíveis com o seu currículo existem na sua região e área. Vaga repetida ou encerrada não conta. Nos portais que não permitem robôs, o clique final de envio é seu.</p>
     </div>
   </section>
 
@@ -426,6 +432,15 @@ footer .fin{grid-column:1/-1;border-top:1px solid rgba(255,255,255,.1);padding-t
       return '<div class="res ' + r[0] + '"><span class="i" aria-hidden="true">' + icon + "</span><div><b>" + esc(r[1]) + "</b>" + body + "</div></div>";
     }).join("");
   }
+  var brl = function (v) { return v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" }); };
+  document.querySelectorAll(".cycles button").forEach(function (b) {
+    b.addEventListener("click", function () {
+      var m = +b.dataset.cycle, off = +b.dataset.off;
+      document.querySelectorAll(".cycles button").forEach(function (x) { x.classList.toggle("on", x === b); x.setAttribute("aria-selected", x === b); });
+      document.querySelectorAll(".price[data-base]").forEach(function (el) { var base = +el.dataset.base, total = Math.round(base * m * (1 - off) * 100) / 100; el.innerHTML = brl(Math.round(total / m * 100) / 100) + "<small>/mês</small>"; });
+      document.querySelectorAll(".cyc[data-base]").forEach(function (el) { var base = +el.dataset.base, total = Math.round(base * m * (1 - off) * 100) / 100; el.hidden = m === 1; el.textContent = m === 1 ? "" : brl(total) + " a cada " + m + " meses · economize " + Math.round(off * 100) + "%"; });
+    });
+  });
   $("demo-run").addEventListener("click", function () { render(analyze($("demo-text").value)); });
   $("demo-sample").addEventListener("click", function () { $("demo-text").value = SAMPLE; render(analyze(SAMPLE)); });
 })();

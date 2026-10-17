@@ -21,6 +21,14 @@ try:
     calls=json.loads(urllib.request.urlopen("http://localhost:4010/__calls").read())
     sub=[c for c in calls if c["u"]=="/v3/subscriptions"][0]["b"]
     ck("PAY-5","Preço vem do servidor (ignora valor enviado pelo navegador)",sub["value"]==59.9 and sub["cycle"]=="MONTHLY" and sub["externalReference"]==ref,sub)
+    ref2="c"*32
+    s,b=req("POST","/api/checkout",{"plan":"max","cycle":"semestral","name":"Teste Silva","email":"t@ex.com","cpfCnpj":"52998224725","ref":ref2})
+    sub2=[c for c in json.loads(urllib.request.urlopen("http://localhost:4010/__calls").read()) if c["u"]=="/v3/subscriptions"][-1]["b"]
+    ck("PAY-5b","Semestral do Max: R$ 251,58 a cada 6 meses (30% de desconto), ciclo SEMIANNUALLY",s==200 and sub2["value"]==251.58 and sub2["cycle"]=="SEMIANNUALLY",sub2)
+    s,b=req("POST","/api/checkout",{"plan":"inicial","cycle":"trimestral","name":"Teste Silva","email":"t@ex.com","cpfCnpj":"52998224725","ref":"d"*32})
+    sub3=[c for c in json.loads(urllib.request.urlopen("http://localhost:4010/__calls").read()) if c["u"]=="/v3/subscriptions"][-1]["b"]
+    ck("PAY-5c","Trimestral do Inicial: R$ 47,76 a cada 3 meses (20% de desconto), ciclo QUARTERLY",sub3["value"]==47.76 and sub3["cycle"]=="QUARTERLY",sub3)
+    s,b=req("POST","/api/checkout",{"plan":"max","cycle":"anual","name":"Teste Silva","email":"t@ex.com","cpfCnpj":"52998224725","ref":"e"*32}); ck("PAY-5d","Ciclo anual (removido) é recusado",s==400,b)
     s,b=req("GET","/api/subscription?ref="+ref); ck("PAY-6","Status começa como pendente",b["status"]=="PENDING",b)
     ev={"id":"evt_1","event":"PAYMENT_CONFIRMED","payment":{"id":"pay_1","subscription":"sub_teste1","externalReference":ref,"status":"CONFIRMED"}}
     s,b=req("POST","/api/webhooks/asaas",json.dumps(ev).encode(),{"asaas-access-token":"errado"}); ck("PAY-7","Webhook com token errado é recusado",s==401,b)

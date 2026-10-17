@@ -11,6 +11,13 @@ const PLANS = {
   plus: { name: "Plus", value: 29.9 },
   max: { name: "Max", value: 59.9 },
 };
+// Ciclos de cobrança: preço mensal × meses × (1 − desconto)
+const CYCLES = {
+  mensal: { asaas: "MONTHLY", months: 1, discount: 0, label: "mensal" },
+  trimestral: { asaas: "QUARTERLY", months: 3, discount: 0.2, label: "trimestral" },
+  semestral: { asaas: "SEMIANNUALLY", months: 6, discount: 0.3, label: "semestral" },
+};
+const priceFor = (plan, cycle) => Math.round(PLANS[plan].value * CYCLES[cycle].months * (1 - CYCLES[cycle].discount) * 100) / 100;
 const ACTIVE_EVENTS = new Set(["PAYMENT_CONFIRMED", "PAYMENT_RECEIVED"]);
 const OVERDUE_EVENTS = new Set(["PAYMENT_OVERDUE"]);
 const CANCEL_EVENTS = new Set(["PAYMENT_DELETED", "PAYMENT_REFUNDED", "PAYMENT_CHARGEBACK_REQUESTED", "SUBSCRIPTION_DELETED", "SUBSCRIPTION_INACTIVATED"]);
@@ -48,6 +55,8 @@ async function checkout(input) {
   const c = cfg();
   if (!c.key) return { status: 503, body: { error: "Pagamentos ainda não configurados no servidor." } };
   const plan = PLANS[input.plan]; if (!plan) return { status: 400, body: { error: "Plano inválido." } };
+  const cycleKey = input.cycle || "mensal"; const cycle = CYCLES[cycleKey]; if (!cycle) return { status: 400, body: { error: "Ciclo inválido." } };
+  const value = priceFor(input.plan, cycleKey);
   const name = String(input.name || "").trim().slice(0, 120); const email = String(input.email || "").trim().slice(0, 160);
   const ref = String(input.ref || ""); if (!/^[a-f0-9]{32}$/.test(ref)) return { status: 400, body: { error: "Referência inválida." } };
   if (name.length < 3 || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return { status: 400, body: { error: "Nome ou e-mail inválido." } };
@@ -55,12 +64,12 @@ async function checkout(input) {
   const db = load(); const existing = db.subscriptions[ref];
   try {
     const customerId = existing?.customerId || (await asaas("POST", "/customers", { name, email, cpfCnpj: onlyDigits(input.cpfCnpj), mobilePhone: onlyDigits(input.phone) || undefined, externalReference: ref, notificationDisabled: false })).id;
-    const sub = await asaas("POST", "/subscriptions", { customer: customerId, billingType: c.billingType, value: plan.value, nextDueDate: today(), cycle: "MONTHLY", description: `Manda Vaga — Plano ${plan.name}`, externalReference: ref });
+    const sub = await asaas("POST", "/subscriptions", { customer: customerId, billingType: c.billingType, value, nextDueDate: today(), cycle: cycle.asaas, description: `Manda Vaga — Plano ${plan.name} (${cycle.label})`, externalReference: ref });
     let invoiceUrl = "";
     try { const pays = await asaas("GET", `/subscriptions/${encodeURIComponent(sub.id)}/payments`); invoiceUrl = pays?.data?.[0]?.invoiceUrl || ""; } catch { /* a cobrança pode demorar alguns segundos para existir */ }
-    db.subscriptions[ref] = { ref, plan: input.plan, customerId, subscriptionId: sub.id, status: "PENDING", invoiceUrl, env: c.env, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() };
+    db.subscriptions[ref] = { ref, plan: input.plan, cycle: cycleKey, value, customerId, subscriptionId: sub.id, status: "PENDING", invoiceUrl, env: c.env, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() };
     save(db);
-    return { status: 200, body: { subscriptionId: sub.id, invoiceUrl, status: "PENDING" } };
+    return { status: 200, body: { subscriptionId: sub.id, invoiceUrl, status: "PENDING", cycle: cycleKey, value } };
   } catch (err) {
     return { status: err.status && err.status < 500 ? 400 : 502, body: { error: "Não foi possível criar a cobrança: " + err.message } };
   }
@@ -71,7 +80,7 @@ async function status(ref) {
   if (!s) return { status: 404, body: { error: "Assinatura não encontrada." } };
   // se ainda não temos o link da primeira cobrança, tenta buscar de novo
   if (!s.invoiceUrl && cfg().key) { try { const pays = await asaas("GET", `/subscriptions/${encodeURIComponent(s.subscriptionId)}/payments`); s.invoiceUrl = pays?.data?.[0]?.invoiceUrl || ""; save(db); } catch { } }
-  return { status: 200, body: { status: s.status, plan: s.plan, invoiceUrl: s.invoiceUrl, updatedAt: s.updatedAt } };
+  return { status: 200, body: { status: s.status, plan: s.plan, cycle: s.cycle || "mensal", invoiceUrl: s.invoiceUrl, updatedAt: s.updatedAt } };
 }
 
 function safeEqual(a, b) { const x = Buffer.from(String(a)), y = Buffer.from(String(b)); return x.length === y.length && crypto.timingSafeEqual(x, y); }
@@ -98,6 +107,6 @@ function webhook(headers, raw) {
   return { status: 200, body: { ok: true } };
 }
 
-function publicConfig() { const c = cfg(); return { payments: !!c.key, env: c.env, plans: PLANS }; }
+function publicConfig() { const c = cfg(); const prices = {}; Object.keys(PLANS).forEach(p => { prices[p] = {}; Object.keys(CYCLES).forEach(k => prices[p][k] = priceFor(p, k)); }); return { payments: !!c.key, env: c.env, plans: PLANS, cycles: CYCLES, prices }; }
 
-module.exports = { checkout, status, webhook, publicConfig, PLANS, _cfg: cfg };
+module.exports = { checkout, status, webhook, publicConfig, PLANS, CYCLES, priceFor, _cfg: cfg };

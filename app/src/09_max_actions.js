@@ -41,19 +41,19 @@ const Payments = {
 const _simulatedChangePlan = Actions.changePlan;
 Object.assign(Actions, {
   async changePlan(el) {
-    const s = me(); const p = Plans.list().find(x => x.key === el.dataset.v);
+    const s = me(); const p = Plans.list().find(x => x.key === el.dataset.v); const cy = el.dataset.cycle || "mensal"; const cc = Plans.cycle(cy);
     const cfg = await Payments.config();
     if (!cfg.payments || !p.price) return _simulatedChangePlan(el);
-    App.modal({ title: `Assinar o plano ${p.name}`, body: `<p>${U.money(p.price)} por mês. Você paga na página segura da Asaas, com Pix, boleto ou cartão.</p>${C.field("pg-doc", "CPF ou CNPJ (exigido para emitir a cobrança)", C.input("pg-doc", "", 'inputmode="numeric" autocomplete="off"'))}${C.field("pg-phone", "Celular (opcional)", C.input("pg-phone", "", 'inputmode="tel"'))}<p class="xs muted">O plano é ativado assim que a Asaas confirmar o pagamento.</p>`, actions: [{ key: "cancel", label: "Cancelar" }, { key: "ok", label: "Gerar cobrança", cls: "btn-primary" }], onAction: k => {
+    App.modal({ title: `Assinar o plano ${p.name} ${cc.label.toLowerCase()}`, body: `<p>${cc.months === 1 ? U.money(p.price) + " por mês" : `${U.money(Plans.total(p, cy))} a cada ${cc.months} meses (${U.money(Plans.perMonth(p, cy))}/mês, ${Math.round(cc.discount * 100)}% de desconto)`}. Você paga na página segura da Asaas, com Pix, boleto ou cartão.</p>${C.field("pg-doc", "CPF ou CNPJ (exigido para emitir a cobrança)", C.input("pg-doc", "", 'inputmode="numeric" autocomplete="off"'))}${C.field("pg-phone", "Celular (opcional)", C.input("pg-phone", "", 'inputmode="tel"'))}<p class="xs muted">O plano é ativado assim que a Asaas confirmar o pagamento.</p>`, actions: [{ key: "cancel", label: "Cancelar" }, { key: "ok", label: "Gerar cobrança", cls: "btn-primary" }], onAction: k => {
       if (k !== "ok") return true;
       const doc = val("pg-doc").replace(/\D/g, ""); if (![11, 14].includes(doc.length)) { App.toast("Informe um CPF (11 dígitos) ou CNPJ (14 dígitos).", true); return false; }
       const ref = Payments.ref(s);
-      fetch("/api/checkout", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ plan: p.key, name: s.name, email: s.email, cpfCnpj: doc, phone: val("pg-phone"), ref }) })
+      fetch("/api/checkout", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ plan: p.key, cycle: cy, name: s.name, email: s.email, cpfCnpj: doc, phone: val("pg-phone"), ref }) })
         .then(r => r.json().then(b => ({ ok: r.ok, b })))
         .then(({ ok, b }) => {
           if (!ok) return App.toast(b.error || "Não foi possível gerar a cobrança.", true);
           Repo.remove("subscriptions", x => x.userId === s.id && x.status === "aguardando pagamento");
-          Repo.insert("subscriptions", { userId: s.id, plan: p.key, status: "aguardando pagamento", ref, asaasSubscriptionId: b.subscriptionId, invoiceUrl: b.invoiceUrl || "" });
+          Repo.insert("subscriptions", { userId: s.id, plan: p.key, cycle: cy, status: "aguardando pagamento", ref, asaasSubscriptionId: b.subscriptionId, invoiceUrl: b.invoiceUrl || "" });
           audit("Cobrança criada (Asaas)", s.id, p.name); App.render(); Actions.payInfo();
         }).catch(() => App.toast("Sem conexão com o servidor de pagamentos.", true));
       return true;

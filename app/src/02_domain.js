@@ -318,7 +318,15 @@ const PLANS_DEFAULT = [
   { key: "plus", name: "Plus", price: 29.9, limit: 200 },
   { key: "max", name: "Max", price: 59.9, limit: 500, features: ["envio", "respostas"] },
 ];
+const CYCLES = [
+  { key: "mensal", label: "Mensal", months: 1, discount: 0 },
+  { key: "trimestral", label: "Trimestral", months: 3, discount: 0.2 },
+  { key: "semestral", label: "Semestral", months: 6, discount: 0.3 },
+];
 const Plans = {
+  cycle(key) { return CYCLES.find(c => c.key === key) || CYCLES[0]; },
+  total(p, cycleKey) { const c = Plans.cycle(cycleKey); return Math.round(p.price * c.months * (1 - c.discount) * 100) / 100; },
+  perMonth(p, cycleKey) { const c = Plans.cycle(cycleKey); return Math.round(Plans.total(p, cycleKey) / c.months * 100) / 100; },
   list() { const saved = Repo.setting("plans_v2", PLANS_DEFAULT); return PLANS_DEFAULT.map(d => ({ ...d, ...(saved.find(x => x.key === d.key) || {}), features: d.features || [] })); },
   pitch(p) {
     if (!p.limit) return "Currículo revisado e pronto para recrutadores e sistemas de IA. Sem vagas.";

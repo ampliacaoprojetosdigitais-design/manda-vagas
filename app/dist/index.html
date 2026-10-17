@@ -733,7 +733,15 @@ const PLANS_DEFAULT = [
   { key: "plus", name: "Plus", price: 29.9, limit: 200 },
   { key: "max", name: "Max", price: 59.9, limit: 500, features: ["envio", "respostas"] },
 ];
+const CYCLES = [
+  { key: "mensal", label: "Mensal", months: 1, discount: 0 },
+  { key: "trimestral", label: "Trimestral", months: 3, discount: 0.2 },
+  { key: "semestral", label: "Semestral", months: 6, discount: 0.3 },
+];
 const Plans = {
+  cycle(key) { return CYCLES.find(c => c.key === key) || CYCLES[0]; },
+  total(p, cycleKey) { const c = Plans.cycle(cycleKey); return Math.round(p.price * c.months * (1 - c.discount) * 100) / 100; },
+  perMonth(p, cycleKey) { const c = Plans.cycle(cycleKey); return Math.round(Plans.total(p, cycleKey) / c.months * 100) / 100; },
   list() { const saved = Repo.setting("plans_v2", PLANS_DEFAULT); return PLANS_DEFAULT.map(d => ({ ...d, ...(saved.find(x => x.key === d.key) || {}), features: d.features || [] })); },
   pitch(p) {
     if (!p.limit) return "Currículo revisado e pronto para recrutadores e sistemas de IA. Sem vagas.";
@@ -1011,7 +1019,7 @@ Views.landing = () => {
       </div></div></section>
     <section class="l-sec" style="padding-top:0"><div class="l-wrap"><div class="eyebrow">Planos</div><h2 style="font-size:clamp(24px,3vw,34px);margin:8px 0 18px">Pague pelo volume de oportunidades</h2>
       <div class="plans" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr))">${plans.map((p, i) => `<div class="plan ${p.key === "max" ? "featured" : ""}"><b>${e(p.name)}</b><div class="price num">${p.price ? U.money(p.price) + "<small>/mês</small>" : "R$ 0"}</div><p class="muted small">${e(Plans.pitch(p))}</p><button class="btn ${p.key === "max" ? "btn-primary" : "btn-ghost"}" data-go="signup">${p.price ? "Escolher " + e(p.name) : "Arrumar meu currículo grátis"}</button></div>`).join("")}</div>
-      <p class="small muted" style="margin-top:12px">Na fase de testes não há cobrança: a troca de plano é simulada.</p></div></section>
+      <p class="small muted" style="margin-top:12px">Também no trimestral, com 20% de desconto, e no semestral, com 30%.</p></div></section>
     <footer class="l-foot"><div class="l-wrap stack-sm"><b>O Manda Vaga não é agência de emprego.</b><span>Não representamos empresas contratantes e não garantimos entrevista ou contratação. A aderência é uma estimativa explicável, não uma previsão. Marcas de plataformas de recrutamento citadas pertencem aos seus donos e não indicam parceria.</span><span>Protótipo local · ${new Date().getFullYear()}</span></div></footer></div>`;
 };
 
@@ -1374,7 +1382,8 @@ Views["cand.plan"] = (s) => {
   return `${C.head("Conta", "Plano e consumo", "Uma oportunidade única é uma vaga diferente entregue a você no mês. Rever a mesma vaga ou vagas duplicadas não consomem de novo.")}
   ${(() => { const pend = Repo.one("subscriptions", x => x.userId === s.id && x.status === "aguardando pagamento"); return pend ? C.notice(`<b>Pagamento do plano ${e(Plans.list().find(p => p.key === pend.plan)?.name || "")} aguardando confirmação.</b> <button class="btn-link" data-act="payInfo">Abrir pagamento</button> · <button class="btn-link" data-act="checkPayment">Verificar pagamento</button>`, "warn", "!") : ""; })()}
   ${C.notice("Neste ambiente de demonstração a troca de plano é simulada. No site publicado com a Asaas configurada, a assinatura gera uma cobrança real.", "info")}
-  <div class="grid g-main" style="margin-top:14px"><div class="plans" style="grid-template-columns:repeat(auto-fit,minmax(190px,1fr))">${Plans.list().map(p => `<div class="plan ${p.key === cur.key ? "featured" : ""}"><div class="row-between"><b>${e(p.name)}</b>${p.key === cur.key ? C.pill("Atual", "ok") : ""}</div><div class="price num">${p.price ? U.money(p.price) + "<small>/mês</small>" : "R$ 0"}</div><p class="small muted">${e(Plans.pitch(p))}</p>${p.key === cur.key ? "" : `<button class="btn btn-primary btn-sm" data-act="changePlan" data-v="${e(p.key)}">Mudar para ${e(p.name)}</button>`}</div>`).join("")}</div>
+  ${(() => { const cy = App.ui.cycle || "mensal"; const cc = Plans.cycle(cy); return `<div class="row" style="margin-top:14px">${C.tabs(cy, CYCLES.map(c => [c.key, c.label + (c.discount ? ` −${Math.round(c.discount * 100)}%` : "")]), "setCycle")}${cur.sub?.cycle && cur.price ? `<span class="small muted">Sua assinatura: ${e(Plans.cycle(cur.sub.cycle).label.toLowerCase())}</span>` : ""}</div>
+  <div class="grid g-main" style="margin-top:14px"><div class="plans" style="grid-template-columns:repeat(auto-fit,minmax(190px,1fr))">${Plans.list().map(p => `<div class="plan ${p.key === cur.key ? "featured" : ""}"><div class="row-between"><b>${e(p.name)}</b>${p.key === cur.key ? C.pill("Atual", "ok") : ""}</div>${p.price ? `<div class="price num">${U.money(Plans.perMonth(p, cy))}<small>/mês</small></div>${cc.months > 1 ? `<p class="small"><b>${U.money(Plans.total(p, cy))}</b> a cada ${cc.months} meses · economize ${Math.round(cc.discount * 100)}%</p>` : ""}` : `<div class="price num">R$ 0</div>`}<p class="small muted">${e(Plans.pitch(p))}</p>${p.key === cur.key && (!p.price || (cur.sub?.cycle || "mensal") === cy) ? "" : p.price || cur.key !== p.key ? `<button class="btn btn-primary btn-sm" data-act="changePlan" data-v="${e(p.key)}" data-cycle="${e(cy)}">${p.key === cur.key ? "Mudar para " + e(cc.label.toLowerCase()) : "Mudar para " + e(p.name)}</button>` : ""}</div>`).join("")}</div>`; })()}
   <div class="card stack"><h2>Este mês</h2><div class="stat"><span class="v num">${used}<span class="muted" style="font-size:16px"> / ${cur.limit}</span></span></div>${C.meter(used, cur.limit, "", true)}<h3 style="margin-top:8px">Últimas entregas</h3>${hist.map(h => { const j = Repo.get("jobs", h.jobId); return `<div class="row-between small"><span>${e(j ? j.title : "Vaga")}</span><span class="muted num">${U.fmtDate(h.createdAt)}</span></div>`; }).join("") || '<p class="small muted">Nada ainda.</p>'}</div></div>`;
 };
 
@@ -1823,7 +1832,8 @@ const Actions = {
   },
   readAll() { const s = me(); Repo.find("notifications", n => n.userId === s.id).forEach(n => n.read = true); Repo.save(); App.render(); },
   openNotif(el) { const n = Repo.get("notifications", el.dataset.id); n.read = true; Repo.save(); App.go(n.link || "cand.home"); },
-  changePlan(el) { const s = me(); const p = Plans.list().find(x => x.key === el.dataset.v); App.confirm(`Mudar para o plano ${p.name}?`, `Simulação: nenhuma cobrança será feita. Novo limite: ${p.limit} oportunidades únicas por mês.`, "Mudar plano", () => { Repo.find("subscriptions", x => x.userId === s.id && x.status === "ativa").forEach(x => { x.status = "encerrada"; x.endedAt = U.now(); }); Repo.insert("subscriptions", { userId: s.id, plan: p.key, status: "ativa", startedAt: U.now(), simulated: true }); audit("Plano alterado (simulado)", s.id, p.name); notify(s.id, "Plano alterado", `Agora você está no ${p.name}.`, "ok", "cand.plan"); App.toast(`Plano ${p.name} ativo (simulado).`); App.render(); }); },
+  setCycle(el) { App.ui.cycle = el.dataset.v; App.render(); },
+  changePlan(el) { const s = me(); const p = Plans.list().find(x => x.key === el.dataset.v); const cy = el.dataset.cycle || "mensal"; App.confirm(`Mudar para o plano ${p.name}${p.price ? " " + Plans.cycle(cy).label.toLowerCase() : ""}?`, `Simulação: nenhuma cobrança será feita.${p.price ? ` Valor: ${U.money(Plans.total(p, cy))} a cada ${Plans.cycle(cy).months === 1 ? "mês" : Plans.cycle(cy).months + " meses"}.` : ""} Limite: ${p.limit} oportunidades por mês.`, "Mudar plano", () => { Repo.find("subscriptions", x => x.userId === s.id && x.status === "ativa").forEach(x => { x.status = "encerrada"; x.endedAt = U.now(); }); Repo.insert("subscriptions", { userId: s.id, plan: p.key, cycle: cy, status: "ativa", startedAt: U.now(), simulated: true }); audit("Plano alterado (simulado)", s.id, p.name + " " + cy); notify(s.id, "Plano alterado", `Agora você está no ${p.name}.`, "ok", "cand.plan"); App.toast(`Plano ${p.name} ativo (simulado).`); App.render(); }); },
   exportMyData() { const s = me(); const own = c => Repo.find(c, r => r.userId === s.id); const { passwordHash, ...user } = s; const data = { exportadoEm: U.now(), usuario: user, perfil: own("profiles"), curriculo: own("resumes"), versoes: own("resume_versions"), declaracoes: own("keyword_claims"), vagasSalvasDispensadas: own("job_feedback"), candidaturas: own("applications"), assinaturas: own("subscriptions"), consumo: own("usage_events"), notificacoes: own("notifications"), preferencias: own("notification_preferences"), pedidos: own("privacy_requests") }; audit("Exportação de dados pelo titular", s.id); App.exportText("Exportar meus dados", `meus-dados-manda-vaga-${U.today()}.json`, JSON.stringify(data, null, 2), "application/json"); },
   requestFix() { const s = me(); const note = val("pv-fix"); if (!note) return App.toast("Descreva o que precisa ser corrigido.", true); Repo.insert("privacy_requests", { userId: s.id, userName: s.name, type: "Correção de dados", status: "aberta", note }); App.toast("Pedido enviado à equipe."); App.render(); },
   deleteAccount() { const s = me(); App.modal({ title: "Excluir conta", body: `<p>Isso apaga seu perfil, currículo, versões, candidaturas e notificações deste navegador.</p>${C.field("del-confirm", "Digite EXCLUIR para confirmar", C.input("del-confirm", "", 'autocomplete="off"'))}`, actions: [{ key: "cancel", label: "Cancelar" }, { key: "ok", label: "Excluir definitivamente", cls: "btn-danger" }], onAction: k => { if (k !== "ok") return true; if (val("del-confirm") !== "EXCLUIR") { App.toast("Digite EXCLUIR em maiúsculas.", true); return false; } ["profiles", "resumes", "resume_versions", "keyword_claims", "job_feedback", "applications", "subscriptions", "usage_events", "notifications", "notification_preferences"].forEach(c => Repo.remove(c, r => r.userId === s.id)); Repo.remove("users", u => u.id === s.id); Repo.insert("privacy_requests", { userId: s.id, userName: s.name, type: "Exclusão de conta", status: "concluída", note: "Executada pelo titular", resolvedAt: U.now() }); audit("Conta excluída pelo titular", s.id); Repo.data.session = null; Repo.save(); App.toast("Conta excluída."); App.go("landing"); return true; } }); },
@@ -2073,19 +2083,19 @@ const Payments = {
 const _simulatedChangePlan = Actions.changePlan;
 Object.assign(Actions, {
   async changePlan(el) {
-    const s = me(); const p = Plans.list().find(x => x.key === el.dataset.v);
+    const s = me(); const p = Plans.list().find(x => x.key === el.dataset.v); const cy = el.dataset.cycle || "mensal"; const cc = Plans.cycle(cy);
     const cfg = await Payments.config();
     if (!cfg.payments || !p.price) return _simulatedChangePlan(el);
-    App.modal({ title: `Assinar o plano ${p.name}`, body: `<p>${U.money(p.price)} por mês. Você paga na página segura da Asaas, com Pix, boleto ou cartão.</p>${C.field("pg-doc", "CPF ou CNPJ (exigido para emitir a cobrança)", C.input("pg-doc", "", 'inputmode="numeric" autocomplete="off"'))}${C.field("pg-phone", "Celular (opcional)", C.input("pg-phone", "", 'inputmode="tel"'))}<p class="xs muted">O plano é ativado assim que a Asaas confirmar o pagamento.</p>`, actions: [{ key: "cancel", label: "Cancelar" }, { key: "ok", label: "Gerar cobrança", cls: "btn-primary" }], onAction: k => {
+    App.modal({ title: `Assinar o plano ${p.name} ${cc.label.toLowerCase()}`, body: `<p>${cc.months === 1 ? U.money(p.price) + " por mês" : `${U.money(Plans.total(p, cy))} a cada ${cc.months} meses (${U.money(Plans.perMonth(p, cy))}/mês, ${Math.round(cc.discount * 100)}% de desconto)`}. Você paga na página segura da Asaas, com Pix, boleto ou cartão.</p>${C.field("pg-doc", "CPF ou CNPJ (exigido para emitir a cobrança)", C.input("pg-doc", "", 'inputmode="numeric" autocomplete="off"'))}${C.field("pg-phone", "Celular (opcional)", C.input("pg-phone", "", 'inputmode="tel"'))}<p class="xs muted">O plano é ativado assim que a Asaas confirmar o pagamento.</p>`, actions: [{ key: "cancel", label: "Cancelar" }, { key: "ok", label: "Gerar cobrança", cls: "btn-primary" }], onAction: k => {
       if (k !== "ok") return true;
       const doc = val("pg-doc").replace(/\D/g, ""); if (![11, 14].includes(doc.length)) { App.toast("Informe um CPF (11 dígitos) ou CNPJ (14 dígitos).", true); return false; }
       const ref = Payments.ref(s);
-      fetch("/api/checkout", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ plan: p.key, name: s.name, email: s.email, cpfCnpj: doc, phone: val("pg-phone"), ref }) })
+      fetch("/api/checkout", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ plan: p.key, cycle: cy, name: s.name, email: s.email, cpfCnpj: doc, phone: val("pg-phone"), ref }) })
         .then(r => r.json().then(b => ({ ok: r.ok, b })))
         .then(({ ok, b }) => {
           if (!ok) return App.toast(b.error || "Não foi possível gerar a cobrança.", true);
           Repo.remove("subscriptions", x => x.userId === s.id && x.status === "aguardando pagamento");
-          Repo.insert("subscriptions", { userId: s.id, plan: p.key, status: "aguardando pagamento", ref, asaasSubscriptionId: b.subscriptionId, invoiceUrl: b.invoiceUrl || "" });
+          Repo.insert("subscriptions", { userId: s.id, plan: p.key, cycle: cy, status: "aguardando pagamento", ref, asaasSubscriptionId: b.subscriptionId, invoiceUrl: b.invoiceUrl || "" });
           audit("Cobrança criada (Asaas)", s.id, p.name); App.render(); Actions.payInfo();
         }).catch(() => App.toast("Sem conexão com o servidor de pagamentos.", true));
       return true;

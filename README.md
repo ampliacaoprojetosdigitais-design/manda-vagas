@@ -29,14 +29,14 @@ Contas de demonstração (tela de login): candidata com currículo, candidato no
 Atalhos sem senha (só contas demo): `/app/#entrar-admin`, `/app/#entrar-candidato`, `/app/#entrar-novo`. Remover quando o login real entrar.
 
 ## Pagamentos (Asaas)
-O servidor cria cliente e assinatura mensal na Asaas, devolve o link de pagamento e ativa o plano quando a Asaas avisa pelo webhook. O preço é definido no servidor (`payments/asaas.js`).
+O servidor cria cliente e assinatura na Asaas (mensal, trimestral com 20% de desconto ou semestral com 30%), devolve o link de pagamento e ativa o plano quando a Asaas avisa pelo webhook. O preço é definido no servidor (`payments/asaas.js`).
 
 1. Na Asaas, gere a chave da API (comece pelo Sandbox).
 2. Na hospedagem, configure as variáveis de `.env.example` (`ASAAS_API_KEY`, `ASAAS_ENV`, `ASAAS_WEBHOOK_TOKEN`).
 3. Na Asaas, cadastre o webhook `https://SEU-DOMINIO/api/webhooks/asaas` com o mesmo token e os eventos de cobrança (`PAYMENT_CONFIRMED`, `PAYMENT_RECEIVED`, `PAYMENT_OVERDUE`, `PAYMENT_DELETED`, `PAYMENT_REFUNDED`).
 4. Sem a chave configurada, o app continua com a troca de plano simulada.
 
-Testes com uma Asaas simulada (sem cobrança real): `python3 tests/pagamentos_test.py` (21/21).
+Testes com uma Asaas simulada (sem cobrança real): `python3 tests/pagamentos_test.py` (24/24).
 
 Limite desta fase: as contas ainda ficam no navegador do usuário. O registro de pagamento fica em `data/payments.json` no servidor. A trava definitiva de plano precisa do banco e do login no servidor (próxima fase).
 

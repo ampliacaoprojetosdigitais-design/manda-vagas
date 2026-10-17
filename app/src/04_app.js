@@ -115,7 +115,7 @@ Views.landing = () => {
       </div></div></section>
     <section class="l-sec" style="padding-top:0"><div class="l-wrap"><div class="eyebrow">Planos</div><h2 style="font-size:clamp(24px,3vw,34px);margin:8px 0 18px">Pague pelo volume de oportunidades</h2>
       <div class="plans" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr))">${plans.map((p, i) => `<div class="plan ${p.key === "max" ? "featured" : ""}"><b>${e(p.name)}</b><div class="price num">${p.price ? U.money(p.price) + "<small>/mês</small>" : "R$ 0"}</div><p class="muted small">${e(Plans.pitch(p))}</p><button class="btn ${p.key === "max" ? "btn-primary" : "btn-ghost"}" data-go="signup">${p.price ? "Escolher " + e(p.name) : "Arrumar meu currículo grátis"}</button></div>`).join("")}</div>
-      <p class="small muted" style="margin-top:12px">Na fase de testes não há cobrança: a troca de plano é simulada.</p></div></section>
+      <p class="small muted" style="margin-top:12px">Também no trimestral, com 20% de desconto, e no semestral, com 30%.</p></div></section>
     <footer class="l-foot"><div class="l-wrap stack-sm"><b>O Manda Vaga não é agência de emprego.</b><span>Não representamos empresas contratantes e não garantimos entrevista ou contratação. A aderência é uma estimativa explicável, não uma previsão. Marcas de plataformas de recrutamento citadas pertencem aos seus donos e não indicam parceria.</span><span>Protótipo local · ${new Date().getFullYear()}</span></div></footer></div>`;
 };
 

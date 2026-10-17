@@ -316,10 +316,10 @@ const PLANS_DEFAULT = [
   { key: "gratis", name: "Grátis", price: 0, limit: 0 },
   { key: "inicial", name: "Inicial", price: 19.9, limit: 100 },
   { key: "plus", name: "Plus", price: 29.9, limit: 200 },
-  { key: "max", name: "Max", price: 39.9, limit: 500, features: ["envio", "respostas"] },
+  { key: "max", name: "Max", price: 59.9, limit: 500, features: ["envio", "respostas"] },
 ];
 const Plans = {
-  list() { const saved = Repo.setting("plans", PLANS_DEFAULT); return PLANS_DEFAULT.map(d => ({ ...d, ...(saved.find(x => x.key === d.key) || {}), features: d.features || [] })); },
+  list() { const saved = Repo.setting("plans_v2", PLANS_DEFAULT); return PLANS_DEFAULT.map(d => ({ ...d, ...(saved.find(x => x.key === d.key) || {}), features: d.features || [] })); },
   pitch(p) {
     if (!p.limit) return "Currículo revisado e pronto para recrutadores e sistemas de IA. Sem vagas.";
     const base = `Até ${p.limit} vagas por mês, entregues de uma vez, escolhidas pelo seu currículo`;

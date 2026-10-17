@@ -731,10 +731,10 @@ const PLANS_DEFAULT = [
   { key: "gratis", name: "Grátis", price: 0, limit: 0 },
   { key: "inicial", name: "Inicial", price: 19.9, limit: 100 },
   { key: "plus", name: "Plus", price: 29.9, limit: 200 },
-  { key: "max", name: "Max", price: 39.9, limit: 500, features: ["envio", "respostas"] },
+  { key: "max", name: "Max", price: 59.9, limit: 500, features: ["envio", "respostas"] },
 ];
 const Plans = {
-  list() { const saved = Repo.setting("plans", PLANS_DEFAULT); return PLANS_DEFAULT.map(d => ({ ...d, ...(saved.find(x => x.key === d.key) || {}), features: d.features || [] })); },
+  list() { const saved = Repo.setting("plans_v2", PLANS_DEFAULT); return PLANS_DEFAULT.map(d => ({ ...d, ...(saved.find(x => x.key === d.key) || {}), features: d.features || [] })); },
   pitch(p) {
     if (!p.limit) return "Currículo revisado e pronto para recrutadores e sistemas de IA. Sem vagas.";
     const base = `Até ${p.limit} vagas por mês, entregues de uma vez, escolhidas pelo seu currículo`;
@@ -890,7 +890,7 @@ function buildSeed(hashes) {
   data.notifications.push({ id: "nt1", userId: cam.id, title: "Ação pendente", body: "A candidatura para Auxiliar de Controladoria Jurídica espera um teste no portal.", kind: "warn", link: "apps", read: false, createdAt: iso(2) });
   data.privacy_requests.push({ id: "pr1", userId: "usr_s5", userName: "Fábio Lopes", type: "Exportação de dados", status: "concluída", note: "Arquivo entregue na área do usuário", createdAt: iso(9), resolvedAt: iso(8) }, { id: "pr2", userId: "usr_s11", userName: "Lucas Esteves", type: "Correção de dados", status: "aberta", note: "Pediu para corrigir cidade", createdAt: iso(2) });
   data.audit_events.push({ id: "au1", actorId: "usr_admin", actorName: "Equipe Manda Vaga", role: "admin", action: "Vaga verificada", target: "job_d07", detail: "Anúncio conferido", createdAt: iso(1) });
-  data.settings.push({ id: "set1", key: "weights", value: DEFAULT_WEIGHTS }, { id: "set2", key: "plans", value: PLANS_DEFAULT });
+  data.settings.push({ id: "set1", key: "weights", value: DEFAULT_WEIGHTS }, { id: "set2", key: "plans_v2", value: PLANS_DEFAULT });
   return data;
 }
 
@@ -1963,7 +1963,7 @@ const Forms = {
     saveResumeData(s, d, r ? "Edição manual: " + ch.map(c => c.field).join(", ") : "Versão inicial (preenchimento manual)", ch);
     App.ui.resumeDraft = null; App.toast("Currículo salvo. Nova versão no histórico."); App.render();
   },
-  plans(f) { const fd = new FormData(f); const plans = Plans.list().map((p, i) => ({ ...p, price: Math.max(0, +fd.get(`pl-price-${i}`) || p.price), limit: p.key === "gratis" ? 0 : Math.max(1, Math.round(+fd.get(`pl-limit-${i}`) || p.limit)) })); Repo.setSetting("plans", plans); audit("Planos alterados", "", plans.map(p => `${p.name}:${p.limit}`).join(", ")); App.toast("Planos salvos."); App.render(); },
+  plans(f) { const fd = new FormData(f); const plans = Plans.list().map((p, i) => ({ ...p, price: Math.max(0, +fd.get(`pl-price-${i}`) || p.price), limit: p.key === "gratis" ? 0 : Math.max(1, Math.round(+fd.get(`pl-limit-${i}`) || p.limit)) })); Repo.setSetting("plans_v2", plans); audit("Planos alterados", "", plans.map(p => `${p.name}:${p.limit}`).join(", ")); App.toast("Planos salvos."); App.render(); },
   weights(f) { const fd = new FormData(f); const w = {}; Object.keys(DIM_LABEL).forEach(k => w[k] = +fd.get("w-" + k)); if (!Object.values(w).some(Boolean)) return App.toast("Pelo menos uma dimensão precisa de peso.", true); Repo.setSetting("weights", w); audit("Pesos de aderência alterados", "", JSON.stringify(w)); App.toast("Pesos salvos. As pontuações já foram recalculadas."); App.render(); },
 };
 

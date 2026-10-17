@@ -225,7 +225,7 @@ anúncio original em nova aba. - Não automatizar candidaturas no MVP.
 
 Planos propostos já discutidos: - Inicial: R\$ 19,90/mês --- até 100
 oportunidades únicas/mês. - Plus: R\$ 29,90/mês --- até 200
-oportunidades únicas/mês. - Max: R\$ 39,90/mês --- até 500 oportunidades
+oportunidades únicas/mês. - Max: R\$ 59,90/mês --- até 500 oportunidades
 únicas/mês.
 
 A unidade de consumo e a definição de oportunidade única precisam ser

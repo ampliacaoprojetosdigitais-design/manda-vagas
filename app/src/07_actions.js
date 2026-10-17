@@ -252,7 +252,7 @@ const Forms = {
     saveResumeData(s, d, r ? "Edição manual: " + ch.map(c => c.field).join(", ") : "Versão inicial (preenchimento manual)", ch);
     App.ui.resumeDraft = null; App.toast("Currículo salvo. Nova versão no histórico."); App.render();
   },
-  plans(f) { const fd = new FormData(f); const plans = Plans.list().map((p, i) => ({ ...p, price: Math.max(0, +fd.get(`pl-price-${i}`) || p.price), limit: p.key === "gratis" ? 0 : Math.max(1, Math.round(+fd.get(`pl-limit-${i}`) || p.limit)) })); Repo.setSetting("plans", plans); audit("Planos alterados", "", plans.map(p => `${p.name}:${p.limit}`).join(", ")); App.toast("Planos salvos."); App.render(); },
+  plans(f) { const fd = new FormData(f); const plans = Plans.list().map((p, i) => ({ ...p, price: Math.max(0, +fd.get(`pl-price-${i}`) || p.price), limit: p.key === "gratis" ? 0 : Math.max(1, Math.round(+fd.get(`pl-limit-${i}`) || p.limit)) })); Repo.setSetting("plans_v2", plans); audit("Planos alterados", "", plans.map(p => `${p.name}:${p.limit}`).join(", ")); App.toast("Planos salvos."); App.render(); },
   weights(f) { const fd = new FormData(f); const w = {}; Object.keys(DIM_LABEL).forEach(k => w[k] = +fd.get("w-" + k)); if (!Object.values(w).some(Boolean)) return App.toast("Pelo menos uma dimensão precisa de peso.", true); Repo.setSetting("weights", w); audit("Pesos de aderência alterados", "", JSON.stringify(w)); App.toast("Pesos salvos. As pontuações já foram recalculadas."); App.render(); },
 };
 

@@ -9,7 +9,7 @@ const crypto = require("crypto");
 const PLANS = {
   inicial: { name: "Inicial", value: 19.9 },
   plus: { name: "Plus", value: 29.9 },
-  max: { name: "Max", value: 39.9 },
+  max: { name: "Max", value: 59.9 },
 };
 const ACTIVE_EVENTS = new Set(["PAYMENT_CONFIRMED", "PAYMENT_RECEIVED"]);
 const OVERDUE_EVENTS = new Set(["PAYMENT_OVERDUE"]);

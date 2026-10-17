@@ -123,6 +123,6 @@ function buildSeed(hashes) {
   data.notifications.push({ id: "nt1", userId: cam.id, title: "Ação pendente", body: "A candidatura para Auxiliar de Controladoria Jurídica espera um teste no portal.", kind: "warn", link: "apps", read: false, createdAt: iso(2) });
   data.privacy_requests.push({ id: "pr1", userId: "usr_s5", userName: "Fábio Lopes", type: "Exportação de dados", status: "concluída", note: "Arquivo entregue na área do usuário", createdAt: iso(9), resolvedAt: iso(8) }, { id: "pr2", userId: "usr_s11", userName: "Lucas Esteves", type: "Correção de dados", status: "aberta", note: "Pediu para corrigir cidade", createdAt: iso(2) });
   data.audit_events.push({ id: "au1", actorId: "usr_admin", actorName: "Equipe Manda Vaga", role: "admin", action: "Vaga verificada", target: "job_d07", detail: "Anúncio conferido", createdAt: iso(1) });
-  data.settings.push({ id: "set1", key: "weights", value: DEFAULT_WEIGHTS }, { id: "set2", key: "plans", value: PLANS_DEFAULT });
+  data.settings.push({ id: "set1", key: "weights", value: DEFAULT_WEIGHTS }, { id: "set2", key: "plans_v2", value: PLANS_DEFAULT });
   return data;
 }

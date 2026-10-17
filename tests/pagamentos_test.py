@@ -20,7 +20,7 @@ try:
     s,b=req("POST","/api/checkout",{"plan":"max","name":"Teste Silva","email":"t@ex.com","cpfCnpj":"529.982.247-25","ref":ref,"value":1}); ck("PAY-4","Checkout cria cliente e assinatura e devolve o link de pagamento",s==200 and b["invoiceUrl"].startswith("https://"),b)
     calls=json.loads(urllib.request.urlopen("http://localhost:4010/__calls").read())
     sub=[c for c in calls if c["u"]=="/v3/subscriptions"][0]["b"]
-    ck("PAY-5","Preço vem do servidor (ignora valor enviado pelo navegador)",sub["value"]==39.9 and sub["cycle"]=="MONTHLY" and sub["externalReference"]==ref,sub)
+    ck("PAY-5","Preço vem do servidor (ignora valor enviado pelo navegador)",sub["value"]==59.9 and sub["cycle"]=="MONTHLY" and sub["externalReference"]==ref,sub)
     s,b=req("GET","/api/subscription?ref="+ref); ck("PAY-6","Status começa como pendente",b["status"]=="PENDING",b)
     ev={"id":"evt_1","event":"PAYMENT_CONFIRMED","payment":{"id":"pay_1","subscription":"sub_teste1","externalReference":ref,"status":"CONFIRMED"}}
     s,b=req("POST","/api/webhooks/asaas",json.dumps(ev).encode(),{"asaas-access-token":"errado"}); ck("PAY-7","Webhook com token errado é recusado",s==401,b)

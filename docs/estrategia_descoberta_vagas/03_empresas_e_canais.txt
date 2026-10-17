@@ -1,0 +1,91 @@
+### 7\. Afinal, quantas empresas existem no Brasil?
+
+Cara, encontrei dois números importantes — e eles medem coisas diferentes.
+
+Empresas e organizações formais
+
+### 10,6 milhões
+
+O IBGE registrou aproximadamente 10,6 milhões de empresas e outras organizações ativas em 2024, alta de 5,8% em relação a 2023.
+
+Estabelecimentos com CNPJ ativo
+
+### 28,1 milhões
+
+Uma compilação dos dados da Receita Federal apontava aproximadamente 28,1 milhões de estabelecimentos ativos em agosto de 2026. Aqui, matriz e filial contam separadamente, e há muitos MEIs.
+
+Quantas dessas empresas têm uma página “Trabalhe Conosco”? Não encontrei uma estatística nacional confiável que responda a isso. Também não seria correto presumir que todas as empresas com CNPJ ativo contratam funcionários ou possuem site próprio.
+
+### 8\. Por onde as empresas brasileiras divulgam vagas?
+
+Na prática, o Manda Vaga precisa mapear diferentes canais, porque uma mesma empresa pode divulgar a mesma oportunidade em vários lugares.
+
+1\. Site oficial da empresa
+
+Seções como “Trabalhe Conosco”, “Carreiras”, “Oportunidades”, “Talentos” e “Faça parte do time”. A candidatura pode ocorrer no próprio site ou em uma plataforma terceirizada.
+
+2\. Sistemas de recrutamento (ATS)
+
+Gupy, Sólides, Pandapé, Workday, Greenhouse e Lever, entre outros. A empresa publica a vaga e o sistema administra o processo seletivo.
+
+3\. Portais de emprego
+
+LinkedIn, Indeed, Catho, Vagas.com, InfoJobs e outros. Podem receber anúncios diretamente ou indexar vagas publicadas em outras fontes.
+
+4\. Consultorias de RH e agências de recrutamento
+
+Randstad, Adecco, ManpowerGroup, Robert Half, Michael Page e consultorias regionais. Elas recrutam para clientes e, conforme o processo, recebem currículos ou mantêm bancos de talentos.
+
+5\. Canais públicos e especializados
+
+SINE/Emprega Brasil, CIEE, Nube, IEL, PATs e CATes, além de portais de concursos, universidades, conselhos profissionais e associações setoriais. O portal Emprega Brasil permite que empregadores cadastrem vagas e candidatos consultem oportunidades.
+
+6\. Redes sociais e divulgação direta
+
+LinkedIn, Instagram, páginas de associações, grupos profissionais, feiras de carreira, indicações e comunidades locais. Algumas oportunidades aparecem nesses canais sem existir um portal próprio de vagas.
+
+### 9\. Como eu estruturaria a busca do Manda Vaga
+
+Minha proposta é não tentar cadastrar manualmente milhares de empresas uma por uma. É construir um cadastro nacional de empregadores e canais de recrutamento, começando pelos que têm maior chance de publicar vagas relevantes.
+
+### Estrutura de dados por empresa
+
+Identificação
+
+Nome, CNPJ ou identificador, setor, porte, cidade e site oficial.
+
+Canais de recrutamento
+
+URL de carreiras, ATS utilizado, portais externos e consultorias parceiras.
+
+Coleta de oportunidades
+
+Página de origem, data de descoberta, frequência de verificação e método permitido de acesso.
+
+Vagas
+
+URL individual, título, local, salário, requisitos, prazo e identificador para deduplicação.
+
+Candidaturas
+
+Status, currículo utilizado, confirmação de envio, respostas e entrevistas.
+
+O cadastro de empresas pode começar pelos dados públicos do CNPJ, complementados por sites oficiais, diretórios setoriais e páginas de carreiras. Depois, o sistema identifica quais empresas têm canais de recrutamento e quais realmente publicam vagas.
+
+### O que precisamos medir para descobrir o tamanho real do mercado
+
+* Quantas empresas têm site próprio.
+
+* Quantas têm uma página de carreiras identificável.
+
+* Quantas publicaram pelo menos uma vaga nos últimos 30, 90 ou 180 dias.
+
+* Quantas usam cada ATS ou portal.
+
+* Quantas aceitam cadastro espontâneo de currículo.
+
+* Quantas permitem acesso automatizado por API, feed ou outro método autorizado.
+
+Essas métricas ainda precisam ser apuradas; não temos uma contagem nacional verificada delas.
+
+Minha recomendação para o projeto: primeiro montar uma base de empregadores, depois descobrir os canais de recrutamento de cada um e, por fim, coletar as vagas. Assim, o Manda Vaga não será apenas mais um agregador de anúncios: poderá relacionar cada oportunidade à empresa que contrata e à página original onde a candidatura acontece.

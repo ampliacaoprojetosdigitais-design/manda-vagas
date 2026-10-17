@@ -1,0 +1,338 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Manda Vaga — Painel de candidaturas</title>
+<style>
+:root{--green:#176b4d;--dark:#102b20;--lime:#d8f36a;--bg:#f4f7f4;--line:#dfe7e1;--muted:#5f6f65;--white:#fff;--orange:#8a5100;--red:#a52a2a}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:#18251e;font:15px/1.5 Inter,system-ui,-apple-system,Arial,sans-serif}
+button,input,select,textarea{font:inherit}button{cursor:pointer}:focus-visible{outline:3px solid #7fb89d;outline-offset:2px}
+.layout{min-height:100vh;display:grid;grid-template-columns:245px 1fr}.sidebar{background:var(--dark);color:white;padding:24px 15px;display:flex;flex-direction:column;gap:22px}.brand{font-size:22px;font-weight:900;padding:0 8px}.brand b{display:inline-grid;place-items:center;background:var(--lime);color:var(--dark);border-radius:10px;width:36px;height:36px;margin-right:7px}.nav{display:grid;gap:5px}.nav button{border:0;text-align:left;background:transparent;color:#c9d8ce;padding:12px;border-radius:10px}.nav button.active,.nav button:hover{background:#244637;color:#fff}.side-note{margin-top:auto;color:#b9cbbf;font-size:12px;padding:8px}
+.main{min-width:0}.topbar{height:70px;position:sticky;top:0;z-index:5;background:#ffffffed;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 28px}.topbar strong{font-size:16px}#menuBtn{display:none}
+.tag{display:inline-flex;align-items:center;padding:4px 9px;border-radius:99px;font-size:11px;font-weight:800;background:#e8f4ec;color:var(--green)}.tag.orange{background:#fff1d7;color:var(--orange)}.tag.red{background:#ffebeb;color:var(--red)}.tag.grey{background:#eef0ee;color:#4b5a51}
+.content{max-width:1280px;margin:auto;padding:28px}.page{display:none}.page.active{display:block}.eyebrow{font-size:11px;text-transform:uppercase;letter-spacing:1.4px;font-weight:850;color:var(--green)}h1{font-size:clamp(28px,3vw,38px);line-height:1.13;letter-spacing:-1px;margin:8px 0}h2{font-size:19px;margin:0 0 8px}h3{font-size:15px;margin:0 0 5px}.sub,.muted{color:var(--muted)}.sub{margin:0 0 22px}
+.grid{display:grid;gap:15px}.stats{grid-template-columns:repeat(4,minmax(0,1fr));margin:22px 0}.two{grid-template-columns:1.15fr .85fr}.card{background:var(--white);border:1px solid var(--line);border-radius:17px;padding:19px;min-width:0}.stat-label{font-size:12px;color:var(--muted)}.value{font-size:30px;font-weight:900;margin:5px 0}
+.btn{border:0;border-radius:10px;padding:10px 14px;font-weight:800;text-decoration:none;display:inline-block}.primary{background:var(--green);color:white}.secondary{background:#e9f4ed;color:var(--green)}.ghost{background:white;border:1px solid var(--line);color:#405248}.danger{background:#fff0f0;color:#a52a2a}
+.field{display:grid;gap:6px;margin:12px 0}.field label{font-size:12px;font-weight:800}.field input,.field select,.field textarea,td select,td input{width:100%;padding:11px;border:1px solid #d8e2da;border-radius:10px;background:white;color:#17251e}.field textarea{min-height:90px;resize:vertical}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.fieldrow{display:grid;grid-template-columns:1fr 1fr;gap:12px}.muted-sm{font-size:12px;color:var(--muted)}
+.notice{padding:13px 15px;border-radius:12px;background:#eff8d7;border:1px solid #e0edb7;font-size:13px}.notice.blue{background:#edf5ff;border-color:#d4e5ff}.notice.warn{background:#fff5e3;border-color:#f2dfb9}.notice.err{background:#ffefef;border-color:#f3cfcf}
+.item{padding:14px 0;border-bottom:1px solid var(--line)}.item:last-child{border-bottom:0}.item-head{display:flex;justify-content:space-between;gap:12px;align-items:start}.item-title{font-weight:850}.meta{font-size:12px;color:var(--muted)}.chips{display:flex;gap:5px;flex-wrap:wrap;margin:8px 0}.chip{font-size:11px;background:#f0f4f0;padding:4px 7px;border-radius:6px}.chip.gap{background:#fff1d7}.actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px;align-items:center}
+.tablewrap{overflow:auto}table{border-collapse:collapse;width:100%;font-size:13px}th,td{text-align:left;padding:11px 9px;border-bottom:1px solid var(--line);vertical-align:top}th{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px}td .stack{display:grid;gap:6px;min-width:200px}td select,td input{padding:8px}
+.empty{padding:24px 10px;text-align:center;color:var(--muted)}.empty strong{display:block;color:#26382d;margin-bottom:5px}
+.toast{position:fixed;bottom:18px;right:18px;left:auto;max-width:calc(100% - 36px);background:var(--dark);color:white;padding:13px 17px;border-radius:12px;display:none;z-index:30;box-shadow:0 8px 30px #0002}.toast.show{display:block}.hidden{display:none!important}
+.profile-bullet{display:flex;gap:9px;margin:8px 0}.profile-bullet b{color:var(--green)}.small-btn{padding:7px 9px;font-size:12px}.footer{color:var(--muted);font-size:11px;margin-top:24px}
+.inline-select{width:auto!important;padding:5px 8px!important;font-size:12px;border:1px solid var(--line);border-radius:8px}
+.backdrop{display:none}
+pre.preview{white-space:pre-wrap;font:13px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace;color:#35453a;margin:0;max-height:420px;overflow:auto}
+@media(max-width:900px){.layout{grid-template-columns:1fr}#menuBtn{display:inline-block}.sidebar{display:none}.sidebar.open{display:flex;position:fixed;inset:0 auto 0 0;width:255px;z-index:20}.backdrop.open{display:block;position:fixed;inset:0;background:#0006;z-index:15}.topbar{padding:0 15px}.content{padding:20px 16px}.stats{grid-template-columns:1fr 1fr}.two{grid-template-columns:1fr}}
+@media(max-width:560px){.fieldrow{grid-template-columns:1fr}.card{padding:15px}.item-head{display:block}.stats .card{padding:13px}.value{font-size:25px}}
+</style>
+</head>
+<body>
+<div class="layout">
+<aside class="sidebar" id="sidebar" aria-label="Navegação">
+ <div class="brand"><b>MV</b> manda vaga</div>
+ <nav class="nav">
+  <button class="active" data-page="home">▦ &nbsp; Visão geral</button>
+  <button data-page="profile">▤ &nbsp; Perfil e currículo</button>
+  <button data-page="jobs">⌕ &nbsp; Oportunidades</button>
+  <button data-page="apps">↗ &nbsp; Painel de candidaturas</button>
+  <button data-page="workflow">✓ &nbsp; Fluxo e dados</button>
+ </nav>
+ <div class="side-note">Oportunidades reais.<br>Experiências verdadeiras.<br>Envios com confirmação.</div>
+</aside>
+<div class="backdrop" id="backdrop"></div>
+<main class="main">
+ <header class="topbar"><div class="row"><button class="btn ghost" id="menuBtn" aria-label="Abrir menu" aria-expanded="false">☰</button><strong id="pageTitle">Visão geral</strong></div><span class="tag orange">Protótipo local · v6</span></header>
+ <div class="content">
+  <div id="storageWarn" class="notice err hidden" style="margin-bottom:15px"><b>Armazenamento bloqueado:</b> este navegador não permite salvar dados locais (janela anônima ou bloqueio de cookies). O painel funciona, mas tudo será perdido ao fechar. Use “Exportar backup” na aba Fluxo e dados.</div>
+
+  <section class="page active" id="page-home">
+   <div class="eyebrow">Seu próximo passo começa aqui</div><h1>Vamos encontrar oportunidades que combinam com você.</h1>
+   <p class="sub">Currículo direcionado, vagas verificadas e acompanhamento transparente de cada candidatura.</p>
+   <div class="notice blue"><b>Importante:</b> este arquivo funciona localmente. Ele organiza dados no navegador, mas ainda não pesquisa portais automaticamente nem envia candidaturas. Nenhum envio será marcado como concluído sem confirmação.</div>
+   <div class="grid stats">
+    <div class="card"><div class="stat-label">Vagas ativas</div><div class="value" id="statJobs">0</div><span class="muted-sm">Únicas, sem duplicatas nem encerradas</span></div>
+    <div class="card"><div class="stat-label">Currículos personalizados</div><div class="value" id="statResumes">0</div><span class="muted-sm">Versões geradas por vaga</span></div>
+    <div class="card"><div class="stat-label">Candidaturas enviadas</div><div class="value" id="statSent">0</div><span class="muted-sm">Só com confirmação real</span></div>
+    <div class="card"><div class="stat-label">Ações pendentes suas</div><div class="value" id="statNeeds">0</div><span class="muted-sm">CAPTCHA, login ou envio sem confirmação</span></div>
+   </div>
+   <div class="grid two">
+    <div class="card"><div class="item-head"><h2>Melhores oportunidades</h2><button class="btn secondary small-btn" data-go="jobs">Abrir vagas →</button></div><div id="homeJobs"></div></div>
+    <div class="card"><h2>Seu perfil de busca</h2>
+     <div class="profile-bullet"><b>01</b><span><strong>São Paulo capital</strong><br><span class="muted-sm">Primeira opção</span></span></div>
+     <div class="profile-bullet"><b>02</b><span><strong>Guarulhos</strong><br><span class="muted-sm">Segunda opção</span></span></div>
+     <div class="profile-bullet"><b>03</b><span><strong>Disponibilidade</strong><br><span class="muted-sm">Manhã e tarde</span></span></div>
+     <div class="profile-bullet"><b>04</b><span><strong>Áreas</strong><br><span class="muted-sm">Direito, acompanhamento processual, cartório, administrativo jurídico, marketing jurídico e sistemas digitais</span></span></div>
+     <button class="btn primary" style="width:100%;margin-top:12px" data-go="profile">Revisar perfil e currículo</button>
+    </div>
+   </div>
+   <div class="footer">Manda Vaga · Protótipo de fluxo · Dados guardados apenas neste navegador.</div>
+  </section>
+
+  <section class="page" id="page-profile">
+   <div class="eyebrow">Etapa 1</div><h1>Perfil e currículo mestre</h1><p class="sub">Use informações reais. Você pode editar os campos antes de gerar uma versão para uma vaga específica.</p>
+   <div class="grid two">
+    <div class="card">
+     <h2>Dados profissionais</h2><p class="muted-sm">Preenchido com base no currículo enviado. Confira tudo antes de usar.</p>
+     <div class="field"><label>Nome</label><input id="pName" value="Agner Simões Rebouças"></div>
+     <div class="fieldrow"><div class="field"><label>Região principal</label><input id="pCity" value="São Paulo, SP"></div><div class="field"><label>Região secundária</label><input id="pCity2" value="Guarulhos, SP"></div></div>
+     <div class="fieldrow"><div class="field"><label>Curso</label><input id="pCourse" value="Bacharelado em Direito — Faculdade CTA (híbrido, unidade Ipiranga)"></div><div class="field"><label>Semestre atual</label><input id="pSemester" value="1º semestre de 10"></div></div>
+     <div class="fieldrow"><div class="field"><label>Disponibilidade</label><input id="pAvailability" value="Manhã e tarde"></div><div class="field"><label>Objetivo de carreira</label><select id="pGoal"><option>Jurídico + acompanhamento processual</option><option>Administrativo jurídico</option><option>Cartório / serviços extrajudiciais</option><option>Marketing jurídico</option><option>Sistemas jurídicos e produtos digitais</option><option>IA aplicada / ferramentas digitais</option></select></div></div>
+     <div class="field"><label>Resumo profissional</label><textarea id="pSummary">Estudante do 1º semestre de Direito, com experiência profissional desde 2008 em atendimento, organização documental, redação, gestão de projetos de comunicação e articulação com órgãos públicos. Atua em projetos digitais e marketing, hoje com foco em soluções de comunicação para escritórios de advocacia.</textarea></div>
+     <div class="field"><label>Experiência profissional (atividades reais)</label><textarea id="pExperience" style="min-height:180px">Ampliação Projetos Digitais (2022–atual): fundador e consultor; sites, conteúdo, organização do atendimento a clientes, planejamento de comunicação para advocacia conforme Provimento OAB 205/2021, cronogramas, orçamentos, contratos de prestação de serviços e relacionamento com clientes.
+Saber Ensinar Educação Criativa (2017–atual): sócio-fundador; criação de cursos e materiais didáticos, formações para prefeituras, centros culturais e organizações sociais, condução de turmas e reuniões.
+CDHU — Programa de Recuperação Socioambiental (2010–2018): coordenação de comunicação comunitária; atendimento a famílias e lideranças, produção de comunicados, atas, registros e relatórios, articulação entre comunidade, equipe técnica e órgãos públicos.
+Tech Image Escola de Fotografia (2008): atendimento ao público e vendas internas.</textarea></div>
+     <div class="field"><label>Formação complementar e certificações</label><textarea id="pEducation">MBA em Gestão de Projetos — Business School São Paulo (BSP), 2016.
+Gestão de Comunicação Empresarial, ênfase em Publicidade e Propaganda — Universidade Anhembi Morumbi, 2014.
+Criação Publicitária — Ceinter, 2011.
+Certificação Scrum Master.
+Marketing Jurídico — OAB São Paulo (em andamento; confirmar o nome exato do curso).</textarea></div>
+     <div class="field"><label>Competências e ferramentas</label><textarea id="pSkills">Redação e organização de documentos; atendimento ao público; pesquisa e organização de informações; gestão de prazos, agendas e projetos; elaboração de atas, relatórios, propostas e planilhas; articulação com órgãos públicos; marketing e comunicação jurídica; Scrum; Word, Excel, PowerPoint, Google Workspace, WordPress, Photoshop, Premiere e InDesign. Ferramentas de IA utilizadas: ChatGPT, Grok, Claude e ferramentas de IA do Google, para produção de textos e materiais.</textarea></div>
+     <div class="field"><label>Notas confirmadas sobre disponibilidade e formação</label><textarea id="pNotes">Direito iniciado em 2026; curso com 10 semestres; disponibilidade de manhã e à tarde. São Paulo capital é a primeira região de busca; Guarulhos, a segunda.</textarea></div>
+     <div class="row"><button class="btn primary" id="btnSaveProfile">Salvar perfil</button><button class="btn secondary" id="btnGenMaster">Gerar currículo mestre</button><button class="btn ghost" id="btnDlMaster">Baixar currículo mestre (.txt)</button></div>
+     <div id="integrityBox" class="notice warn hidden" style="margin-top:12px"></div>
+    </div>
+    <div class="grid" style="align-content:start">
+     <div class="card"><h2>Regras de integridade</h2>
+      <div class="profile-bullet"><b>✓</b><span>Não inventar experiências, resultados, certificações ou ferramentas dominadas.</span></div>
+      <div class="profile-bullet"><b>✓</b><span>Separar experiência comprovada, conhecimento de ferramentas e projetos em andamento.</span></div>
+      <div class="profile-bullet"><b>✓</b><span>Não descrever automação com IA como experiência profissional atual.</span></div>
+      <div class="profile-bullet"><b>✓</b><span>Não apresentar estudante como advogado ou profissional jurídico habilitado.</span></div>
+     </div>
+     <div class="card"><h2>Currículo mestre — prévia</h2><pre id="masterPreview" class="preview">Clique em “Gerar currículo mestre” para montar uma versão revisável.</pre></div>
+     <div class="card" id="personalizeCard"><h2>Personalizar para uma vaga</h2>
+      <div class="field"><label>Vaga escolhida</label><select id="resumeJob"><option value="">Selecione uma vaga cadastrada</option></select></div>
+      <div class="row"><button class="btn primary" id="btnPersonalize">Preparar versão personalizada</button><button class="btn secondary" id="btnDlPersonalized">Baixar currículo personalizado</button></div>
+      <div id="personalizedBox" class="notice hidden" style="margin-top:12px"></div>
+     </div>
+    </div>
+   </div>
+  </section>
+
+  <section class="page" id="page-jobs">
+   <div class="eyebrow">Etapa 2</div><h1>Oportunidades verificadas</h1><p class="sub">Não há vagas fictícias pré-carregadas. Cadastre apenas anúncios reais com link direto e indique o que já foi verificado.</p>
+   <div class="notice warn"><b>Limite deste protótipo:</b> a pesquisa automática em LinkedIn, Indeed, Gupy e outros portais ainda não está conectada. Use este formulário para registrar vagas verificadas durante a fase local.</div>
+   <div class="grid two" style="margin-top:15px">
+    <div class="card"><h2>Registrar vaga real</h2>
+     <div class="field"><label>Cargo anunciado *</label><input id="jTitle" placeholder="Ex.: Estágio em Direito"></div>
+     <div class="field"><label>Empresa / escritório *</label><input id="jCompany" placeholder="Nome da organização"></div>
+     <div class="fieldrow"><div class="field"><label>Cidade *</label><select id="jCity"><option>São Paulo, SP</option><option>Guarulhos, SP</option><option>Outra</option></select></div><div class="field"><label>Modalidade</label><select id="jModality"><option>Não informada</option><option>Presencial</option><option>Híbrido</option><option>Remoto</option></select></div></div>
+     <div class="fieldrow"><div class="field"><label>Fonte</label><select id="jSource"><option>Site oficial da empresa</option><option>Gupy</option><option>LinkedIn</option><option>Indeed</option><option>Vagas.com</option><option>Infojobs</option><option>Catho</option><option>Outro portal</option></select></div><div class="field"><label>Data da consulta *</label><input id="jChecked" type="date"></div></div>
+     <div class="field"><label>Link direto do anúncio *</label><input id="jUrl" type="url" placeholder="https://..."></div>
+     <div class="fieldrow"><div class="field"><label>Data de publicação (se disponível)</label><input id="jDate" type="date"></div><div class="field"><label>Prazo de inscrição (se disponível)</label><input id="jDeadline" type="date"></div></div>
+     <div class="field"><label>Requisitos e atividades do anúncio</label><textarea id="jRequirements" placeholder="Cole um resumo seu; não precisa copiar o anúncio inteiro."></textarea></div>
+     <div class="field"><label>Estado de verificação</label><select id="jVerified"><option>Pendente de verificação</option><option>Anúncio e empresa verificados</option><option>Inscrições abertas confirmadas</option><option>Encerrada ou indisponível</option></select></div>
+     <div class="fieldrow"><div class="field"><label>Aderência estimada (%)</label><input id="jScore" type="number" min="0" max="100" value="0"></div><div class="field"><label>Motivo / lacunas</label><input id="jReason" placeholder="Ex.: confirmar semestre mínimo"></div></div>
+     <button class="btn primary" id="btnAddJob">Registrar oportunidade</button>
+    </div>
+    <div class="card"><h2>Filtros de busca</h2>
+     <div class="field"><label>Palavra-chave</label><input id="filterQ" placeholder="Direito, processual, cartório, marketing..."></div>
+     <div class="field"><label>Localização</label><select id="filterCity"><option value="">Todas</option><option>São Paulo, SP</option><option>Guarulhos, SP</option><option>Outra</option></select></div>
+     <div class="field"><label>Estado de verificação</label><select id="filterVerified"><option value="">Todos</option><option>Pendente de verificação</option><option>Anúncio e empresa verificados</option><option>Inscrições abertas confirmadas</option><option>Encerrada ou indisponível</option></select></div>
+     <div class="field"><label>Ordenar por</label><select id="filterSort"><option value="score">Maior aderência</option><option value="recent">Cadastro mais recente</option><option value="deadline">Prazo mais próximo</option></select></div>
+     <button class="btn ghost" id="btnClearFilters">Limpar filtros</button>
+     <p class="muted-sm">Os filtros são aplicados enquanto você digita.</p>
+     <hr style="border:0;border-top:1px solid var(--line);margin:20px 0">
+     <h3>Critérios da sua busca</h3>
+     <div class="profile-bullet"><b>1</b><span>São Paulo capital em primeiro lugar; Guarulhos em segundo.</span></div>
+     <div class="profile-bullet"><b>2</b><span>Disponibilidade de manhã e à tarde.</span></div>
+     <div class="profile-bullet"><b>3</b><span>Semestre mínimo compatível com o 1º semestre, salvo vaga não acadêmica que aceite sua experiência.</span></div>
+     <div class="profile-bullet"><b>4</b><span>Seis grupos: jurídico, processual, cartório, administrativo, marketing jurídico e sistemas digitais.</span></div>
+    </div>
+   </div>
+   <div class="card" style="margin-top:15px"><div class="item-head"><h2>Lista de oportunidades</h2><span class="tag" id="jobCount">0 vagas</span></div><div id="jobsList"></div><div class="actions"><button class="btn secondary" id="btnExportJobs">Exportar vagas (CSV)</button></div></div>
+  </section>
+
+  <section class="page" id="page-apps">
+   <div class="eyebrow">Etapa 3</div><h1>Painel de candidaturas</h1><p class="sub">Acompanhe o estado de cada candidatura. O sistema diferencia candidatura preparada, pendência de ação e envio confirmado.</p>
+   <div class="notice blue">Os estados “Candidatura enviada — confirmada”, “Aguardando resposta”, “Resposta recebida” e “Entrevista agendada” exigem que você confirme que o portal mostrou uma confirmação real ou forneceu protocolo. O protótipo não envia formulários para sites externos.</div>
+   <div class="card" style="margin:15px 0"><div class="row" style="align-items:end">
+    <div class="field" style="margin:0;flex:1;min-width:220px"><label>Registrar candidatura para a vaga</label><select id="newAppJob"><option value="">Selecione uma vaga cadastrada</option></select></div>
+    <button class="btn primary" id="btnNewApp">Registrar candidatura</button><button class="btn secondary" id="btnExportApps">Exportar painel (CSV)</button>
+   </div></div>
+   <div class="card tablewrap"><table><thead><tr><th>Vaga / empresa</th><th>Registro</th><th>Currículo</th><th>Status</th><th>Próxima ação e evidência</th></tr></thead><tbody id="appsTable"></tbody></table></div>
+  </section>
+
+  <section class="page" id="page-workflow">
+   <div class="eyebrow">Fluxo operacional</div><h1>Da vaga encontrada ao envio confirmado</h1><p class="sub">Este é o fluxo que vamos implementar no Manda Vaga. As integrações externas serão conectadas depois do teste local.</p>
+   <div class="grid two">
+    <div class="card"><h2>Estados da candidatura</h2>
+     <div class="item"><span class="tag">01</span><h3 style="margin-top:8px">Vaga encontrada → Em verificação</h3><p class="muted-sm">Guardar link original, empresa, cargo, localidade, modalidade e data da consulta. Conferir se o anúncio existe e se as inscrições estão abertas.</p></div>
+     <div class="item"><span class="tag">02</span><h3 style="margin-top:8px">Selecionada → Preparando currículo → Pronta para revisão</h3><p class="muted-sm">Comparar semestre, horários, localização e requisitos obrigatórios. Gerar versão fiel às experiências reais.</p></div>
+     <div class="item"><span class="tag orange">03</span><h3 style="margin-top:8px">Aguardando ação do candidato</h3><p class="muted-sm">Resolver CAPTCHA, login, testes ou perguntas pessoais que exijam sua participação.</p></div>
+     <div class="item"><span class="tag orange">04</span><h3 style="margin-top:8px">Envio tentado — sem confirmação</h3><p class="muted-sm">Não entra no total de enviadas.</p></div>
+     <div class="item"><span class="tag">05</span><h3 style="margin-top:8px">Candidatura enviada — confirmada</h3><p class="muted-sm">Só com confirmação explícita do portal ou protocolo. Depois: aguardando resposta, resposta recebida, entrevista agendada, processo encerrado.</p></div>
+     <div class="item"><span class="tag grey">—</span><h3 style="margin-top:8px">Alternativos</h3><p class="muted-sm">Vaga expirada/indisponível e Descartada.</p></div>
+    </div>
+    <div class="grid" style="align-content:start">
+     <div class="card"><h2>O que já funciona neste protótipo</h2>
+      <div class="profile-bullet"><b>✓</b><span>Editar e salvar o perfil no navegador, com alerta de afirmações sem evidência.</span></div>
+      <div class="profile-bullet"><b>✓</b><span>Gerar currículo mestre em texto e baixar o arquivo.</span></div>
+      <div class="profile-bullet"><b>✓</b><span>Registrar vagas com bloqueio de duplicatas e atualizar o estado de verificação.</span></div>
+      <div class="profile-bullet"><b>✓</b><span>Preparar currículo por vaga, com termos encontrados e lacunas.</span></div>
+      <div class="profile-bullet"><b>✓</b><span>Registrar candidaturas com os estados do PRD e exportar CSV.</span></div>
+      <div class="profile-bullet"><b>—</b><span>Pesquisa automática, análise por IA, contas de recrutamento e envio externo ainda não conectados.</span></div>
+     </div>
+     <div class="card"><h2>Seus dados</h2><p class="muted-sm">Tudo fica só neste navegador. Faça backup antes de limpar o navegador ou trocar de computador.</p>
+      <div class="row"><button class="btn secondary" id="btnBackup">Exportar backup (.json)</button><label class="btn ghost" for="importFile" style="cursor:pointer">Importar backup</label><input type="file" id="importFile" accept="application/json,.json" class="hidden"><button class="btn danger" id="btnReset">Apagar dados locais</button></div>
+     </div>
+    </div>
+   </div>
+  </section>
+ </div>
+</main>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script>
+"use strict";
+const titles={home:"Visão geral",profile:"Perfil e currículo",jobs:"Oportunidades",apps:"Painel de candidaturas",workflow:"Fluxo e dados"};
+const VERIF=["Pendente de verificação","Anúncio e empresa verificados","Inscrições abertas confirmadas","Encerrada ou indisponível"];
+const CLOSED="Encerrada ou indisponível";
+const STATUSES=["Vaga encontrada","Em verificação","Selecionada","Preparando currículo","Pronta para revisão","Aguardando ação do candidato","Envio tentado — sem confirmação","Candidatura enviada — confirmada","Aguardando resposta","Resposta recebida","Entrevista agendada","Processo encerrado","Vaga expirada/indisponível","Descartada"];
+const NEEDS_CONFIRM=["Candidatura enviada — confirmada","Aguardando resposta","Resposta recebida","Entrevista agendada"];
+const LEGACY_STATUS={"Vaga selecionada":"Selecionada","Aguardando sua intervenção":"Aguardando ação do candidato","Entrevista":"Entrevista agendada","Encerrada":"Processo encerrado"};
+const RESUME_STATES=["Ainda não preparado","Currículo preparado","Currículo revisado","Não necessário"];
+const PROFILE_FIELDS={name:"pName",city:"pCity",city2:"pCity2",course:"pCourse",semester:"pSemester",availability:"pAvailability",goal:"pGoal",summary:"pSummary",experience:"pExperience",education:"pEducation",skills:"pSkills",notes:"pNotes"};
+const STOP=new Set("sobre entre outros outras outro outra para pelos pelas pelo pela como mais menos muito muita muitos muitas quando onde ainda também apenas desde todos todas toda todo cada estar estão sendo seja será serão nosso nossa nossos nossas vaga vagas empresa empresas área áreas trabalho trabalhar atuar atuação experiência experiências conhecimento conhecimentos desejável desejáveis requisitos requisito atividades atividade responsabilidades benefícios horário horários local candidato candidata candidatos pessoa pessoas buscamos procuramos oportunidade oportunidades junto parte nível acima abaixo forma dentro durante através possuir possui ter tenha sendo isso essa esse esta este estas estes aquele aquela anos meses dias semana semanas segunda sexta cursando cursar curso novas novos nova novo semestre semestres estágio estagio estagiário estagiária intermediário intermediária avançado avançada básico básica diferencial região dentre".split(" "));
+
+let jobs=[],apps=[],resumes={},masterText="",storageOK=true;
+const $=id=>document.getElementById(id);
+const uid=()=>(window.crypto&&crypto.randomUUID)?crypto.randomUUID():"id-"+Date.now().toString(36)+"-"+Math.random().toString(36).slice(2,10);
+const today=()=>{const d=new Date();return new Date(d.getTime()-d.getTimezoneOffset()*60000).toISOString().slice(0,10)};
+
+/* ---------- armazenamento seguro ---------- */
+function sget(k){try{return localStorage.getItem(k)}catch(e){storageOK=false;return null}}
+function sset(k,v){try{localStorage.setItem(k,v);return true}catch(e){storageOK=false;$("storageWarn").classList.remove("hidden");return false}}
+function sdel(k){try{localStorage.removeItem(k)}catch(e){}}
+function parse(k,fb){try{const v=sget(k);return v?JSON.parse(v):fb}catch(e){return fb}}
+function persistJobs(){sset("mv6_jobs",JSON.stringify(jobs))}
+function persistApps(){sset("mv6_apps",JSON.stringify(apps))}
+function persistResumes(){sset("mv6_resumes",JSON.stringify(resumes))}
+
+/* ---------- utilidades ---------- */
+function toast(msg){const t=$("toast");t.textContent=msg;t.classList.add("show");clearTimeout(toast._t);toast._t=setTimeout(()=>t.classList.remove("show"),2800)}
+function esc(s){return String(s??"").replace(/[&<>"'`]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;","`":"&#96;"}[c]))}
+function safeUrl(u){try{const x=new URL(String(u||""));return["http:","https:"].includes(x.protocol)?x.href:""}catch(e){return""}}
+function canonicalUrl(u){try{const x=new URL(u);x.hash="";[...x.searchParams.keys()].forEach(k=>{if(/^(utm_|fbclid|gclid|ref|refid|trk|trackingid|src)/i.test(k))x.searchParams.delete(k)});x.hostname=x.hostname.toLowerCase().replace(/^www\./,"");let s=x.toString();return s.replace(/\/(\?|$)/,"$1").toLowerCase()}catch(e){return String(u||"").trim().toLowerCase()}}
+function fmtDate(s){if(!s)return"—";const d=new Date(String(s).slice(0,10)+"T12:00:00");return Number.isNaN(+d)?"—":d.toLocaleDateString("pt-BR")}
+function csv(rows){return rows.map(r=>r.map(x=>'"'+String(x??"").replace(/"/g,'""')+'"').join(",")).join("\r\n")}
+function downloadFile(name,text,mime="text/plain;charset=utf-8"){if(!text){toast("Gere o conteúdo antes de baixar.");return false}const b=new Blob([text],{type:mime}),url=URL.createObjectURL(b),a=document.createElement("a");a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1500);return true}
+function downloadCsv(name,rows){return downloadFile(name,"﻿"+csv(rows),"text/csv;charset=utf-8")}
+function slug(s){return String(s).normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/[^\w]+/g,"_").replace(/^_|_$/g,"").slice(0,40)||"vaga"}
+function terms(text){return[...new Set(String(text).toLowerCase().split(/[^a-záàâãéêíóôõúüç0-9]+/i).filter(w=>w.length>4&&!STOP.has(w)&&!/^\d+$/.test(w)))]}
+
+/* ---------- navegação ---------- */
+function go(page){if(!titles[page])return;document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));$("page-"+page).classList.add("active");document.querySelectorAll(".nav button").forEach(b=>b.classList.toggle("active",b.dataset.page===page));$("pageTitle").textContent=titles[page];closeMenu();window.scrollTo({top:0,behavior:"smooth"})}
+function closeMenu(){$("sidebar").classList.remove("open");$("backdrop").classList.remove("open");$("menuBtn").setAttribute("aria-expanded","false")}
+function toggleMenu(){const o=$("sidebar").classList.toggle("open");$("backdrop").classList.toggle("open",o);$("menuBtn").setAttribute("aria-expanded",String(o))}
+
+/* ---------- carregamento e migração ---------- */
+function normalizeJob(j){const url=safeUrl(j.url);if(!url||!j.title||!j.company)return null;return{id:/^[\w-]{6,}$/.test(j.id||"")?j.id:uid(),title:String(j.title),company:String(j.company),city:String(j.city||"Outra"),modality:String(j.modality||"Não informada"),source:String(j.source||"Outro portal"),url,canon:canonicalUrl(url),date:String(j.date||""),deadline:String(j.deadline||""),checked:String(j.checked||(j.created||"").slice(0,10)||""),requirements:String(j.requirements||""),verified:VERIF.includes(j.verified)?j.verified:VERIF[0],score:Math.max(0,Math.min(100,Number(j.score)||0)),reason:String(j.reason||""),created:String(j.created||new Date().toISOString())}}
+function normalizeApp(a){let st=LEGACY_STATUS[a.status]||a.status;if(!STATUSES.includes(st))st="Selecionada";return{id:/^[\w-]{6,}$/.test(a.id||"")?a.id:uid(),jobId:String(a.jobId||""),title:String(a.title||"(sem título)"),company:String(a.company||""),url:safeUrl(a.url),city:String(a.city||""),date:String(a.date||new Date().toISOString()),resumeStatus:RESUME_STATES.includes(a.resumeStatus)?a.resumeStatus:RESUME_STATES[0],status:st,confirmed:!!a.confirmed||st==="Candidatura enviada — confirmada",next:String(a.next||""),evidence:String(a.evidence||""),notes:String(a.notes||"")}}
+function load(){
+ const hasV6=sget("mv6_jobs")!==null||sget("mv6_apps")!==null||sget("mv6_profile")!==null;
+ const pref=hasV6?"mv6_":"mv5_";
+ jobs=(parse(pref+"jobs",[])||[]).map(normalizeJob).filter(Boolean);
+ apps=(parse(pref+"apps",[])||[]).map(normalizeApp);
+ resumes=parse("mv6_resumes",{})||{};
+ const p=parse(pref+"profile",null);if(p)applyProfile(p);
+ if(!hasV6&&(jobs.length||apps.length||p)){persistJobs();persistApps();if(p)sset("mv6_profile",JSON.stringify(p));}
+ if(!storageOK)$("storageWarn").classList.remove("hidden");
+}
+function applyProfile(p){for(const[k,id]of Object.entries(PROFILE_FIELDS)){if(p[k]===undefined)continue;const el=$(id);if(el.tagName==="SELECT"&&![...el.options].some(o=>o.value===p[k])){const o=document.createElement("option");o.textContent=p[k];el.appendChild(o)}el.value=p[k]}}
+
+/* ---------- perfil e currículo ---------- */
+function currentProfile(){const p={};for(const[k,id]of Object.entries(PROFILE_FIELDS))p[k]=$(id).value.trim();return p}
+function saveProfile(silent){const ok=sset("mv6_profile",JSON.stringify(currentProfile()));if(!silent)toast(ok?"Perfil salvo neste navegador":"Não foi possível salvar: armazenamento bloqueado");checkIntegrity();return ok}
+function checkIntegrity(){const p=currentProfile(),warn=[];const years=(p.experience.match(/\b(19[5-9]\d|20[0-4]\d)\b/g)||[]).map(Number);const now=new Date().getFullYear();const first=years.length?Math.min(...years):null;const re=/mais de\s+(\d{1,2})\s+anos/gi;let m;while((m=re.exec(p.summary))){const n=+m[1];if(first&&n>now-first)warn.push(`O resumo diz “mais de ${n} anos”, mas a experiência mais antiga registrada é de ${first} (cerca de ${now-first} anos). Ajuste ou acrescente a experiência que comprove.`)}
+ if(/\badvogad[oa]\b/i.test(p.summary)&&!/não\s+(sou|é)\s+advogad/i.test(p.summary))warn.push("O resumo menciona “advogado(a)”. Confirme que não está sugerindo inscrição na OAB.");
+ if(/automa[çc][ãa]o/i.test(p.skills+" "+p.summary+" "+p.experience))warn.push("Há menção a automação. Você informou que ainda não trabalha profissionalmente com automações de IA; confira o contexto.");
+ const box=$("integrityBox");box.classList.toggle("hidden",!warn.length);box.innerHTML=warn.length?"<b>Revisão de integridade</b><br>"+warn.map(esc).join("<br>"):"";return warn}
+function buildResume(p,extraTitle){return `${p.name.toUpperCase()}\n${p.city} · Região secundária: ${p.city2}\n\nOBJETIVO PROFISSIONAL\n${extraTitle||p.goal}\n\nFORMAÇÃO\n${p.course} — ${p.semester}\n${p.education}\nDisponibilidade: ${p.availability}\n\nRESUMO PROFISSIONAL\n${p.summary}\n\nEXPERIÊNCIA PROFISSIONAL\n${p.experience}\n\nCOMPETÊNCIAS E FERRAMENTAS\n${p.skills}\n\nINFORMAÇÕES ADICIONAIS\n${p.notes}`}
+function generateMaster(){const p=currentProfile();if(!p.name){toast("Preencha o nome antes de gerar.");return}masterText=buildResume(p)+"\n\nREVISÃO ANTES DO USO\nConfira datas, nomes, ferramentas e atividades. Inclua resultados numéricos apenas quando puder comprová-los.";$("masterPreview").textContent=masterText;saveProfile(true);toast(checkIntegrity().length?"Currículo gerado com alertas de integridade. Revise.":"Currículo mestre gerado. Revise antes de usar.")}
+function downloadMaster(){generateMaster();if(masterText)downloadFile("MandaVaga_Curriculo_Mestre_"+slug($("pName").value.split(" ")[0])+".txt",masterText)}
+function personalizeResume(){const id=$("resumeJob").value,j=jobs.find(x=>x.id===id);if(!j){toast("Cadastre ou selecione uma vaga primeiro.");return null}
+ const p=currentProfile();const jobTerms=terms(j.title+" "+j.requirements);const src=(p.summary+" "+p.experience+" "+p.skills+" "+p.education).toLowerCase();const matches=jobTerms.filter(k=>src.includes(k));const gaps=jobTerms.filter(k=>!src.includes(k));
+ const text=`${buildResume(p,j.title+" — "+j.company)}\n\nPALAVRAS-CHAVE DA VAGA JÁ SUSTENTADAS PELO PERFIL\n${matches.length?matches.join(" · "):"Nenhuma correspondência textual automática. Revise manualmente."}\n\nTERMOS DA VAGA SEM EVIDÊNCIA NO PERFIL (NÃO DECLARAR SEM COMPROVAR)\n${gaps.length?gaps.slice(0,25).join(" · "):"—"}\n\nCONTROLE DE INTEGRIDADE\nEsta versão reorganiza informações fornecidas no perfil. Não acrescenta experiências, resultados ou habilidades. Confira cada palavra-chave antes de usar.\n\nVAGA ORIGINAL\n${j.title} — ${j.company}\n${j.url}\nConsulta: ${fmtDate(j.checked)} · Estado de verificação: ${j.verified}\nAderência estimada registrada: ${j.score}%\nPendências: ${j.reason||"não informadas"}`;
+ resumes[j.id]={text,date:new Date().toISOString(),matches:matches.length,gaps:gaps.length};persistResumes();
+ apps.filter(a=>a.jobId===j.id&&a.resumeStatus==="Ainda não preparado").forEach(a=>a.resumeStatus="Currículo preparado");persistApps();
+ $("personalizedBox").classList.remove("hidden");
+ $("personalizedBox").innerHTML=`<b>Versão preparada para revisão</b><br>${esc(j.title)} — ${esc(j.company)}<div class="chips">${matches.slice(0,12).map(t=>`<span class="chip">${esc(t)}</span>`).join("")}</div>${gaps.length?`<div class="muted-sm">Sem evidência no perfil:</div><div class="chips">${gaps.slice(0,12).map(t=>`<span class="chip gap">${esc(t)}</span>`).join("")}</div>`:""}<span class="muted-sm">${matches.length} termo(s) sustentado(s), ${gaps.length} sem evidência. Correspondência textual, não avaliação por IA nem garantia de compatibilidade.</span>`;
+ renderApps();refreshStats();toast("Currículo personalizado preparado para revisão");return text}
+function downloadPersonalized(){const id=$("resumeJob").value;if(!id){toast("Selecione uma vaga primeiro.");return}const text=personalizeResume();const j=jobs.find(x=>x.id===id);if(text)downloadFile("MandaVaga_Curriculo_"+slug(j.title)+"_"+slug(j.company)+".txt",text)}
+
+/* ---------- vagas ---------- */
+function addJob(){const title=$("jTitle").value.trim(),company=$("jCompany").value.trim(),raw=$("jUrl").value.trim();if(!title||!company||!raw){toast("Preencha cargo, empresa e link direto.");return}
+ const url=safeUrl(raw);if(!url){toast("Informe um link válido começando com https://");return}
+ const canon=canonicalUrl(url);const dup=jobs.find(j=>j.canon===canon);if(dup){toast("Esta vaga já está cadastrada: "+dup.title+" — "+dup.company);return}
+ const twin=jobs.find(j=>j.title.toLowerCase()===title.toLowerCase()&&j.company.toLowerCase()===company.toLowerCase());if(twin&&!confirm("Já existe uma vaga com o mesmo cargo e empresa (link diferente). Cadastrar mesmo assim?"))return;
+ const v=$("jVerified").value;if(v!==VERIF[0]&&!$("jChecked").value){toast("Informe a data da consulta para registrar a verificação.");return}
+ const j=normalizeJob({id:uid(),title,company,city:$("jCity").value,modality:$("jModality").value,source:$("jSource").value,url,date:$("jDate").value,deadline:$("jDeadline").value,checked:$("jChecked").value||today(),requirements:$("jRequirements").value.trim(),verified:v,score:$("jScore").value,reason:$("jReason").value.trim(),created:new Date().toISOString()});
+ jobs.unshift(j);persistJobs();["jTitle","jCompany","jUrl","jDate","jDeadline","jRequirements","jReason"].forEach(id=>$(id).value="");$("jScore").value=0;$("jVerified").value=VERIF[0];$("jChecked").value=today();renderAll();toast("Oportunidade registrada. Confirme a origem antes de se candidatar.")}
+function setJobVerified(id,v){const j=jobs.find(x=>x.id===id);if(!j||!VERIF.includes(v))return;j.verified=v;j.checked=today();persistJobs();if(v===CLOSED)apps.filter(a=>a.jobId===id&&!a.confirmed&&!["Processo encerrado","Descartada"].includes(a.status)).forEach(a=>{a.status="Vaga expirada/indisponível"});persistApps();renderAll();toast("Verificação atualizada em "+fmtDate(j.checked))}
+function deleteJob(id){const linked=apps.filter(a=>a.jobId===id).length;if(!confirm(linked?`Excluir esta vaga? Ela tem ${linked} candidatura(s) registrada(s); o histórico da candidatura será mantido.`:"Excluir esta vaga do painel local?"))return;jobs=jobs.filter(j=>j.id!==id);delete resumes[id];persistJobs();persistResumes();renderAll();toast("Vaga removida")}
+function clearFilters(){["filterQ","filterCity","filterVerified"].forEach(id=>$(id).value="");$("filterSort").value="score";renderJobs()}
+function sortJobs(list){const s=$("filterSort").value;const by={score:(a,b)=>b.score-a.score||b.created.localeCompare(a.created),recent:(a,b)=>b.created.localeCompare(a.created),deadline:(a,b)=>(a.deadline||"9999").localeCompare(b.deadline||"9999")}[s]||(()=>0);return list.slice().sort(by)}
+function verTag(v){return v===CLOSED?"red":v===VERIF[0]?"orange":""}
+function renderJobs(){const q=$("filterQ").value.toLowerCase().trim(),city=$("filterCity").value,ver=$("filterVerified").value;
+ const list=sortJobs(jobs.filter(j=>(!q||(j.title+" "+j.company+" "+j.requirements+" "+j.reason+" "+j.source).toLowerCase().includes(q))&&(!city||j.city===city)&&(!ver||j.verified===ver)));
+ $("jobCount").textContent=list.length===jobs.length?`${jobs.length} vaga(s)`:`${list.length} de ${jobs.length} vaga(s)`;
+ $("jobsList").innerHTML=list.length?list.map(j=>{const hasApp=apps.some(a=>a.jobId===j.id);const exp=j.deadline&&j.deadline<today();return `<div class="item"><div class="item-head"><div><div class="item-title">${esc(j.title)}</div><div>${esc(j.company)} · ${esc(j.city)} · ${esc(j.modality)} · ${esc(j.source)}</div><div class="meta">Consulta: ${fmtDate(j.checked)} · Publicação: ${j.date?fmtDate(j.date):"não informada"} · Prazo: ${j.deadline?fmtDate(j.deadline):"não informado"}${exp?' · <b style="color:var(--red)">prazo vencido</b>':""}</div><div class="chips"><span class="tag ${verTag(j.verified)}">${esc(j.verified)}</span><span class="tag">Aderência estimada: ${j.score}%</span>${resumes[j.id]?'<span class="tag">Currículo personalizado</span>':""}${hasApp?'<span class="tag grey">No painel</span>':""}</div><div class="muted-sm">${esc(j.reason||"Sem observações de compatibilidade registradas.")}</div></div><div class="actions">${j.url?`<a class="btn secondary small-btn" href="${esc(j.url)}" target="_blank" rel="noopener noreferrer">Abrir anúncio ↗</a>`:""}<button class="btn primary small-btn" data-act="prep" data-id="${esc(j.id)}">${hasApp?"Ver candidatura":"Preparar candidatura"}</button><select class="inline-select" data-act="ver" data-id="${esc(j.id)}" aria-label="Estado de verificação">${VERIF.map(v=>`<option ${v===j.verified?"selected":""}>${v}</option>`).join("")}</select><button class="btn ghost small-btn" data-act="del" data-id="${esc(j.id)}">Excluir</button></div></div>${j.requirements?`<p class="muted-sm"><b>Requisitos / atividades:</b> ${esc(j.requirements)}</p>`:""}</div>`}).join(""):(jobs.length?'<div class="empty"><strong>Nenhuma vaga com esses filtros</strong>Ajuste ou limpe os filtros.</div>':'<div class="empty"><strong>Nenhuma oportunidade cadastrada</strong>Adicione uma vaga real com link direto.</div>')}
+function renderHomeJobs(){const list=sortJobs(jobs.filter(j=>j.verified!==CLOSED)).slice(0,3);$("homeJobs").innerHTML=list.length?list.map(j=>`<div class="item"><div class="item-title">${esc(j.title)}</div><div class="meta">${esc(j.company)} · ${esc(j.city)} · ${esc(j.modality)}</div><div class="chips"><span class="tag ${verTag(j.verified)}">${esc(j.verified)}</span><span class="tag">${j.score}% aderência estimada</span></div><a href="${esc(j.url)}" target="_blank" rel="noopener noreferrer">Abrir anúncio original ↗</a></div>`).join(""):'<div class="empty"><strong>Nenhuma vaga ativa cadastrada</strong>As oportunidades só entram no painel depois de registrar o anúncio original e seu estado de verificação.</div>'}
+function refreshJobSelects(){for(const sel of[$("resumeJob"),$("newAppJob")]){const old=sel.value;sel.innerHTML='<option value="">Selecione uma vaga cadastrada</option>'+sortJobs(jobs).map(j=>`<option value="${esc(j.id)}">${esc(j.title)} — ${esc(j.company)}${j.verified===CLOSED?" (encerrada)":""}</option>`).join("");if(jobs.some(j=>j.id===old))sel.value=old}}
+
+/* ---------- candidaturas ---------- */
+function prepareApplication(id){const j=jobs.find(x=>x.id===id);if(!j)return;const exists=apps.find(a=>a.jobId===id&&!["Processo encerrado","Descartada","Vaga expirada/indisponível"].includes(a.status));if(exists){go("apps");toast("Esta vaga já está no painel de candidaturas.");return}
+ if(j.verified===CLOSED&&!confirm("Esta vaga está marcada como encerrada ou indisponível. Registrar mesmo assim?"))return;
+ apps.unshift(normalizeApp({id:uid(),jobId:id,title:j.title,company:j.company,url:j.url,city:j.city,date:new Date().toISOString(),resumeStatus:resumes[id]?"Currículo preparado":"Ainda não preparado",status:j.verified===VERIF[0]?"Em verificação":"Selecionada",next:j.verified===VERIF[0]?"Verificar se o anúncio está aberto":"Revisar requisitos e preparar currículo"}));
+ persistApps();renderAll();go("apps");toast("Vaga adicionada ao painel. Nenhuma candidatura foi enviada.")}
+function newApplication(){const id=$("newAppJob").value;if(!jobs.length){toast("Cadastre uma vaga real primeiro.");go("jobs");return}if(!id){toast("Selecione a vaga na lista.");return}prepareApplication(id)}
+function setAppStatus(id,status){const a=apps.find(x=>x.id===id);if(!a||!STATUSES.includes(status))return;
+ if(NEEDS_CONFIRM.includes(status)&&!a.confirmed){if(!confirm("Confirma que o site mostrou uma confirmação real de envio ou forneceu protocolo? Só confirme se isso aconteceu.")){renderApps();return}
+  if(!a.evidence.trim()){const ev=prompt("Registre o protocolo ou descreva a confirmação observada (mensagem, e-mail, tela):");if(!ev||!ev.trim()){alert("Para manter o registro confiável, informe a evidência observada.");renderApps();return}a.evidence=ev.trim()}
+  a.confirmed=true;a.confirmedAt=new Date().toISOString()}
+ if(status==="Aguardando ação do candidato")a.next="Concluir CAPTCHA, login ou confirmação pessoal no site original";
+ if(status==="Envio tentado — sem confirmação")a.next="Verificar e-mail ou portal para confirmar o recebimento";
+ a.status=status;persistApps();renderApps();refreshStats();toast("Status atualizado")}
+function updateApp(id,key,val){const a=apps.find(x=>x.id===id);if(!a||!["next","evidence","notes","resumeStatus"].includes(key))return;a[key]=val;persistApps();refreshStats()}
+function removeApp(id){if(!confirm("Remover esta candidatura do painel local?"))return;apps=apps.filter(a=>a.id!==id);persistApps();renderAll()}
+function openPersonalize(jobId){go("profile");if(jobs.some(j=>j.id===jobId)){$("resumeJob").value=jobId;setTimeout(()=>$("personalizeCard").scrollIntoView({behavior:"smooth"}),50)}else toast("A vaga original foi excluída; cadastre-a novamente para personalizar.")}
+function statusNote(a){if(a.confirmed)return"Envio confirmado"+(a.evidence?" · evidência registrada":"");if(a.status==="Aguardando ação do candidato")return"Ação pessoal necessária.";if(a.status==="Envio tentado — sem confirmação")return"Não contabilizada como enviada.";return""}
+function renderApps(){const body=$("appsTable");body.innerHTML=apps.length?apps.map(a=>`<tr><td><b>${esc(a.title)}</b><br><span class="meta">${esc(a.company)}${a.city?" · "+esc(a.city):""}</span><br>${a.url?`<a href="${esc(a.url)}" target="_blank" rel="noopener noreferrer">Anúncio original ↗</a>`:""}${a.jobId&&!jobs.some(j=>j.id===a.jobId)?'<div class="muted-sm">Vaga excluída da lista</div>':""}</td><td>${fmtDate(a.date)}${a.confirmedAt?`<div class="muted-sm">Envio: ${fmtDate(a.confirmedAt)}</div>`:""}</td><td><div class="stack"><select data-act="resume" data-id="${esc(a.id)}" aria-label="Estado do currículo">${RESUME_STATES.map(s=>`<option ${s===a.resumeStatus?"selected":""}>${s}</option>`).join("")}</select><button class="btn secondary small-btn" data-act="personalize" data-job="${esc(a.jobId)}">Personalizar currículo</button></div></td><td><div class="stack"><select data-act="status" data-id="${esc(a.id)}" aria-label="Status da candidatura">${STATUSES.map(s=>`<option ${s===a.status?"selected":""}>${s}</option>`).join("")}</select><div class="muted-sm">${esc(statusNote(a))}</div></div></td><td><div class="stack"><input placeholder="Próxima ação" aria-label="Próxima ação" value="${esc(a.next)}" data-act="field" data-key="next" data-id="${esc(a.id)}"><input placeholder="Protocolo / evidência (se houver)" aria-label="Protocolo ou evidência" value="${esc(a.evidence)}" data-act="field" data-key="evidence" data-id="${esc(a.id)}"><input placeholder="Observações" aria-label="Observações" value="${esc(a.notes)}" data-act="field" data-key="notes" data-id="${esc(a.id)}"><button class="btn danger small-btn" data-act="rmapp" data-id="${esc(a.id)}">Remover</button></div></td></tr>`).join(""):'<tr><td colspan="5" class="empty"><strong>Nenhuma candidatura registrada</strong>Escolha uma vaga acima ou use “Preparar candidatura” na lista de oportunidades.</td></tr>'}
+function refreshStats(){$("statJobs").textContent=jobs.filter(j=>j.verified!==CLOSED).length;$("statResumes").textContent=Object.keys(resumes).filter(id=>jobs.some(j=>j.id===id)).length;$("statSent").textContent=apps.filter(a=>a.confirmed).length;$("statNeeds").textContent=apps.filter(a=>["Aguardando ação do candidato","Envio tentado — sem confirmação"].includes(a.status)).length}
+function renderAll(){renderJobs();renderHomeJobs();refreshJobSelects();renderApps();refreshStats()}
+
+/* ---------- exportação, backup e reset ---------- */
+function exportJobs(){if(!jobs.length){toast("Nenhuma vaga para exportar.");return}downloadCsv("MandaVaga_Oportunidades.csv",[["Cargo","Empresa","Cidade","Modalidade","Fonte","Link","Data da consulta","Publicação","Prazo","Verificação","Aderência estimada","Motivo / lacunas","Requisitos"],...jobs.map(j=>[j.title,j.company,j.city,j.modality,j.source,j.url,j.checked,j.date,j.deadline,j.verified,j.score,j.reason,j.requirements])]);toast("Exportação CSV preparada")}
+function exportApps(){if(!apps.length){toast("Nenhuma candidatura para exportar.");return}downloadCsv("MandaVaga_Candidaturas.csv",[["Cargo","Empresa","Cidade","Link","Registro","Status","Envio confirmado","Data do envio","Currículo","Próxima ação","Evidência","Observações"],...apps.map(a=>[a.title,a.company,a.city,a.url,a.date.slice(0,10),a.status,a.confirmed?"Sim":"Não",(a.confirmedAt||"").slice(0,10),a.resumeStatus,a.next,a.evidence,a.notes])]);toast("Exportação CSV preparada")}
+function exportBackup(){downloadFile("MandaVaga_backup_"+today()+".json",JSON.stringify({app:"manda-vaga",version:6,exported:new Date().toISOString(),profile:currentProfile(),jobs,apps,resumes},null,2),"application/json");toast("Backup exportado")}
+function importBackup(file){if(!file)return;if(file.size>5e6){toast("Arquivo grande demais para um backup.");return}const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);if(d.app!=="manda-vaga"||!Array.isArray(d.jobs)||!Array.isArray(d.apps))throw new Error("formato");if(!confirm(`Importar ${d.jobs.length} vaga(s) e ${d.apps.length} candidatura(s)? Os dados atuais deste navegador serão substituídos.`))return;
+ jobs=d.jobs.map(normalizeJob).filter(Boolean);apps=d.apps.map(normalizeApp);resumes={};if(d.resumes&&typeof d.resumes==="object")for(const[k,v]of Object.entries(d.resumes))if(jobs.some(j=>j.id===k)&&v&&typeof v.text==="string")resumes[k]={text:v.text,date:String(v.date||""),matches:+v.matches||0,gaps:+v.gaps||0};
+ if(d.profile&&typeof d.profile==="object"){const clean={};for(const k of Object.keys(PROFILE_FIELDS))if(typeof d.profile[k]==="string")clean[k]=d.profile[k];applyProfile(clean);saveProfile(true)}
+ persistJobs();persistApps();persistResumes();renderAll();toast("Backup importado")}catch(e){toast("Arquivo inválido: não é um backup do Manda Vaga.")}finally{$("importFile").value=""}};r.readAsText(file)}
+function resetData(){if(!confirm("Apagar todas as vagas, candidaturas, currículos personalizados e o perfil salvos neste navegador? Exporte um backup antes se quiser guardar."))return;["mv6_jobs","mv6_apps","mv6_profile","mv6_resumes","mv5_jobs","mv5_apps","mv5_profile"].forEach(sdel);location.reload()}
+
+/* ---------- eventos ---------- */
+function bindLabels(){document.querySelectorAll(".field").forEach(f=>{const l=f.querySelector("label"),c=f.querySelector("input,select,textarea");if(l&&c&&c.id&&!l.htmlFor)l.htmlFor=c.id})}
+document.querySelectorAll(".nav button").forEach(b=>b.addEventListener("click",()=>go(b.dataset.page)));
+document.querySelectorAll("[data-go]").forEach(b=>b.addEventListener("click",()=>go(b.dataset.go)));
+$("menuBtn").addEventListener("click",toggleMenu);$("backdrop").addEventListener("click",closeMenu);
+document.addEventListener("keydown",e=>{if(e.key==="Escape")closeMenu()});
+$("btnSaveProfile").addEventListener("click",()=>saveProfile());$("btnGenMaster").addEventListener("click",generateMaster);$("btnDlMaster").addEventListener("click",downloadMaster);
+$("btnPersonalize").addEventListener("click",personalizeResume);$("btnDlPersonalized").addEventListener("click",downloadPersonalized);
+$("resumeJob").addEventListener("change",()=>$("personalizedBox").classList.add("hidden"));
+$("btnAddJob").addEventListener("click",addJob);$("btnClearFilters").addEventListener("click",clearFilters);$("btnExportJobs").addEventListener("click",exportJobs);
+["filterQ","filterCity","filterVerified","filterSort"].forEach(id=>$(id).addEventListener("input",renderJobs));
+$("btnNewApp").addEventListener("click",newApplication);$("btnExportApps").addEventListener("click",exportApps);
+$("btnBackup").addEventListener("click",exportBackup);$("importFile").addEventListener("change",e=>importBackup(e.target.files[0]));$("btnReset").addEventListener("click",resetData);
+$("jobsList").addEventListener("click",e=>{const b=e.target.closest("button[data-act]");if(!b)return;if(b.dataset.act==="prep")prepareApplication(b.dataset.id);if(b.dataset.act==="del")deleteJob(b.dataset.id)});
+$("jobsList").addEventListener("change",e=>{const s=e.target.closest("select[data-act=ver]");if(s)setJobVerified(s.dataset.id,s.value)});
+$("appsTable").addEventListener("change",e=>{const t=e.target;if(t.dataset.act==="status")setAppStatus(t.dataset.id,t.value);else if(t.dataset.act==="resume")updateApp(t.dataset.id,"resumeStatus",t.value);else if(t.dataset.act==="field")updateApp(t.dataset.id,t.dataset.key,t.value)});
+$("appsTable").addEventListener("click",e=>{const b=e.target.closest("button[data-act]");if(!b)return;if(b.dataset.act==="rmapp")removeApp(b.dataset.id);if(b.dataset.act==="personalize")openPersonalize(b.dataset.job)});
+
+bindLabels();$("jChecked").value=today();load();renderAll();checkIntegrity();
+</script>
+</body>
+</html>

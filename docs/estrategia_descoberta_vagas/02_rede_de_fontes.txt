@@ -1,0 +1,229 @@
+Agora entendi, cara! Você quer montar uma rede nacional e internacional de recrutamento para o Manda Vaga: centenas de fontes nas quais o sistema possa localizar oportunidades, aproveitar o currículo cadastrado, direcionar você à candidatura e acompanhar cada etapa.
+
+A ideia não é ficar preso à Gupy. Vamos incluir quatro grupos:
+
+* Portais de emprego: Gupy, Catho, Vagas.com, InfoJobs e similares.
+
+* Consultorias e agências de RH: empresas que recrutam para outras organizações e podem manter bancos de currículos.
+
+* Páginas de carreiras das próprias empresas: vagas publicadas diretamente pelos empregadores, sem depender de um portal agregador.
+
+* Plataformas internacionais e remotas: oportunidades em empresas estrangeiras e vagas que aceitam candidatos do Brasil.
+
+Recuperei também um ponto importante do nosso planejamento anterior: o Manda Vaga precisa registrar o link original, a compatibilidade da vaga, os requisitos, o status da candidatura e os retornos recebidos. Encontrar uma vaga não significa que o currículo foi enviado; o sistema só deve marcar como candidatura realizada quando houver confirmação.
+
+### 1\. Portais de emprego e bancos de currículos
+
+Estes são os primeiros que eu colocaria na base do Manda Vaga. A Gupy, por exemplo, possui cadastro de candidatos e banco de talentos; a Randstad também divulga bancos de talentos para áreas específicas.
+
+| #   | Plataforma      | Site                  |
+| --- | --------------- | --------------------- |
+| 1   | Gupy            | gupy.io               |
+| 2   | Catho           | catho.com.br          |
+| 3   | Vagas.com       | vagas.com.br          |
+| 4   | InfoJobs        | infojobs.com.br       |
+| 5   | LinkedIn Jobs   | linkedin.com/jobs     |
+| 6   | Indeed          | br.indeed.com         |
+| 7   | Glassdoor       | glassdoor.com.br      |
+| 8   | Trabalha Brasil | trabalhabrasil.com.br |
+| 9   | Empregos.com.br | empregos.com.br       |
+| 10  | Sólides Vagas   | solides.com.br        |
+| 11  | Pandapé         | pandape.com.br        |
+| 12  | Empregare       | empregare.com         |
+| 13  | BNE             | bne.com.br            |
+| 14  | Jobbol          | jobbol.com.br         |
+| 15  | Jooble          | br.jooble.org         |
+| 16  | Talent.com      | br.talent.com         |
+| 17  | Careerjet       | careerjet.com.br      |
+| 18  | Jora            | br.jora.com           |
+| 19  | Trovit Empregos | emprego.trovit.com.br |
+| 20  | Google Jobs     | Pesquisa de vagas     |
+| 21  | CIEE            | ciee.org.br           |
+| 22  | Nube            | nube.com.br           |
+| 23  | IEL             | iel.org.br            |
+| 24  | Espro           | espro.org.br          |
+| 25  | 99jobs          | 99jobs.com            |
+
+### 2\. Consultorias de recrutamento, RH e headhunters
+
+Aqui entram empresas que recrutam para outras organizações. Algumas trabalham com profissionais especializados ou executivos; outras também têm vagas operacionais, temporárias ou administrativas. A disponibilidade de cadastro espontâneo varia conforme a empresa e o tipo de vaga.
+
+| #   | Recrutadora / consultoria | Site                  |
+| --- | ------------------------- | --------------------- |
+| 26  | Randstad                  | randstad.com.br       |
+| 27  | Adecco                    | adecco.com/pt-br      |
+| 28  | ManpowerGroup             | manpowergroup.com.br  |
+| 29  | Robert Half               | roberthalf.com/br     |
+| 30  | Michael Page              | michaelpage.com.br    |
+| 31  | Page Personnel            | pagepersonnel.com.br  |
+| 32  | Hays                      | hays.com.br           |
+| 33  | Gi Group                  | gigroup.com           |
+| 34  | Gi Group Holding Brasil   | gigroup.com.br        |
+| 35  | LHH                       | lhh.com               |
+| 36  | Korn Ferry                | kornferry.com         |
+| 37  | Egon Zehnder              | egonzehnder.com       |
+| 38  | FESA Group                | fesagroup.com.br      |
+| 39  | Talenses                  | talenses.com          |
+| 40  | Cia de Talentos           | ciadetalentos.com.br  |
+| 41  | Eureca                    | eureca.me             |
+| 42  | Across                    | across.com.br         |
+| 43  | HProjekt                  | hprojekt.com.br       |
+| 44  | Luandre                   | luandre.com.br        |
+| 45  | Extra Consult             | extraconsult.com.br   |
+| 46  | RHF Talentos              | rhf.com.br            |
+| 47  | Grupo Soulan              | soulan.com.br         |
+| 48  | Desafio RH                | desafiorh.com.br      |
+| 49  | Life Recursos Humanos     | liferh.com.br         |
+| 50  | Global Empregos           | globalempregos.com.br |
+| 51  | Grupo SELPE               | gruposelpe.com.br     |
+| 52  | Mappit                    | mappit.com.br         |
+| 53  | Souza Santos Consultoria  | Busca institucional   |
+| 54  | Heach Recursos Humanos    | heach.com.br          |
+| 55  | Acelera RH                | Busca institucional   |
+
+Importante: os links acima são pontos de partida. Antes de automatizar cadastro ou envio, precisamos confirmar se cada site está ativo, se recebe currículos, se permite candidaturas automatizadas e quais permissões exige.
+
+### 3\. Empresas que publicam vagas nos próprios sites
+
+Essas páginas são estratégicas porque permitem encontrar vagas diretamente na fonte. A plataforma deve descobrir a oportunidade, abrir a descrição original e, quando necessário, encaminhar para o sistema de recrutamento usado pela empresa.
+
+Empresas brasileiras e multinacionais com atuação no Brasil
+
+| #   | Empresa                            | Página de carreiras  |
+| --- | ---------------------------------- | -------------------- |
+| 56  | Itaú Unibanco                      | Carreiras            |
+| 57  | Bradesco                           | Carreiras            |
+| 58  | Santander                          | Carreiras            |
+| 59  | Banco do Brasil                    | Portal institucional |
+| 60  | Caixa Econômica Federal            | Trabalhe na Caixa    |
+| 61  | BTG Pactual                        | Carreiras            |
+| 62  | XP Inc.                            | Carreiras            |
+| 63  | Nubank                             | Carreiras            |
+| 64  | Mercado Livre                      | Carreiras            |
+| 65  | Amazon                             | Jobs                 |
+| 66  | Google                             | Carreiras            |
+| 67  | Microsoft                          | Carreiras            |
+| 68  | IBM                                | Carreiras            |
+| 69  | Accenture                          | Carreiras            |
+| 70  | Capgemini                          | Carreiras            |
+| 71  | Stefanini                          | Carreiras            |
+| 72  | TOTVS                              | Carreiras            |
+| 73  | CI&T                               | Carreiras            |
+| 74  | Deloitte                           | Carreiras            |
+| 75  | PwC                                | Carreiras            |
+| 76  | EY                                 | Carreiras            |
+| 77  | KPMG                               | Carreiras            |
+| 78  | Accor                              | Carreiras            |
+| 79  | Grupo Boticário                    | Carreiras            |
+| 80  | Natura                             | Carreiras            |
+| 81  | Ambev                              | Carreiras            |
+| 82  | Coca-Cola FEMSA                    | Carreiras            |
+| 83  | Nestlé                             | Carreiras            |
+| 84  | Unilever                           | Carreiras            |
+| 85  | PepsiCo                            | Carreiras            |
+| 86  | Carrefour Brasil                   | Portal               |
+| 87  | Assaí Atacadista                   | Carreiras            |
+| 88  | Grupo Pão de Açúcar                | Carreiras            |
+| 89  | Magazine Luiza                     | Carreiras            |
+| 90  | Renner                             | Carreiras            |
+| 91  | RD Saúde                           | Portal               |
+| 92  | Dasa                               | Carreiras            |
+| 93  | Hospital Israelita Albert Einstein | Carreiras            |
+| 94  | Rede D'Or                          | Carreiras            |
+| 95  | Localiza                           | Carreiras            |
+| 96  | Raízen                             | Carreiras            |
+| 97  | Embraer                            | Carreiras            |
+| 98  | WEG                                | Carreiras            |
+| 99  | Gerdau                             | Carreiras            |
+| 100 | Votorantim                         | Portal               |
+
+Os links institucionais de algumas empresas podem exigir navegação adicional até a área de carreiras. O sistema deverá descobrir e armazenar a página específica de cada vaga, e não tratar a página inicial como se fosse um anúncio.
+
+### 4\. Plataformas internacionais e de trabalho remoto
+
+Para ampliar a cobertura para vagas fora do Brasil, eu incluiria estas fontes. Atenção: uma vaga internacional não significa necessariamente que a empresa aceite residentes no Brasil; o Manda Vaga precisará verificar país elegível, idioma, fuso horário e autorização de trabalho.
+
+| #   | Plataforma       | Foco                          | Site               |
+| --- | ---------------- | ----------------------------- | ------------------ |
+| 101 | EURES            | Empregos na Europa            | eures.europa.eu    |
+| 102 | USAJOBS          | Empregos federais nos EUA     | usajobs.gov        |
+| 103 | Workday Careers  | Carreiras de empresas globais | workday.com        |
+| 104 | Wellfound        | Startups e tecnologia         | wellfound.com      |
+| 105 | FlexJobs         | Remoto e flexível             | flexjobs.com       |
+| 106 | Remote OK        | Trabalho remoto               | remoteok.com       |
+| 107 | We Work Remotely | Trabalho remoto global        | weworkremotely.com |
+| 108 | Remotive         | Remoto e tecnologia           | remotive.com       |
+| 109 | Working Nomads   | Remoto internacional          | workingnomads.com  |
+| 110 | Jobspresso       | Remoto                        | jobspresso.co      |
+| 111 | Dynamite Jobs    | Remoto                        | dynamitejobs.com   |
+| 112 | Wellfound Jobs   | Startups                      | wellfound.com/jobs |
+| 113 | Himalayas        | Remoto global                 | himalayas.app      |
+| 114 | Arc              | Tecnologia e remoto           | arc.dev            |
+| 115 | Turing           | Trabalho remoto em tecnologia | turing.com         |
+| 116 | Upwork           | Freelance                     | upwork.com         |
+| 117 | Fiverr           | Serviços freelance            | fiverr.com         |
+| 118 | Freelancer.com   | Projetos freelance            | freelancer.com     |
+| 119 | PeoplePerHour    | Projetos freelance            | peopleperhour.com  |
+| 120 | Contra           | Freelancers e portfólio       | contra.com         |
+
+### 5\. Como transformar essas 120 fontes em um fluxo real no Manda Vaga
+
+Não basta armazenar mil links. Precisamos fazer cada fonte funcionar como um canal de aquisição de oportunidades.
+
+1\. Descoberta
+
+Buscar vagas em portais, páginas oficiais, feeds e APIs permitidas. Registrar a fonte e a data da última verificação.
+
+2\. Triagem inteligente
+
+Cruzar os requisitos da vaga com o currículo verdadeiro do candidato, localização, formação, experiência, idioma e modalidade.
+
+3\. Currículo adequado
+
+Preparar uma versão específica para cada oportunidade, sem inventar experiências ou qualificações.
+
+4\. Candidatura
+
+Abrir a vaga original, preencher o que for permitido e solicitar intervenção do candidato quando houver login, CAPTCHA, consentimento ou confirmação pessoal.
+
+5\. CRM de candidaturas
+
+Acompanhar candidaturas confirmadas, respostas, entrevistas, prazos, vagas expiradas e resultados.
+
+### 6\. Minha proposta para ampliar a lista
+
+Os 120 itens acima formam uma primeira base de fontes, mas ainda precisamos validar individualmente o endereço de candidatura, a atividade do site e as condições de uso antes de considerar qualquer canal pronto para automação.
+
+Podemos ampliar o catálogo para 200, 500 ou até 1.000 fontes, incluindo empresas regionais, multinacionais, consultorias especializadas, órgãos públicos, universidades, cartórios, escritórios de advocacia e empresas de tecnologia. O importante é distinguir fontes realmente úteis de simples páginas institucionais e eliminar anúncios duplicados.
+
+### Próxima etapa: catálogo de fontes
+
+Escolha o tamanho e o formato para organizar a próxima versão.
+
+Quantidade de fontes
+
+200 fontes — primeira expansão
+
+500 fontes — catálogo amplo
+
+1.000 fontes — catálogo de grande escala
+
+Abrangência
+
+Brasil inteiro
+
+Brasil + internacional
+
+Brasil + internacional + remoto e freelance
+
+Formato de entrega
+
+Lista organizada com links
+
+Planilha para importar no Manda Vaga
+
+Catálogo técnico com tipo de acesso, APIs e possibilidade de automação
+
+Preparar o catálogo
+
+Eu começaria com 500 fontes organizadas em uma planilha importável, priorizando primeiro as que permitem buscar vagas reais e acessar candidaturas individuais. Depois ampliaria para 1.000 sem perder a qualidade dos dados.

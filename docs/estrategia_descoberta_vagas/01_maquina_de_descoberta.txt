@@ -1,0 +1,109 @@
+Cara, para o Manda Vaga, eu mudaria um pouco a estratégia: em vez de tentar cadastrar manualmente 500 ou 1.000 empresas, vamos construir uma máquina de descoberta de empresas e vagas, capaz de encontrar milhares de empregadores, identificar onde publicam oportunidades e encaminhar cada candidatura pelo canal correto.
+
+A diferença é enorme: uma lista de empresas é estática. Um sistema de descoberta consegue encontrar novas empresas, detectar vagas novas, atualizar anúncios encerrados e manter o banco de oportunidades vivo.
+
+### 1\. A estratégia para alcançar o maior número possível de empresas
+
+Camada 1 — Grandes bases de vagas
+
+Integrar agregadores e APIs de emprego, como Adzuna, que disponibiliza uma API para pesquisar anúncios e consultar estatísticas do mercado de trabalho. Isso amplia a cobertura sem precisarmos cadastrar cada empregador manualmente.
+
+Camada 2 — Sistemas de recrutamento (ATS)
+
+Descobrir empresas que usam Greenhouse, Ashby, SmartRecruiters e outros sistemas com interfaces públicas de vagas. Em vez de procurar cada anúncio isoladamente, podemos consultar os anúncios publicados pelo quadro de vagas de cada empresa.
+
+Camada 3 — Sites oficiais das empresas
+
+Encontrar páginas de carreira por setor, porte, região e termos como “Trabalhe Conosco”, “Carreiras”, “Banco de Talentos” e “Oportunidades”. Cada página encontrada vira uma fonte monitorável.
+
+Camada 4 — Consultorias, RH e canais especializados
+
+Adicionar recrutadoras, agências regionais, empresas de trabalho temporário, estágio, concursos e vagas setoriais.
+
+O objetivo é combinar essas quatro camadas. Nenhuma fonte isolada contém todas as vagas do Brasil, e o mesmo anúncio pode aparecer em vários canais. Por isso, a plataforma precisa consolidar e eliminar duplicidades.
+
+### 2\. Quais sistemas permitem realmente automatizar a coleta?
+
+Esta é uma das partes mais importantes: algumas ferramentas deixam consultar vagas publicadas, enquanto outras exigem credenciais ou autorização para enviar candidaturas.
+
+| Fonte tecnológica | O que conseguimos fazer                                                                                     |
+| ----------------- | ----------------------------------------------------------------------------------------------------------- |
+| Greenhouse        | Consultar vagas públicas por quadro de vagas; o envio via API exige credencial apropriada.                  |
+| Lever             | Consultar anúncios publicados e, em condições compatíveis com a API, enviar candidaturas programaticamente. |
+| Ashby             | Consultar vagas publicadas pela API de job postings, filtrando anúncios públicos listados.                  |
+| SmartRecruiters   | Consultar vagas públicas; a API de candidatura exige autenticação e permissões específicas.                 |
+| Workable          | Consultar vagas por API; o acesso depende das credenciais e permissões configuradas.                        |
+| Adzuna            | Pesquisar anúncios agregados por termos e localização usando sua API.                                       |
+
+Isso já demonstra que existe um caminho técnico concreto para além do LinkedIn. Mas não existe uma API universal que permita entrar em qualquer portal, cadastrar um candidato e enviar o currículo para todas as empresas.
+
+### 3\. Como descobrir milhares de empresas sem cadastrar cada uma à mão
+
+Eu construiria um processo de expansão automática da base:
+
+A. Base inicial de empregadores
+
+Diretórios públicos, dados de empresas, associações e listas setoriais
+
+B. Descoberta de páginas de carreira
+
+Sites oficiais, ATS conhecidos, páginas de recrutamento e bancos de talentos
+
+C. Coleta de vagas
+
+APIs, feeds e fontes públicas acessíveis de forma permitida
+
+D. Base única do Manda Vaga
+
+Empresas, fontes, vagas únicas, requisitos, links e datas de atualização
+
+Uma empresa pode ter várias fontes. Por exemplo, pode publicar no próprio site, usar a Gupy e ainda anunciar no LinkedIn. O Manda Vaga deve registrar os três canais, mas evitar apresentar a mesma vaga três vezes.
+
+### Metas de expansão que eu usaria
+
+Estas são metas de implementação, não números já coletados ou garantidos.
+
+| Etapa             | Meta de trabalho | Objetivo                                         |
+| ----------------- | ---------------- | ------------------------------------------------ |
+| Piloto            | 100 empresas     | Testar coleta, links e qualidade dos anúncios    |
+| Primeira expansão | 500 empresas     | Cobrir diferentes setores e canais               |
+| Expansão nacional | 2.000 empresas   | Ampliar regiões, portes e fontes                 |
+| Escala contínua   | 5.000+ empresas  | Descobrir novas fontes e monitorar as existentes |
+
+Não temos ainda uma contagem verificada de quantas empresas brasileiras publicam vagas acessíveis por esses métodos. O limite prático vai depender da cobertura das fontes, das permissões, da qualidade dos dados e dos recursos de coleta.
+
+### 4\. Como o currículo chega à empresa?
+
+O fluxo precisa distinguir quatro situações:
+
+* Cadastro de currículo: o candidato entra em um banco de talentos, sem necessariamente concorrer a uma vaga específica.
+
+* Candidatura direta: o currículo é enviado para uma vaga identificada.
+
+* Redirecionamento: o Manda Vaga prepara os dados e abre o formulário oficial para conclusão.
+
+* Candidatura confirmada: o sistema registra o envio somente depois de obter confirmação confiável.
+
+Também precisamos evitar disparos indiscriminados de currículos. A candidatura deve corresponder ao perfil do candidato, respeitar as regras do portal e usar os dados pessoais com autorização.
+
+### 5\. O que eu faria agora, na prática
+
+Eu começaria por um levantamento técnico de 500 fontes candidatas, dividido em:
+
+* 100 portais e agregadores de vagas;
+
+* 100 consultorias e empresas de recrutamento;
+
+* 200 empregadores com páginas oficiais de carreira;
+
+* 100 fontes especializadas, regionais, públicas ou internacionais.
+
+Essas quantidades são uma divisão inicial de trabalho, não uma afirmação de que todas as fontes já foram verificadas. Durante o levantamento, substituiríamos fontes duplicadas, inativas ou sem utilidade por outras mais relevantes.
+
+Cada registro deveria conter:
+
+`empresa | categoria | país | site oficial | página de carreiras | ATS | URL de vagas | API/feed | candidatura automatizável? | autenticação necessária? | última verificação | status`
+
+Minha recomendação final: o primeiro produto a construir não é um robô que dispara currículos. É o motor de descoberta e coleta de vagas do Manda Vaga. Quando ele conseguir identificar fontes, coletar anúncios, deduplicar e verificar links de forma confiável, conectamos o módulo de currículo e a candidatura canal por canal.
+
+Assim, podemos ampliar a rede continuamente sem depender de um único portal e sem prometer automações que cada empresa não permite.

@@ -1,0 +1,5 @@
+__pycache__/
+*.png
+.DS_Store
+# dados pessoais reais nunca entram no repositório
+dados_privados/

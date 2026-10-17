@@ -278,7 +278,8 @@ async function seedFresh() {
 async function boot() {
   if (!Repo.load()) await seedFresh();
   if (!LocalAdapter.ok) setTimeout(() => App.toast("Este navegador bloqueou o armazenamento local. O app funciona, mas os dados somem ao fechar.", true), 400);
-  App.route = { page: Repo.data.session ? "home" : "landing", params: {} };
+  const underApp = /\/app(\/|$)/.test(location.pathname); // no site, a landing fica em "/" e o app em "/app/"
+  App.route = { page: Repo.data.session ? "home" : (underApp ? "login" : "landing"), params: {} };
   applyTheme(); App.render();
 }
 boot();

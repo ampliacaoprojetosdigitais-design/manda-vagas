@@ -8,15 +8,16 @@ SaaS que (1) prepara um currículo-base fiel à trajetória real, (2) busca e cl
 Protótipo funcional **local-first** (fases 3 a 10 do PRD). Tudo roda no navegador com dados demonstrativos; integrações externas aparecem como "não conectadas".
 
 - `app/src/` — código-fonte em camadas: `01_core` (utilidades, repositório e adaptadores), `02_domain` (regras de currículo, palavras-chave, aderência, deduplicação, planos e estados), `03_seed` (dados demonstrativos), `04_app` / `05_candidate` / `06_admin` (interface), `07_actions` (eventos e formulários).
-- `app/dist/index.html` — app em arquivo único. Abra no navegador.
-- `tests/e2e.py` — testes ponta a ponta (Playwright). Último resultado: 59/59.
+- `site/` — landing page (StoryBrand) servida em `/`; `site/landing.src.html` é o modelo com marcadores.
+- `app/dist/index.html` — app em arquivo único, servido em `/app/`. O início do candidato é um assistente em conversa.
+- `tests/e2e.py` — testes ponta a ponta (Playwright). Último resultado: 63/63.
 - `docs/` — PRD mestre (com adendos 3.1 e 3.2), relatório de QA do painel v6 e a estratégia de descoberta diária de vagas.
 - `prototipos/` — painel v6 e landing page.
 - `piloto/` — lote-piloto de 5 vagas reais consultadas em 17/10/2026.
 
 ## Rodar
 ```bash
-npm start                           # abre em http://localhost:3000 (sem dependências)
+npm start                           # landing em http://localhost:3000 e app em /app/
 ```
 
 Para desenvolver:

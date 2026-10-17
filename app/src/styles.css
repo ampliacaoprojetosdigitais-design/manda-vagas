@@ -283,3 +283,34 @@ td.num,th.num{text-align:right}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 
 .filters summary{cursor:pointer;list-style:none}.filters summary::-webkit-details-marker{display:none}.filters summary::after{content:"▾";margin-left:8px;color:var(--muted)}.filters[open] summary::after{content:"▴"}
+
+/* dashboard com assistente */
+.dash{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(0,1fr);gap:16px;align-items:start}
+.chat{display:flex;flex-direction:column;padding:0;overflow:hidden;min-height:560px;height:calc(100vh - 140px);max-height:820px}
+.chat-head{display:flex;gap:12px;align-items:center;padding:14px 16px;border-bottom:1px solid var(--line)}
+.chat-head>div{flex:1;min-width:0}
+.chat-log{flex:1;overflow-y:auto;padding:18px 16px;display:grid;gap:14px;align-content:start;background:var(--surface-2)}
+.msg{display:flex;gap:10px;align-items:flex-start;min-width:0}
+.msg.me{justify-content:flex-end}
+.msg .bubble{border-radius:16px;padding:10px 14px;line-height:1.5;max-width:min(560px,100%);font-size:14.5px}
+.msg.bot .bubble{background:var(--surface);border:1px solid var(--line);border-top-left-radius:4px}
+.msg.me .bubble{background:var(--green);color:var(--surface);border-top-right-radius:4px}
+.bot-body{display:grid;gap:8px;min-width:0;flex:1}
+.bot-avatar{width:30px;height:30px;border-radius:10px;background:var(--deep);color:var(--lime);display:grid;place-items:center;font:800 11px/1 var(--f-display);flex:none}
+.bot-avatar.lg{width:38px;height:38px;font-size:13px}
+.quick{gap:6px}
+.qr{border:1px solid var(--green);background:var(--surface);color:var(--green);border-radius:99px;padding:6px 12px;font-weight:700;font-size:13px}
+.qr:hover{background:var(--green-soft)}
+.chat-job{display:flex;gap:12px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 12px;max-width:620px}
+.chat-job .score{width:46px;height:46px;font-size:14px}
+.chat-input{display:flex;gap:8px;padding:12px;border-top:1px solid var(--line);background:var(--surface)}
+.chat-input .input{border-radius:99px;padding:11px 16px}
+.chat-input .btn{border-radius:50%;width:44px;height:44px;padding:0;font-size:18px}
+.mini-step{all:unset;cursor:pointer;display:flex;gap:10px;align-items:center;font-size:13.5px;padding:6px 4px;border-radius:8px}
+.mini-step:hover{background:var(--surface-2)}
+.mini-step .tick{width:20px;height:20px;border-radius:50%;border:1.5px solid var(--line-strong);display:grid;place-items:center;font-size:11px;font-weight:800;flex:none}
+.mini-step.done .tick{background:var(--green);border-color:var(--green);color:var(--surface)}
+.mini-step.done{color:var(--muted)}
+.mini-step:focus-visible{outline:3px solid color-mix(in srgb,var(--green) 55%,transparent)}
+@media (max-width:900px){.dash{grid-template-columns:minmax(0,1fr)}.chat{height:auto;min-height:0;max-height:none}.chat-log{max-height:62vh}}
+@media (max-width:600px){.chat-job{flex-wrap:wrap}.chat-job .stack-sm{flex-direction:row;display:flex;gap:6px;width:100%}}

@@ -1,0 +1,429 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Manda Vaga</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Seu currículo pronto para a nova era do RH. O Manda Vaga organiza seu currículo com o que você realmente fez, encontra vagas compatíveis e mostra o motivo de cada uma.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<style>
+/* Layout: hero escuro (história começa aqui) → seções claras que seguem o StoryBrand: problema, guia, plano, chamada, riscos, sucesso */
+:root{
+  --deep:#0b2419; --deep-2:#103424; --deep-3:#16422f; --lime:#d6f45e; --lime-2:#b9e43a; --mint:#7fd1a5;
+  --paper:#f3f5ef; --white:#ffffff; --ink:#132119; --muted:#55645b; --line:#dbe3d8; --green:#145c42;
+  --coral:#e2725b; --sky:#5b8def; --gold:#e3b23c;
+  --on-dark:#e7efe9; --on-dark-muted:#a9bcb0;
+  --f-display:"Sora",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-body:"Plus Jakarta Sans",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.6 var(--f-body);-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:60;background:var(--deep)}
+h1,h2,h3{font-family:var(--f-display);letter-spacing:-.03em;text-wrap:balance;margin:0}
+p{margin:0}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--lime);outline-offset:3px;border-radius:6px}
+.wrap{max-width:1200px;margin:0 auto;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;font:700 12px/1 var(--f-body);letter-spacing:.14em;text-transform:uppercase;color:var(--green)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;border-radius:99px;padding:15px 26px;font:700 16px/1.1 var(--f-body);text-decoration:none;border:2px solid transparent;cursor:pointer;transition:transform .15s ease,box-shadow .15s ease,background .15s ease}
+.btn:hover{transform:translateY(-1px)}
+.btn-lime{background:var(--lime);color:var(--deep);box-shadow:0 10px 30px rgba(214,244,94,.25)}
+.btn-lime:hover{background:var(--lime-2)}
+.btn-line{border-color:rgba(231,239,233,.35);color:var(--on-dark)}
+.btn-line:hover{border-color:var(--lime);color:var(--lime)}
+.btn-dark{background:var(--deep);color:var(--lime)}
+.btn-ghost{border-color:var(--ink);color:var(--ink)}
+.arrow{transition:transform .15s ease}.btn:hover .arrow{transform:translateX(3px)}
+
+/* ---------- HERO ---------- */
+.hero{background:radial-gradient(1200px 700px at 85% 30%,#1d5a3e 0%,rgba(29,90,62,0) 60%),var(--deep);color:var(--on-dark);position:relative;overflow:hidden}
+.hero::after{content:"";position:absolute;right:-18%;top:-10%;width:70%;aspect-ratio:1;border-radius:50%;border:70px solid rgba(127,209,165,.10);pointer-events:none}
+.nav{display:flex;align-items:center;gap:28px;padding-block:22px;position:relative;z-index:3}
+.logo{display:flex;align-items:center;gap:12px;text-decoration:none;color:#fff}
+.logo svg{width:44px;height:32px}
+.logo b{font:700 22px/1 var(--f-display);letter-spacing:-.02em;display:block}
+.logo small{font-size:12px;color:var(--on-dark-muted)}
+.nav-links{display:flex;gap:26px;margin-left:24px}
+.nav-links a{text-decoration:none;font-weight:600;font-size:14.5px;color:var(--on-dark)}
+.nav-links a:hover{color:var(--lime)}
+.nav .sp{flex:1}
+.nav .enter{text-decoration:none;font-weight:600;font-size:14.5px}
+.nav .btn{padding:12px 20px;font-size:14.5px}
+.hero-grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:40px;align-items:end;padding-block:28px 0;position:relative;z-index:2}
+.tagpill{display:inline-flex;align-items:center;gap:9px;border:1px solid rgba(231,239,233,.25);border-radius:99px;padding:7px 14px;font-size:13.5px;color:var(--on-dark)}
+.tagpill i{width:8px;height:8px;border-radius:50%;background:var(--lime);box-shadow:0 0 0 4px rgba(214,244,94,.18)}
+.hero h1{font-size:clamp(40px,5.6vw,72px);line-height:1.02;font-weight:800;color:#fff;margin-top:22px}
+.hero h1 em{font-style:normal;color:var(--lime)}
+.hero .lead{font-size:clamp(17px,1.6vw,21px);color:var(--on-dark-muted);margin-top:20px;max-width:56ch}
+.hero .lead b{color:var(--on-dark);font-weight:600}
+.features{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:32px}
+.feat{border-radius:18px;padding:16px 15px 18px;border:1px solid rgba(255,255,255,.12);background:linear-gradient(160deg,rgba(255,255,255,.07),rgba(255,255,255,.02));display:grid;gap:10px;align-content:start;position:relative;overflow:hidden}
+.feat::before{content:"";position:absolute;inset:0 0 auto;height:3px;background:var(--c)}
+.feat .ic{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;background:color-mix(in srgb,var(--c) 18%,transparent);border:1px solid color-mix(in srgb,var(--c) 45%,transparent)}
+.feat .ic svg{width:22px;height:22px;stroke:var(--c)}
+.feat h3{font-size:16.5px;line-height:1.2;color:#fff}
+.feat p{font-size:13.5px;line-height:1.45;color:var(--on-dark-muted)}
+.cta-row{display:flex;flex-wrap:wrap;gap:14px;align-items:center;margin-top:30px}
+.assure{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:18px;font-size:13.5px;color:var(--on-dark-muted)}
+.assure span{display:inline-flex;align-items:center;gap:7px}
+.assure span::before{content:"✓";color:var(--lime);font-weight:800}
+.visual{position:relative;align-self:end;justify-self:center;width:min(100%,470px)}
+.arch{position:relative;aspect-ratio:816/800;border-radius:240px 240px 28px 28px;overflow:hidden;background:#efe7db;box-shadow:0 30px 80px rgba(0,0,0,.35);border:6px solid rgba(214,244,94,.85)}
+.arch img{width:100%;height:100%;object-fit:cover;display:block}
+.ring{position:absolute;inset:-26px -26px auto -26px;aspect-ratio:1;border-radius:50%;border:2px dashed rgba(214,244,94,.35);z-index:-1}
+.float{position:absolute;background:#fff;color:var(--ink);border-radius:16px;padding:11px 14px;box-shadow:0 18px 40px rgba(0,0,0,.28);display:flex;gap:11px;align-items:center;font-size:13px;line-height:1.3;max-width:240px}
+.float b{display:block;font-size:13.5px}
+.float .dot{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;font:800 12px/1 var(--f-display);flex:none}
+.f1{left:-56px;top:22%;animation:bob 6s ease-in-out infinite}
+.f2{right:-34px;top:52%;animation:bob 6s ease-in-out -2s infinite}
+.f3{left:-30px;bottom:8%;animation:bob 6s ease-in-out -4s infinite}
+.ring-score{width:38px;height:38px;border-radius:50%;background:conic-gradient(var(--green) 82%,#e3e9e2 0);display:grid;place-items:center;flex:none}
+.ring-score span{width:28px;height:28px;border-radius:50%;background:#fff;display:grid;place-items:center;font:800 11px/1 var(--f-display)}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.sources{position:relative;z-index:2;margin-top:44px;border:1px solid rgba(255,255,255,.12);border-radius:22px;background:rgba(255,255,255,.04);padding:18px 22px;margin-bottom:34px}
+.sources-top{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:baseline}
+.sources-top p{font-size:14.5px;color:var(--on-dark)}
+.sources-top small{font-size:12px;color:var(--on-dark-muted)}
+.marks{display:flex;flex-wrap:wrap;gap:10px 30px;margin-top:14px;align-items:center}
+.marks span{font:700 19px/1 var(--f-display);color:rgba(231,239,233,.72);letter-spacing:-.02em}
+
+/* ---------- SEÇÕES ---------- */
+section.block{padding-block:clamp(64px,8vw,110px)}
+.sec-head{max-width:760px}
+.sec-head h2{font-size:clamp(30px,3.8vw,48px);line-height:1.08;margin-top:12px}
+.sec-head p{font-size:18px;color:var(--muted);margin-top:16px;max-width:62ch}
+.problem .cols{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-top:40px}
+.pcard{background:var(--white);border:1px solid var(--line);border-radius:22px;padding:26px;display:grid;gap:12px;align-content:start}
+.pcard .lbl{font:700 12px/1 var(--f-body);letter-spacing:.12em;text-transform:uppercase;color:var(--coral)}
+.pcard h3{font-size:21px;line-height:1.2}
+.pcard p{color:var(--muted);font-size:15.5px}
+.villain{margin-top:22px;display:flex;gap:18px;align-items:center;background:var(--ink);color:var(--paper);border-radius:22px;padding:22px 26px;flex-wrap:wrap}
+.villain .stamp{font:800 13px/1 var(--f-display);letter-spacing:.12em;text-transform:uppercase;background:var(--coral);color:#fff;border-radius:8px;padding:8px 10px}
+.villain p{font-size:18px;flex:1;min-width:240px}
+.villain s{text-decoration-color:var(--coral);text-decoration-thickness:3px;opacity:.7}
+
+.guide{background:var(--white);border-block:1px solid var(--line)}
+.guide-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:48px;align-items:start}
+.rules{display:grid;gap:14px;margin-top:30px}
+.rule{display:grid;grid-template-columns:48px minmax(0,1fr);gap:16px;align-items:start}
+.rule .n{width:48px;height:48px;border-radius:14px;background:var(--deep);color:var(--lime);display:grid;place-items:center;font:800 18px/1 var(--f-display)}
+.rule h3{font-size:19px}
+.rule p{color:var(--muted);font-size:15.5px;margin-top:4px}
+.demo{background:var(--deep);color:var(--on-dark);border-radius:26px;padding:26px;display:grid;gap:14px;box-shadow:0 30px 60px rgba(11,36,25,.18)}
+.demo h3{color:#fff;font-size:22px}
+.demo p.s{color:var(--on-dark-muted);font-size:14.5px}
+.demo textarea{width:100%;min-height:140px;border-radius:14px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);color:#fff;padding:14px;font:15px/1.5 var(--f-body);resize:vertical}
+.demo textarea::placeholder{color:rgba(231,239,233,.5)}
+.demo .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.demo .btn{padding:12px 20px;font-size:15px}
+.linkish{background:none;border:0;color:var(--lime);font:600 14px var(--f-body);text-decoration:underline;text-underline-offset:3px;cursor:pointer;padding:0}
+.results{display:grid;gap:8px}
+.res{display:grid;grid-template-columns:28px minmax(0,1fr);gap:10px;align-items:start;background:rgba(255,255,255,.05);border-radius:12px;padding:10px 12px;font-size:14.5px}
+.res .i{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font:800 12px/1 var(--f-body)}
+.res.ok .i{background:var(--mint);color:var(--deep)}.res.warn .i{background:var(--gold);color:var(--deep)}.res.bad .i{background:var(--coral);color:#fff}
+.res b{color:#fff}
+.kw{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.kw span{font-size:12.5px;background:rgba(214,244,94,.14);color:var(--lime);border-radius:6px;padding:3px 8px}
+.demo .fine{font-size:12px;color:var(--on-dark-muted)}
+
+.plan .steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-top:44px;counter-reset:st}
+.step{background:var(--white);border:1px solid var(--line);border-radius:24px;padding:28px 26px;position:relative;display:grid;gap:12px;align-content:start}
+.step .num{font:800 54px/1 var(--f-display);color:var(--lime);-webkit-text-stroke:1.5px var(--green);letter-spacing:-.04em}
+.step h3{font-size:22px}
+.step p{color:var(--muted);font-size:15.5px}
+.step .tag{justify-self:start;font-size:12px;font-weight:700;color:var(--green);background:#e5f1e9;border-radius:99px;padding:4px 10px}
+.pact{margin-top:22px;border:2px dashed var(--green);border-radius:24px;padding:24px 26px;display:grid;grid-template-columns:minmax(0,.7fr) minmax(0,1.3fr);gap:24px;align-items:center;background:#eef5ec}
+.pact h3{font-size:22px}
+.pact ul{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 22px}
+.pact li{display:flex;gap:10px;font-size:15px;font-weight:600}
+.pact li::before{content:"✓";color:var(--green);font-weight:800}
+
+.cta-band{background:var(--lime);color:var(--deep)}
+.cta-band .wrap{display:flex;gap:24px;align-items:center;justify-content:space-between;flex-wrap:wrap;padding-block:44px}
+.cta-band h2{font-size:clamp(26px,3vw,38px);max-width:22ch;line-height:1.1}
+.cta-band .row{display:flex;gap:12px;flex-wrap:wrap}
+
+.stakes .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-top:40px}
+.risk{border-left:4px solid var(--coral);background:var(--white);border-radius:0 18px 18px 0;padding:20px 22px;display:grid;gap:8px}
+.risk h3{font-size:18.5px}
+.risk p{font-size:15px;color:var(--muted)}
+
+.success{background:var(--deep);color:var(--on-dark)}
+.success .sec-head h2{color:#fff}
+.success .sec-head p{color:var(--on-dark-muted)}
+.success .eyebrow{color:var(--lime)}
+.succ-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:40px;align-items:center;margin-top:44px}
+.ba{display:grid;gap:10px}
+.ba-row{display:grid;grid-template-columns:minmax(0,1fr) 34px minmax(0,1fr);gap:10px;align-items:center}
+.ba-row .b{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:14px 16px;font-size:14.5px;color:var(--on-dark-muted);text-decoration:line-through;text-decoration-color:rgba(226,114,91,.7)}
+.ba-row .a{background:rgba(214,244,94,.1);border:1px solid rgba(214,244,94,.35);border-radius:14px;padding:14px 16px;font-size:14.5px;color:#fff;font-weight:600}
+.ba-row .to{color:var(--lime);font-size:22px;text-align:center}
+.ba-head{display:grid;grid-template-columns:minmax(0,1fr) 34px minmax(0,1fr);gap:10px;font:700 12px/1 var(--f-body);letter-spacing:.12em;text-transform:uppercase;color:var(--on-dark-muted)}
+.phone{background:#0e2c1f;border:1px solid rgba(255,255,255,.12);border-radius:30px;padding:16px;display:grid;gap:10px;max-width:440px;justify-self:center;width:100%;box-shadow:0 30px 70px rgba(0,0,0,.35)}
+.phone .top{display:flex;gap:10px;align-items:center;padding:4px 4px 10px;border-bottom:1px solid rgba(255,255,255,.08)}
+.phone .av{width:34px;height:34px;border-radius:10px;background:var(--lime);color:var(--deep);display:grid;place-items:center;font:800 12px/1 var(--f-display)}
+.phone .top b{color:#fff;font-size:14.5px}.phone .top small{display:block;color:var(--on-dark-muted);font-size:12px}
+.bub{background:#fff;color:var(--ink);border-radius:16px 16px 16px 4px;padding:11px 13px;font-size:14px;line-height:1.45;max-width:92%}
+.bub.me{background:var(--lime);color:var(--deep);border-radius:16px 16px 4px 16px;justify-self:end;font-weight:600}
+.qrs{display:flex;flex-wrap:wrap;gap:6px}
+.qrs span{border:1px solid var(--lime);color:var(--lime);border-radius:99px;padding:5px 11px;font-size:12.5px;font-weight:700}
+.mini-job{background:rgba(255,255,255,.06);border-radius:14px;padding:10px 12px;display:flex;gap:10px;align-items:center;color:#fff;font-size:13.5px}
+.mini-job small{display:block;color:var(--on-dark-muted);font-size:12px}
+.phone .demo-tag{font-size:11px;color:var(--on-dark-muted);text-align:center}
+
+.pricing .plans{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-top:40px}
+.pcard.pl{gap:14px}
+.pl .price{font:800 40px/1 var(--f-display);letter-spacing:-.03em}
+.pl .price small{font:600 15px var(--f-body);color:var(--muted)}
+.pl ul{list-style:none;padding:0;margin:0;display:grid;gap:8px;font-size:15px}
+.pl li::before{content:"✓ ";color:var(--green);font-weight:800}
+.pl.featured{background:var(--deep);color:var(--on-dark);border-color:var(--deep);box-shadow:0 30px 60px rgba(11,36,25,.2)}
+.pl.featured h3,.pl.featured .price{color:#fff}.pl.featured .price small,.pl.featured p{color:var(--on-dark-muted)}.pl.featured li::before{color:var(--lime)}
+.badge{justify-self:start;background:var(--lime);color:var(--deep);font-weight:800;font-size:12px;border-radius:99px;padding:4px 10px}
+.note{font-size:13.5px;color:var(--muted);margin-top:16px}
+
+.faq .list{margin-top:34px;display:grid;gap:10px;max-width:860px}
+.faq details{background:var(--white);border:1px solid var(--line);border-radius:16px;padding:0 22px}
+.faq summary{cursor:pointer;list-style:none;padding:18px 0;font:700 17px/1.35 var(--f-display);letter-spacing:-.01em;display:flex;justify-content:space-between;gap:16px}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";font-size:22px;color:var(--green);line-height:1}
+.faq details[open] summary::after{content:"–"}
+.faq details p{padding:0 0 18px;color:var(--muted);font-size:15.5px;max-width:70ch}
+
+footer{background:var(--deep);color:var(--on-dark-muted);font-size:13.5px}
+footer .wrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);gap:30px;padding-block:44px}
+footer b{color:#fff}
+footer .fin{grid-column:1/-1;border-top:1px solid rgba(255,255,255,.1);padding-top:18px;font-size:12.5px}
+
+@media (max-width:1060px){.features{grid-template-columns:repeat(2,minmax(0,1fr))}.nav-links{display:none}}
+@media (max-width:900px){
+  .hero-grid,.guide-grid,.succ-grid{grid-template-columns:minmax(0,1fr)}
+  .visual{width:min(86%,400px);margin-top:20px}
+  .problem .cols,.plan .steps,.stakes .grid,.pricing .plans{grid-template-columns:minmax(0,1fr)}
+  .pact{grid-template-columns:minmax(0,1fr)}
+  footer .wrap{grid-template-columns:minmax(0,1fr)}
+}
+@media (max-width:560px){
+  .nav .enter,.logo small{display:none}
+  .nav{gap:12px}.nav .btn{padding:10px 16px;font-size:14px;white-space:nowrap}
+  .features{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .feat{padding:13px 12px 14px;gap:8px}.feat .ic{width:36px;height:36px}.feat h3{font-size:15px}.feat p{font-size:12.5px}
+  .pact ul{grid-template-columns:minmax(0,1fr)}
+  .f1{left:-10px;top:8%}.f2{right:-8px;top:46%}.f3{left:-6px;bottom:4%}
+  .float{max-width:200px;font-size:12px;padding:9px 11px}
+  .ba-row,.ba-head{grid-template-columns:minmax(0,1fr) 22px minmax(0,1fr)}
+  .ba-row .b,.ba-row .a{padding:10px;font-size:13px}
+  .cta-row .btn{width:100%}
+  .marks span{font-size:16px}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head><body>
+
+
+<header class="hero">
+  <div class="wrap">
+    <nav class="nav" aria-label="Principal">
+      <a class="logo" href="#topo" aria-label="Manda Vaga, início"><svg viewBox="0 0 44 32" aria-hidden="true"><path d="M3 27 L11 6 L19 22 L26 6 L33 22 L41 5" fill="none" stroke="#d6f45e" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg><span><b>MandaVaga</b><small>Seu currículo, mais oportunidades.</small></span></a>
+      <div class="nav-links"><a href="#como-funciona">Como funciona</a><a href="#para-voce">Para você</a><a href="#planos">Planos</a><a href="#duvidas">Dúvidas</a></div>
+      <span class="sp"></span>
+      <a class="enter" href="app/" target="_self" rel="noopener">Entrar</a>
+      <a class="btn btn-lime" href="app/" target="_self" rel="noopener">Começar agora <span class="arrow" aria-hidden="true">→</span></a>
+    </nav>
+    <div class="hero-grid" id="topo">
+      <div>
+        <span class="tagpill"><i aria-hidden="true"></i>Seu próximo passo profissional</span>
+        <h1>Seu currículo pronto para a <em>nova era do RH.</em></h1>
+        <p class="lead">Você conta o que já fez. A gente <b>organiza seu currículo para os filtros do RH</b>, encontra vagas que combinam com você e mostra o motivo de cada uma. <b>Quem decide onde se candidatar é você.</b></p>
+        <div class="features">
+          <div class="feat" style="--c:#7fd1a5"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg></span><h3>Currículo mais claro</h3><p>Organizado para os sistemas de seleção, só com o que você fez.</p></div>
+          <div class="feat" style="--c:#a78bfa"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4"/><path d="M12 12l7-7M16 5h3v3"/></svg></span><h3>Vagas com motivo</h3><p>Aderência explicada: o que combina e o que falta.</p></div>
+          <div class="feat" style="--c:#e3b23c"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 21V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16M16 9h2a2 2 0 0 1 2 2v10M8 7h4M8 11h4M8 15h4M3 21h18"/></svg></span><h3>Fontes verificadas</h3><p>Link do anúncio original e data da conferência.</p></div>
+          <div class="feat" style="--c:#e2725b"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4z"/></svg></span><h3>Você no controle</h3><p>Nada é enviado sem a sua confirmação.</p></div>
+        </div>
+        <div class="cta-row"><a class="btn btn-lime" href="app/" target="_self" rel="noopener">Quero começar pelo currículo <span class="arrow" aria-hidden="true">→</span></a><a class="btn btn-line" href="#diagnostico">Testar meu resumo agora</a></div>
+        <div class="assure"><span>Diagnóstico do currículo gratuito</span><span>Sem cartão de crédito</span><span>Seus dados não são vendidos</span></div>
+      </div>
+      <div class="visual">
+        <span class="ring" aria-hidden="true"></span>
+        <div class="arch"><img src="assets/hero.jpg" alt="Profissional sorrindo enquanto usa um tablet" width="816" height="800"></div>
+        <div class="float f1" aria-hidden="true"><span class="ring-score"><span>82</span></span><span><b>Estágio em Direito</b>Aderência 82% · híbrido</span></div>
+        <div class="float f2" aria-hidden="true"><span class="dot" style="background:#e5f1e9;color:#145c42">✓</span><span><b>Currículo revisado</b>3 ajustes aceitos, nada inventado</span></div>
+        <div class="float f3" aria-hidden="true"><span class="dot" style="background:#0b2419;color:#d6f45e">MV</span><span><b>Envio confirmado</b>Protocolo registrado no painel</span></div>
+      </div>
+    </div>
+    <div class="sources">
+      <div class="sources-top"><p>Vagas de onde elas realmente são publicadas: portais, sistemas de recrutamento e sites das empresas</p><small>Marcas citadas só para indicar onde as vagas aparecem. Sem parceria ou endosso.</small></div>
+      <div class="marks" aria-label="Exemplos de onde vagas são publicadas"><span>Gupy</span><span>LinkedIn</span><span>Indeed</span><span>Catho</span><span>InfoJobs</span><span>Vagas.com</span><span>CIEE</span><span>“Trabalhe Conosco”</span></div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <!-- 2. PROBLEMA -->
+  <section class="block problem" id="para-voce" aria-labelledby="p-title">
+    <div class="wrap">
+      <div class="sec-head"><span class="eyebrow">O problema</span><h2 id="p-title">Você manda currículo e ninguém responde. Não é falta de capacidade.</h2><p>Hoje, muitos currículos passam por um sistema antes de chegar a uma pessoa. Quando a sua experiência está escrita do jeito errado, ela simplesmente não aparece.</p></div>
+      <div class="cols">
+        <article class="pcard"><span class="lbl">O que acontece</span><h3>Sua experiência fica invisível</h3><p>Filtros automáticos procuram termos e estrutura. Um currículo bom, escrito de forma genérica, é descartado antes de alguém ler.</p></article>
+        <article class="pcard"><span class="lbl">Como você se sente</span><h3>Cansado e sem resposta</h3><p>Formulário atrás de formulário, a mesma história digitada dez vezes e a dúvida: “será que o problema sou eu?”.</p></article>
+        <article class="pcard"><span class="lbl">O que não é justo</span><h3>Quem fez merece ser lido</h3><p>Anos de trabalho real não deveriam perder para quem só sabe escrever palavras-chave.</p></article>
+      </div>
+      <div class="villain"><span class="stamp">O vilão</span><p>O problema não é você. É o <s>currículo genérico</s> mandado para todo lugar, sem estratégia e sem acompanhamento.</p></div>
+    </div>
+  </section>
+
+  <!-- 3. GUIA: empatia + autoridade + demonstração -->
+  <section class="block guide" id="diagnostico" aria-labelledby="g-title">
+    <div class="wrap guide-grid">
+      <div>
+        <div class="sec-head"><span class="eyebrow">Seu guia</span><h2 id="g-title">A gente sabe como é. Por isso o Manda Vaga tem três regras.</h2><p>Um currículo melhor não é um currículo inventado. É a sua história real, contada do jeito que o RH consegue ler.</p></div>
+        <div class="rules">
+          <div class="rule"><span class="n">1</span><div><h3>Nada inventado</h3><p>Uma competência só entra no currículo quando você diz onde a usou. O que falta aparece como lacuna, não como mentira.</p></div></div>
+          <div class="rule"><span class="n">2</span><div><h3>Tudo explicado</h3><p>Cada sugestão mostra antes, depois e o motivo. Cada vaga mostra a nota de aderência e o porquê.</p></div></div>
+          <div class="rule"><span class="n">3</span><div><h3>Você decide</h3><p>Você escolhe as vagas e envia no site original. A gente prepara, organiza e acompanha.</p></div></div>
+        </div>
+      </div>
+      <div class="demo" aria-labelledby="d-title">
+        <h3 id="d-title">Teste agora: cole o resumo do seu currículo</h3>
+        <p class="s">Roda aqui no seu navegador. Nada é enviado nem guardado.</p>
+        <label for="demo-text" class="s" style="position:absolute;left:-9999px">Resumo do currículo</label>
+        <textarea id="demo-text" placeholder="Ex.: Profissional com mais de 10 anos de experiência em atendimento... Responsável por organizar documentos e controlar prazos em Excel..."></textarea>
+        <div class="row"><button class="btn btn-lime" id="demo-run" type="button">Analisar meu resumo</button><button class="linkish" id="demo-sample" type="button">Usar um exemplo</button></div>
+        <div class="results" id="demo-out" aria-live="polite"></div>
+        <p class="fine">Este é um teste rápido do resumo. O diagnóstico completo, com experiências, datas e palavras-chave por vaga, fica dentro do Manda Vaga.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. PLANO + acordo -->
+  <section class="block plan" id="como-funciona" aria-labelledby="pl-title">
+    <div class="wrap">
+      <div class="sec-head"><span class="eyebrow">O plano</span><h2 id="pl-title">Três passos, nesta ordem</h2><p>Primeiro o currículo. Depois as vagas. Por último o acompanhamento.</p></div>
+      <div class="steps">
+        <article class="step"><span class="num">01</span><span class="tag">Etapa 1 · Currículo</span><h3>Conte sua história</h3><p>Cole o currículo ou preencha do zero. Você recebe o diagnóstico, as palavras-chave que sua experiência sustenta e sugestões com antes e depois.</p></article>
+        <article class="step"><span class="num">02</span><span class="tag">Etapa 2 · Curadoria</span><h3>Receba vagas com motivo</h3><p>Cruzamos competências, cargo, cidade, modalidade, nível e salário. Cada vaga vem com a nota explicada e o link do anúncio original.</p></article>
+        <article class="step"><span class="num">03</span><span class="tag">Etapa 3 · Entrega</span><h3>Escolha e acompanhe</h3><p>Gere um currículo para cada vaga, candidate-se no site da empresa e acompanhe tudo no painel: próximo passo, protocolo e entrevista.</p></article>
+      </div>
+      <div class="pact"><h3>Nosso acordo com você</h3><ul><li>Nunca declaramos competência sem evidência</li><li>Nunca enviamos candidatura sem você</li><li>Seus dados não são vendidos</li><li>Você exporta ou apaga tudo quando quiser</li></ul></div>
+    </div>
+  </section>
+
+  <!-- 5. CHAMADA -->
+  <section class="cta-band" aria-label="Começar">
+    <div class="wrap"><h2>Comece pelo que você já tem: a sua história.</h2><div class="row"><a class="btn btn-dark" href="app/" target="_self" rel="noopener">Criar minha conta <span class="arrow" aria-hidden="true">→</span></a><a class="btn btn-ghost" href="#diagnostico">Fazer o teste grátis</a></div></div>
+  </section>
+
+  <!-- 6. O QUE ESTÁ EM JOGO -->
+  <section class="block stakes" aria-labelledby="s-title">
+    <div class="wrap">
+      <div class="sec-head"><span class="eyebrow">O que está em jogo</span><h2 id="s-title">O custo de continuar do mesmo jeito</h2></div>
+      <div class="grid">
+        <div class="risk"><h3>Mandar o mesmo currículo para tudo</h3><p>E continuar sem saber por que ninguém chama.</p></div>
+        <div class="risk"><h3>Perder prazos e respostas</h3><p>Dez sites, vinte vagas e nenhum lugar dizendo em que pé está cada processo.</p></div>
+        <div class="risk"><h3>Desistir de vagas boas</h3><p>Por achar que não daria, quando a sua experiência atendia ao que pediam.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. SUCESSO -->
+  <section class="block success" aria-labelledby="sx-title">
+    <div class="wrap">
+      <div class="sec-head"><span class="eyebrow">Como fica depois</span><h2 id="sx-title">De currículo genérico para uma busca com direção</h2><p>Seu painel conversa com você, diz o próximo passo e guarda cada etapa de cada candidatura.</p></div>
+      <div class="succ-grid">
+        <div class="ba">
+          <div class="ba-head"><span>Antes</span><span></span><span>Com o Manda Vaga</span></div>
+          <div class="ba-row"><div class="b">Currículo genérico</div><span class="to" aria-hidden="true">→</span><div class="a">Currículo claro, com as suas palavras-chave reais</div></div>
+          <div class="ba-row"><div class="b">Vagas soltas em dez sites</div><span class="to" aria-hidden="true">→</span><div class="a">Uma lista com motivo e link original</div></div>
+          <div class="ba-row"><div class="b">Planilha bagunçada</div><span class="to" aria-hidden="true">→</span><div class="a">Cada candidatura com status e próximo passo</div></div>
+          <div class="ba-row"><div class="b">“Será que eu sirvo?”</div><span class="to" aria-hidden="true">→</span><div class="a">Segurança para ir à entrevista</div></div>
+        </div>
+        <div class="phone" aria-label="Exemplo do painel com assistente">
+          <div class="top"><span class="av">MV</span><span><b>Assistente Manda Vaga</b><small>Exemplo ilustrativo</small></span></div>
+          <div class="bub">Boa tarde, Camila. Hoje você tem <b>12 vagas compatíveis</b> e <b>1 candidatura</b> esperando ação sua.</div>
+          <div class="bub">Vamos continuar a candidatura para <b>Auxiliar de Controladoria</b> ou prefere que eu amplie a lista de vagas?</div>
+          <div class="qrs"><span>Continuar a candidatura</span><span>Ampliar a lista</span><span>Ver as melhores</span></div>
+          <div class="bub me">Ver as melhores</div>
+          <div class="mini-job"><span class="ring-score"><span>86</span></span><span>Assistente Administrativo Jurídico<small>São Paulo · híbrido · combina: contratos, gestão documental</small></span></div>
+          <p class="demo-tag">Dados ilustrativos</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PLANOS -->
+  <section class="block pricing" id="planos" aria-labelledby="pr-title">
+    <div class="wrap">
+      <div class="sec-head"><span class="eyebrow">Planos</span><h2 id="pr-title">Pague pelo volume de oportunidades</h2><p>Todos os planos têm o currículo completo, o painel e o assistente. Muda quantas vagas diferentes você recebe por mês.</p></div>
+      <div class="plans">
+        <article class="pcard pl"><h3>Inicial</h3><div class="price">R$ 19,90<small>/mês</small></div><p>Para quem está começando a busca.</p><ul><li>Até 100 oportunidades únicas por mês</li><li>Currículo e versões por vaga</li><li>Painel de candidaturas</li></ul><a class="btn btn-ghost" href="app/" target="_self" rel="noopener">Escolher Inicial</a></article>
+        <article class="pcard pl featured"><span class="badge">Mais escolhido</span><h3>Plus</h3><div class="price">R$ 29,90<small>/mês</small></div><p>Para quem busca em mais de uma área.</p><ul><li>Até 200 oportunidades únicas por mês</li><li>Tudo do Inicial</li><li>Mais vagas para comparar</li></ul><a class="btn btn-lime" href="app/" target="_self" rel="noopener">Escolher Plus</a></article>
+        <article class="pcard pl"><h3>Max</h3><div class="price">R$ 39,90<small>/mês</small></div><p>Para quem precisa de volume.</p><ul><li>Até 500 oportunidades únicas por mês</li><li>Tudo do Plus</li><li>Ideal para recolocação</li></ul><a class="btn btn-ghost" href="app/" target="_self" rel="noopener">Escolher Max</a></article>
+      </div>
+      <p class="note">Oportunidade única é uma vaga diferente entregue a você no mês: rever a mesma vaga ou anúncios repetidos não contam de novo. Durante a fase de testes, a troca de plano é simulada e não há cobrança.</p>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="block faq" id="duvidas" aria-labelledby="f-title" style="padding-top:0">
+    <div class="wrap">
+      <div class="sec-head"><span class="eyebrow">Dúvidas</span><h2 id="f-title">Perguntas frequentes</h2></div>
+      <div class="list">
+        <details><summary>O Manda Vaga garante entrevista ou emprego?</summary><p>Não. Nenhum serviço honesto garante. O que fazemos é deixar o seu currículo claro, mostrar vagas compatíveis com motivo explicado e organizar o acompanhamento. A decisão de contratar é sempre da empresa.</p></details>
+        <details><summary>Vocês se candidatam por mim?</summary><p>Não automaticamente. Portais como Gupy e LinkedIn não permitem robôs, e muitos pedem testes e confirmações pessoais. Preparamos tudo, você envia no site original e registra no painel. Envios por e-mail podem ser feitos pela sua conta, sempre com a sua confirmação.</p></details>
+        <details><summary>Vocês colocam no currículo coisas que eu não fiz?</summary><p>Nunca. Uma competência só entra quando você descreve onde a usou. O que falta aparece como lacuna de desenvolvimento.</p></details>
+        <details><summary>De onde vêm as vagas?</summary><p>De anúncios públicos em portais, sistemas de recrutamento e sites das próprias empresas. Cada vaga vem com o link do anúncio original e a data da última verificação. Vagas encerradas ou repetidas são sinalizadas.</p></details>
+        <details><summary>Serve para estágio e primeiro emprego?</summary><p>Sim. O sistema considera o semestre do curso e avisa quando uma vaga de estágio pede um semestre mais avançado.</p></details>
+        <details><summary>O que acontece com os meus dados?</summary><p>Seu currículo e suas candidaturas são privados. Você pode exportar ou excluir tudo pela área de privacidade. Se um dia usarmos um provedor de IA externo, você será avisado antes.</p></details>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div><b>MandaVaga</b><p style="margin-top:8px">Seu currículo, mais oportunidades.</p></div>
+    <div><p><b>O Manda Vaga não é agência de emprego.</b> Não representamos empresas contratantes e não garantimos entrevista ou contratação. A aderência é uma estimativa explicável, não uma previsão. Marcas de plataformas de recrutamento citadas pertencem aos seus donos e não indicam parceria.</p></div>
+    <p class="fin">© <span id="yr">2026</span> Manda Vaga</p>
+  </div>
+</footer>
+
+<script>
+(function () {
+  "use strict";
+  var $ = function (id) { return document.getElementById(id); };
+  $("yr").textContent = new Date().getFullYear();
+  var esc = function (s) { return String(s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); };
+  var norm = function (s) { return String(s || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, ""); };
+  var TERMS = [["Atendimento", ["atendimento", "atender"]], ["Organização de documentos", ["documento", "arquivo"]], ["Controle de prazos", ["prazo"]], ["Excel", ["excel", "planilha"]], ["Relatórios", ["relatorio"]], ["Contratos", ["contrato"]], ["Gestão de projetos", ["projeto", "cronograma"]], ["Comunicação", ["comunicacao", "redacao", "conteudo"]], ["Redes sociais", ["redes sociais", "instagram"]], ["Vendas e negociação", ["venda", "negociacao", "proposta"]], ["Cadastros", ["cadastro"]], ["Órgãos públicos", ["orgaos publicos", "prefeitura"]], ["Direito", ["direito", "juridic", "processo"]], ["Ferramentas de IA", ["inteligencia artificial", "chatgpt", " ia "]], ["Liderança", ["lideranca", "coordena", "gestao de equipe"]]];
+  var SAMPLE = "Profissional com mais de 15 anos de experiência em atendimento ao público e rotinas administrativas. Responsável por organizar documentos, controlar prazos em planilhas de Excel e elaborar relatórios mensais. Busco oportunidade na área jurídica.";
+  function analyze(text) {
+    var t = String(text || "").trim(), n = norm(" " + t + " "), out = [];
+    if (t.length < 40) return [["bad", "Texto curto demais", "Cole pelo menos duas ou três frases do seu resumo profissional."]];
+    var len = t.length;
+    out.push(len < 200 ? ["warn", "Resumo curto (" + len + " caracteres)", "Entre 200 e 750 caracteres explica melhor quem você é e o que já fez."] : len > 750 ? ["warn", "Resumo longo (" + len + " caracteres)", "Recrutadores leem os primeiros segundos. Tente ficar abaixo de 750."] : ["ok", "Bom tamanho (" + len + " caracteres)", "Cabe numa leitura rápida."]);
+    var years = (t.match(/mais de\s+(\d{1,2})\s+anos/i) || [])[1];
+    if (years) out.push(["warn", "“Mais de " + years + " anos”: confira as datas", "Recrutador costuma conferir. No Manda Vaga, o tempo declarado é comparado com as datas das suas experiências."]);
+    var weak = (t.match(/respons[aá]vel (por|pela|pelo)/gi) || []).length;
+    if (weak) out.push(["warn", "“Responsável por” aparece " + (weak === 1 ? "1 vez" : weak + " vezes"), "Começar pela ação deixa a frase mais forte: “Organizei documentos…” em vez de “Responsável por organizar…”."]);
+    else out.push(["ok", "Frases começam pela ação", "Isso facilita a leitura rápida."]);
+    var adj = (n.match(/\b(proativ|dinamic|comunicativ|esforcad|dedicad|responsavel e|pontual)/g) || []).length;
+    if (adj >= 2) out.push(["warn", "Muitos adjetivos", "Troque qualidades genéricas por coisas que você fez. Fatos convencem mais."]);
+    if (/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/u.test(t)) out.push(["bad", "Emojis no texto", "Alguns sistemas de recrutamento não leem emojis. Use texto simples."]);
+    var found = TERMS.filter(function (x) { return x[1].some(function (a) { return n.indexOf(a) >= 0; }); }).map(function (x) { return x[0]; });
+    out.push(found.length ? ["ok", found.length === 1 ? "1 competência reconhecida" : found.length + " competências reconhecidas", found] : ["warn", "Nenhuma competência reconhecida", "Cite o que você fazia no dia a dia: atendimento, documentos, prazos, vendas, sistemas…"]);
+    return out;
+  }
+  function render(list) {
+    $("demo-out").innerHTML = list.map(function (r) {
+      var icon = r[0] === "ok" ? "✓" : r[0] === "warn" ? "!" : "✕";
+      var body = Array.isArray(r[2]) ? '<div class="kw">' + r[2].map(function (k) { return "<span>" + esc(k) + "</span>"; }).join("") + "</div>" : "<div>" + esc(r[2]) + "</div>";
+      return '<div class="res ' + r[0] + '"><span class="i" aria-hidden="true">' + icon + "</span><div><b>" + esc(r[1]) + "</b>" + body + "</div></div>";
+    }).join("");
+  }
+  $("demo-run").addEventListener("click", function () { render(analyze($("demo-text").value)); });
+  $("demo-sample").addEventListener("click", function () { $("demo-text").value = SAMPLE; render(analyze(SAMPLE)); });
+})();
+</script>
+
+</body></html>

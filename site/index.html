@@ -171,7 +171,8 @@ section.block{padding-block:clamp(64px,8vw,110px)}
 .mini-job small{display:block;color:var(--on-dark-muted);font-size:12px}
 .phone .demo-tag{font-size:11px;color:var(--on-dark-muted);text-align:center}
 
-.pricing .plans{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-top:40px}
+.pricing .plans{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin-top:40px}
+.pl .perday{font-size:15.5px;color:var(--ink)}.pl.featured .perday{color:#fff}.pl .perday b{color:inherit}
 .pcard.pl{gap:14px}
 .pl .price{font:800 40px/1 var(--f-display);letter-spacing:-.03em}
 .pl .price small{font:600 15px var(--f-body);color:var(--muted)}
@@ -195,7 +196,7 @@ footer .wrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);ga
 footer b{color:#fff}
 footer .fin{grid-column:1/-1;border-top:1px solid rgba(255,255,255,.1);padding-top:18px;font-size:12.5px}
 
-@media (max-width:1060px){.features{grid-template-columns:repeat(2,minmax(0,1fr))}.nav-links{display:none}}
+@media (max-width:1060px){.features{grid-template-columns:repeat(2,minmax(0,1fr))}.nav-links{display:none}.pricing .plans{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media (max-width:900px){
   .hero-grid,.guide-grid,.succ-grid{grid-template-columns:minmax(0,1fr)}
   .visual{width:min(86%,400px);margin-top:20px}
@@ -232,17 +233,17 @@ footer .fin{grid-column:1/-1;border-top:1px solid rgba(255,255,255,.1);padding-t
     </nav>
     <div class="hero-grid" id="topo">
       <div>
-        <span class="tagpill"><i aria-hidden="true"></i>Seu próximo passo profissional</span>
+        <span class="tagpill"><i aria-hidden="true"></i>Currículo grátis · sem cartão de crédito</span>
         <h1>Seu currículo pronto para a <em>nova era do RH.</em></h1>
-        <p class="lead">Você conta o que já fez. A gente <b>organiza seu currículo para os filtros do RH</b>, encontra vagas que combinam com você e mostra o motivo de cada uma. <b>Quem decide onde se candidatar é você.</b></p>
+        <p class="lead"><b>Arrume seu currículo de graça</b> e deixe-o pronto para ser lido por recrutadores e pelos sistemas de IA que as empresas usam na seleção. Quando quiser, <b>receba de uma vez dezenas de vagas escolhidas pelo seu currículo</b> e personalize o currículo para cada uma.</p>
         <div class="features">
           <div class="feat" style="--c:#7fd1a5"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg></span><h3>Currículo mais claro</h3><p>Organizado para os sistemas de seleção, só com o que você fez.</p></div>
           <div class="feat" style="--c:#a78bfa"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4"/><path d="M12 12l7-7M16 5h3v3"/></svg></span><h3>Vagas com motivo</h3><p>Aderência explicada: o que combina e o que falta.</p></div>
           <div class="feat" style="--c:#e3b23c"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 21V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16M16 9h2a2 2 0 0 1 2 2v10M8 7h4M8 11h4M8 15h4M3 21h18"/></svg></span><h3>Fontes verificadas</h3><p>Link do anúncio original e data da conferência.</p></div>
           <div class="feat" style="--c:#e2725b"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4z"/></svg></span><h3>Você no controle</h3><p>Nada é enviado sem a sua confirmação.</p></div>
         </div>
-        <div class="cta-row"><a class="btn btn-lime" href="app/" target="_self" rel="noopener">Quero começar pelo currículo <span class="arrow" aria-hidden="true">→</span></a><a class="btn btn-line" href="#diagnostico">Testar meu resumo agora</a></div>
-        <div class="assure"><span>Diagnóstico do currículo gratuito</span><span>Sem cartão de crédito</span><span>Seus dados não são vendidos</span></div>
+        <div class="cta-row"><a class="btn btn-lime" href="app/" target="_self" rel="noopener">Arrumar meu currículo grátis <span class="arrow" aria-hidden="true">→</span></a><a class="btn btn-line" href="#diagnostico">Testar meu resumo agora</a></div>
+        <div class="assure"><span>Currículo grátis</span><span>Vagas a partir de R$ 19,90/mês</span><span>Seus dados não são vendidos</span></div>
       </div>
       <div class="visual">
         <span class="ring" aria-hidden="true"></span>
@@ -311,7 +312,7 @@ footer .fin{grid-column:1/-1;border-top:1px solid rgba(255,255,255,.1);padding-t
 
   <!-- 5. CHAMADA -->
   <section class="cta-band" aria-label="Começar">
-    <div class="wrap"><h2>Comece pelo que você já tem: a sua história.</h2><div class="row"><a class="btn btn-dark" href="app/" target="_self" rel="noopener">Criar minha conta <span class="arrow" aria-hidden="true">→</span></a><a class="btn btn-ghost" href="#diagnostico">Fazer o teste grátis</a></div></div>
+    <div class="wrap"><h2>Comece de graça pelo que você já tem: a sua história.</h2><div class="row"><a class="btn btn-dark" href="app/" target="_self" rel="noopener">Arrumar meu currículo grátis <span class="arrow" aria-hidden="true">→</span></a><a class="btn btn-ghost" href="#diagnostico">Fazer o teste grátis</a></div></div>
   </section>
 
   <!-- 6. O QUE ESTÁ EM JOGO -->
@@ -354,13 +355,14 @@ footer .fin{grid-column:1/-1;border-top:1px solid rgba(255,255,255,.1);padding-t
   <!-- PLANOS -->
   <section class="block pricing" id="planos" aria-labelledby="pr-title">
     <div class="wrap">
-      <div class="sec-head"><span class="eyebrow">Planos</span><h2 id="pr-title">Pague pelo volume de oportunidades</h2><p>Todos os planos têm o currículo completo, o painel e o assistente. Muda quantas vagas diferentes você recebe por mês.</p></div>
+      <div class="sec-head"><span class="eyebrow">Planos</span><h2 id="pr-title">O currículo é grátis. As vagas chegam de uma vez.</h2><p>Comece arrumando o currículo sem pagar nada. Quando assinar, você recebe de uma vez todas as vagas compatíveis com o seu currículo, até o limite do plano, e personaliza o currículo para cada uma.</p></div>
       <div class="plans">
-        <article class="pcard pl"><h3>Inicial</h3><div class="price">R$ 19,90<small>/mês</small></div><p>Para quem está começando a busca.</p><ul><li>Até 100 oportunidades únicas por mês</li><li>Currículo e versões por vaga</li><li>Painel de candidaturas</li></ul><a class="btn btn-ghost" href="app/" target="_self" rel="noopener">Escolher Inicial</a></article>
-        <article class="pcard pl featured"><span class="badge">Mais escolhido</span><h3>Plus</h3><div class="price">R$ 29,90<small>/mês</small></div><p>Para quem busca em mais de uma área.</p><ul><li>Até 200 oportunidades únicas por mês</li><li>Tudo do Inicial</li><li>Mais vagas para comparar</li></ul><a class="btn btn-lime" href="app/" target="_self" rel="noopener">Escolher Plus</a></article>
-        <article class="pcard pl"><h3>Max</h3><div class="price">R$ 39,90<small>/mês</small></div><p>Para quem precisa de volume.</p><ul><li>Até 500 oportunidades únicas por mês</li><li>Tudo do Plus</li><li>Ideal para recolocação</li></ul><a class="btn btn-ghost" href="app/" target="_self" rel="noopener">Escolher Max</a></article>
+        <article class="pcard pl"><h3>Grátis</h3><div class="price">R$ 0</div><p>Para deixar o currículo pronto.</p><ul><li>Diagnóstico completo do currículo</li><li>Sugestões com antes e depois</li><li>Pronto para recrutadores e sistemas de IA</li><li>Exportação do currículo</li></ul><a class="btn btn-ghost" href="app/" target="_self" rel="noopener">Começar grátis</a></article>
+        <article class="pcard pl"><h3>Inicial</h3><div class="price">R$ 19,90<small>/mês</small></div><p class="perday"><b>Receba até 100 vagas de uma vez.</b></p><ul><li>Vagas escolhidas pelo seu currículo</li><li>No seu painel e no seu e‑mail</li><li>Currículo personalizado para cada vaga</li><li>Painel de candidaturas</li></ul><a class="btn btn-ghost" href="app/" target="_self" rel="noopener">Escolher Inicial</a></article>
+        <article class="pcard pl"><h3>Plus</h3><div class="price">R$ 29,90<small>/mês</small></div><p class="perday"><b>Receba até 200 vagas de uma vez.</b></p><ul><li>Tudo do Inicial</li><li>O dobro de vagas</li></ul><a class="btn btn-ghost" href="app/" target="_self" rel="noopener">Escolher Plus</a></article>
+        <article class="pcard pl featured"><span class="badge">Mais completo</span><h3>Max</h3><div class="price">R$ 39,90<small>/mês</small></div><p class="perday"><b>Receba até 500 vagas de uma vez</b> e deixe o envio e as respostas com a gente.</p><ul><li>Tudo do Plus</li><li><b>Envio facilitado</b> para as empresas: mensagem pronta para cada vaga e envio pelo seu e‑mail</li><li><b>Central de Respostas</b>: convites, pedidos e recusas organizados por vaga, com sugestão de resposta</li><li>Gestão de entrevistas e próximos passos</li></ul><a class="btn btn-lime" href="app/" target="_self" rel="noopener">Escolher Max</a></article>
       </div>
-      <p class="note">Oportunidade única é uma vaga diferente entregue a você no mês: rever a mesma vaga ou anúncios repetidos não contam de novo. Durante a fase de testes, a troca de plano é simulada e não há cobrança.</p>
+      <p class="note">As quantidades são o máximo do plano por mês. O número que chega depende de quantas vagas compatíveis com o seu currículo existem na sua região e área. Vaga repetida ou encerrada não conta. Nos portais que não permitem robôs, o clique final de envio é seu.</p>
     </div>
   </section>
 
@@ -369,8 +371,10 @@ footer .fin{grid-column:1/-1;border-top:1px solid rgba(255,255,255,.1);padding-t
     <div class="wrap">
       <div class="sec-head"><span class="eyebrow">Dúvidas</span><h2 id="f-title">Perguntas frequentes</h2></div>
       <div class="list">
+        <details><summary>Como as vagas chegam?</summary><p>De uma vez. Ao assinar, você recebe no painel todas as vagas compatíveis com o seu currículo que existem no momento, até o limite do plano (100, 200 ou 500 por mês). Vagas novas entram assim que aparecem, até completar o limite. Não completamos a conta com vagas que não combinam com você.</p></details>
+        <details><summary>O currículo é grátis mesmo?</summary><p>Sim. Diagnóstico, sugestões e exportação do currículo não custam nada e não pedem cartão de crédito. Você só paga se quiser receber vagas.</p></details>
         <details><summary>O Manda Vaga garante entrevista ou emprego?</summary><p>Não. Nenhum serviço honesto garante. O que fazemos é deixar o seu currículo claro, mostrar vagas compatíveis com motivo explicado e organizar o acompanhamento. A decisão de contratar é sempre da empresa.</p></details>
-        <details><summary>Vocês se candidatam por mim?</summary><p>Não automaticamente. Portais como Gupy e LinkedIn não permitem robôs, e muitos pedem testes e confirmações pessoais. Preparamos tudo, você envia no site original e registra no painel. Envios por e-mail podem ser feitos pela sua conta, sempre com a sua confirmação.</p></details>
+        <details><summary>Vocês se candidatam por mim?</summary><p>No plano Max, o envio é facilitado: preparamos a mensagem de apresentação e o currículo de cada vaga, e o envio por e‑mail sai da sua conta, com a sua confirmação. Portais como Gupy e LinkedIn não permitem robôs e muitas vezes pedem testes, então nesses o clique final é seu. Depois, as respostas das empresas ficam organizadas na Central de Respostas.</p></details>
         <details><summary>Vocês colocam no currículo coisas que eu não fiz?</summary><p>Nunca. Uma competência só entra quando você descreve onde a usou. O que falta aparece como lacuna de desenvolvimento.</p></details>
         <details><summary>De onde vêm as vagas?</summary><p>De anúncios públicos em portais, sistemas de recrutamento e sites das próprias empresas. Cada vaga vem com o link do anúncio original e a data da última verificação. Vagas encerradas ou repetidas são sinalizadas.</p></details>
         <details><summary>Serve para estágio e primeiro emprego?</summary><p>Sim. O sistema considera o semestre do curso e avisa quando uma vaga de estágio pede um semestre mais avançado.</p></details>

@@ -201,6 +201,7 @@ const ResumeViews = {
 /* ---------------- Vagas (Etapas 2 e 3) ---------------- */
 Views["cand.jobs"] = (s) => {
   if (!Cand.hasResume(s)) return `${C.head("Etapa 2", "Vagas para você")}${C.empty("O currículo vem primeiro", "A curadoria usa o que o seu currículo sustenta. Preencha experiências ou competências para liberar as vagas.", `<button class="btn btn-primary" data-go="cand.resume">Montar currículo</button>`)}`;
+  if (Plans.of(s.id).limit === 0) return `${C.head("Etapas 2 e 3", "Vagas para você")}<div class="card">${C.empty("Seu currículo é grátis. As vagas vêm com um plano.", `No plano Grátis você arruma o currículo e deixa ele pronto para recrutadores e sistemas de IA. Para receber vagas escolhidas pelo seu currículo, todas de uma vez, escolha um plano: ${Plans.list().filter(p => p.limit).map(p => `<b>${e(p.name)}</b> ${U.money(p.price)}, até ${p.limit} vagas`).join(" · ")}.`, `<button class="btn btn-primary" data-go="cand.plan">Ver planos</button>`)}</div>`;
   const tab = App.ui.jobsTab || "rec"; const f = App.ui.jobFilter || {};
   const prof = Cand.profile(s); const plan = Plans.of(s.id);
   const recs = Cand.recommendations(s); const used = Plans.used(s.id);
@@ -304,6 +305,7 @@ function AppModal(s, a) {
   </div>
   <div id="ap-proof" class="${NEEDS_PROOF.includes(a.status) && !a.confirmed ? "" : "hidden"} notice warn"><span class="ic">!</span><div class="stack-sm"><b>Confirmação obrigatória</b><label class="check"><input type="checkbox" id="ap-proof-ok"> O portal mostrou confirmação de envio ou forneceu protocolo. Só marque se isso aconteceu.</label><span class="small">Preencha a evidência acima.</span></div></div>
   <div id="ap-int" class="${a.status === "Entrevista agendada" ? "" : "hidden"} form-grid sunken">${C.field("ap-int-date", "Data da entrevista", C.input("ap-int-date", a.interview?.date || "", 'type="date"'))}${C.field("ap-int-time", "Horário", C.input("ap-int-time", a.interview?.time || "", 'type="time"'))}<div class="full">${C.field("ap-int-place", "Local ou link", C.input("ap-int-place", a.interview?.place || ""))}</div></div>
+  ${EnvioPanel(s, a)}
   ${C.field("ap-notes", "Observações", C.textarea("ap-notes", a.notes, 'rows="3"'))}
   <div><div class="label" style="margin-bottom:8px">Histórico</div><div class="timeline">${(a.history || []).slice().reverse().map(h => `<div class="t"><b>${e(h.status)}</b> <span class="muted xs">${U.fmtDateTime(h.at)}</span>${h.note ? `<div class="xs muted">${e(h.note)}</div>` : ""}</div>`).join("")}</div></div>`;
 }
@@ -320,8 +322,9 @@ Views["cand.plan"] = (s) => {
   const cur = Plans.of(s.id); const used = Plans.used(s.id);
   const hist = Repo.find("usage_events", u => u.userId === s.id).sort((a, b) => b.createdAt.localeCompare(a.createdAt)).slice(0, 12);
   return `${C.head("Conta", "Plano e consumo", "Uma oportunidade única é uma vaga diferente entregue a você no mês. Rever a mesma vaga ou vagas duplicadas não consomem de novo.")}
-  ${C.notice("Pagamento real ainda não conectado: a troca de plano é simulada e não gera cobrança.", "warn", "!")}
-  <div class="grid g-main" style="margin-top:14px"><div class="plans" style="grid-template-columns:repeat(auto-fit,minmax(190px,1fr))">${Plans.list().map(p => `<div class="plan ${p.key === cur.key ? "featured" : ""}"><div class="row-between"><b>${e(p.name)}</b>${p.key === cur.key ? C.pill("Atual", "ok") : ""}</div><div class="price num">${U.money(p.price)}<small>/mês</small></div><p class="small muted">Até ${p.limit} oportunidades únicas/mês</p>${p.key === cur.key ? "" : `<button class="btn btn-primary btn-sm" data-act="changePlan" data-v="${e(p.key)}">Mudar para ${e(p.name)}</button>`}</div>`).join("")}</div>
+  ${(() => { const pend = Repo.one("subscriptions", x => x.userId === s.id && x.status === "aguardando pagamento"); return pend ? C.notice(`<b>Pagamento do plano ${e(Plans.list().find(p => p.key === pend.plan)?.name || "")} aguardando confirmação.</b> <button class="btn-link" data-act="payInfo">Abrir pagamento</button> · <button class="btn-link" data-act="checkPayment">Verificar pagamento</button>`, "warn", "!") : ""; })()}
+  ${C.notice("Neste ambiente de demonstração a troca de plano é simulada. No site publicado com a Asaas configurada, a assinatura gera uma cobrança real.", "info")}
+  <div class="grid g-main" style="margin-top:14px"><div class="plans" style="grid-template-columns:repeat(auto-fit,minmax(190px,1fr))">${Plans.list().map(p => `<div class="plan ${p.key === cur.key ? "featured" : ""}"><div class="row-between"><b>${e(p.name)}</b>${p.key === cur.key ? C.pill("Atual", "ok") : ""}</div><div class="price num">${p.price ? U.money(p.price) + "<small>/mês</small>" : "R$ 0"}</div><p class="small muted">${e(Plans.pitch(p))}</p>${p.key === cur.key ? "" : `<button class="btn btn-primary btn-sm" data-act="changePlan" data-v="${e(p.key)}">Mudar para ${e(p.name)}</button>`}</div>`).join("")}</div>
   <div class="card stack"><h2>Este mês</h2><div class="stat"><span class="v num">${used}<span class="muted" style="font-size:16px"> / ${cur.limit}</span></span></div>${C.meter(used, cur.limit, "", true)}<h3 style="margin-top:8px">Últimas entregas</h3>${hist.map(h => { const j = Repo.get("jobs", h.jobId); return `<div class="row-between small"><span>${e(j ? j.title : "Vaga")}</span><span class="muted num">${U.fmtDate(h.createdAt)}</span></div>`; }).join("") || '<p class="small muted">Nada ainda.</p>'}</div></div>`;
 };
 

@@ -728,13 +728,20 @@ const Match = {
 
 /* ---------------- planos e consumo ---------------- */
 const PLANS_DEFAULT = [
+  { key: "gratis", name: "Grátis", price: 0, limit: 0 },
   { key: "inicial", name: "Inicial", price: 19.9, limit: 100 },
   { key: "plus", name: "Plus", price: 29.9, limit: 200 },
-  { key: "max", name: "Max", price: 39.9, limit: 500 },
+  { key: "max", name: "Max", price: 39.9, limit: 500, features: ["envio", "respostas"] },
 ];
 const Plans = {
-  list() { return Repo.setting("plans", PLANS_DEFAULT); },
-  of(userId) { const s = Repo.one("subscriptions", x => x.userId === userId && x.status === "ativa"); const p = Plans.list().find(p => p.key === (s?.plan || "inicial")) || Plans.list()[0]; return { ...p, sub: s }; },
+  list() { const saved = Repo.setting("plans", PLANS_DEFAULT); return PLANS_DEFAULT.map(d => ({ ...d, ...(saved.find(x => x.key === d.key) || {}), features: d.features || [] })); },
+  pitch(p) {
+    if (!p.limit) return "Currículo revisado e pronto para recrutadores e sistemas de IA. Sem vagas.";
+    const base = `Até ${p.limit} vagas por mês, entregues de uma vez, escolhidas pelo seu currículo`;
+    return (p.features || []).includes("envio") ? base + ", com envio facilitado para as empresas e Central de Respostas." : base + ".";
+  },
+  has(userId, feature) { return (Plans.of(userId).features || []).includes(feature); },
+  of(userId) { const s = Repo.one("subscriptions", x => x.userId === userId && x.status === "ativa"); const p = Plans.list().find(p => p.key === (s?.plan || "gratis")) || Plans.list()[0]; return { ...p, sub: s }; },
   used(userId, month = U.month()) { return new Set(Repo.find("usage_events", e => e.userId === userId && e.type === "oportunidade_entregue" && e.month === month).map(e => e.jobId)).size; },
   deliver(userId, jobId) {
     const month = U.month(); const key = `${userId}|${jobId}|${month}`;
@@ -841,7 +848,7 @@ function buildSeed(hashes) {
     const name = `${first[i % first.length]} ${last[(i * 7) % last.length]}`;
     const u = { id: "usr_s" + i, name, email: `demo${i}@exemplo.invalid`, role: "candidate", status: "ativo", city, uf, area: areas[i % areas.length], origin: origins[i % origins.length], ageRange: ages[i % ages.length], synthetic: true, createdAt: iso(created), lastActiveAt: iso(active), resumeComplete: i % 3 !== 0, appsCount: i % 3 !== 0 ? (i * 3) % 7 : 0 };
     data.users.push(u);
-    data.subscriptions.push({ id: "sub_s" + i, userId: u.id, plan: ["inicial", "inicial", "plus", "max"][i % 4], status: "ativa", startedAt: u.createdAt, simulated: true, createdAt: u.createdAt });
+    data.subscriptions.push({ id: "sub_s" + i, userId: u.id, plan: ["gratis", "inicial", "gratis", "plus", "inicial", "max"][i % 6], status: "ativa", startedAt: u.createdAt, simulated: true, createdAt: u.createdAt });
   }
 
   // contas de demonstração para entrar
@@ -849,7 +856,7 @@ function buildSeed(hashes) {
   const raf = { id: "usr_rafael", name: "Rafael Moreira", email: "rafael@demo.mandavaga", passwordHash: hashes.demo, role: "candidate", status: "ativo", city: "Guarulhos", uf: "SP", area: null, origin: "Instagram", ageRange: null, demoAccount: true, createdAt: iso(1), lastActiveAt: iso(1), consents: { terms: true, marketing: false, whatsapp: false } };
   const adm = { id: "usr_admin", name: "Equipe Manda Vaga", email: "admin@demo.mandavaga", passwordHash: hashes.demo, role: "admin", status: "ativo", city: "São Paulo", uf: "SP", demoAccount: true, createdAt: iso(90), lastActiveAt: iso(0) };
   data.users.push(cam, raf, adm);
-  data.subscriptions.push({ id: "sub_cam", userId: cam.id, plan: "inicial", status: "ativa", startedAt: iso(20), simulated: true, createdAt: iso(20) }, { id: "sub_raf", userId: raf.id, plan: "inicial", status: "ativa", startedAt: iso(1), simulated: true, createdAt: iso(1) });
+  data.subscriptions.push({ id: "sub_cam", userId: cam.id, plan: "inicial", status: "ativa", startedAt: iso(20), simulated: true, createdAt: iso(20) }, { id: "sub_raf", userId: raf.id, plan: "gratis", status: "ativa", startedAt: iso(1), simulated: true, createdAt: iso(1) });
 
   data.profiles.push(
     { id: "pro_cam", userId: cam.id, city: "São Paulo", uf: "SP", city2: "Guarulhos", targetRoles: ["Estágio em Direito", "Assistente jurídico", "Controladoria jurídica"], families: ["juridico", "processual", "adm"], modalities: ["Presencial", "Híbrido", "Remoto"], levels: ["Estágio", "Assistente/Auxiliar", "Júnior"], semester: 3, course: "Direito", availability: "Manhã e tarde", careerStage: "Transição de carreira", salaryMin: null, minScore: 45, createdAt: iso(20) },
@@ -961,7 +968,7 @@ const Views = {};
 /* ---------------- shell ---------------- */
 Views.shell = (s, inner) => {
   const unread = Repo.find("notifications", n => n.userId === s.id && !n.read).length;
-  const candNav = [["Etapa 1", [["cand.home", "▦", "Início"], ["cand.resume", "▤", "Currículo"], ["cand.profile", "◎", "Perfil e preferências"]]], ["Etapas 2 e 3", [["cand.jobs", "⌕", "Vagas para você"], ["cand.apps", "↗", "Candidaturas"]]], ["Conta", [["cand.notifications", "◔", "Notificações", unread], ["cand.plan", "◇", "Plano e consumo"], ["cand.privacy", "⚿", "Privacidade"]]]];
+  const candNav = [["Etapa 1", [["cand.home", "▦", "Início"], ["cand.resume", "▤", "Currículo"], ["cand.profile", "◎", "Perfil e preferências"]]], ["Etapas 2 e 3", [["cand.jobs", "⌕", "Vagas para você"], ["cand.apps", "↗", "Candidaturas"], ["cand.responses", "✉", "Respostas"]]], ["Conta", [["cand.notifications", "◔", "Notificações", unread], ["cand.plan", "◇", "Plano e consumo"], ["cand.privacy", "⚿", "Privacidade"]]]];
   const admNav = [["Visão", [["admin.dashboard", "▦", "Métricas"]]], ["Operação", [["admin.users", "◎", "Usuários"], ["admin.jobs", "⌕", "Vagas"], ["admin.sources", "⇄", "Fontes"], ["admin.editorial", "✎", "Editorial"]]], ["Gestão", [["admin.plans", "◇", "Planos e uso"], ["admin.privacy", "⚿", "Privacidade e auditoria"], ["admin.settings", "⚙", "Configurações"]]]];
   const nav = s.role === "admin" ? admNav : candNav;
   const page = App.route.page.split(":")[0];
@@ -1003,7 +1010,7 @@ Views.landing = () => {
         <div class="l-step"><span class="n">ETAPA 3</span><h3>Entrega na sua área</h3><p class="muted">Cada vaga vem com link do anúncio original e data da verificação. Você salva, dispensa, gera uma versão do currículo e acompanha a candidatura.</p></div>
       </div></div></section>
     <section class="l-sec" style="padding-top:0"><div class="l-wrap"><div class="eyebrow">Planos</div><h2 style="font-size:clamp(24px,3vw,34px);margin:8px 0 18px">Pague pelo volume de oportunidades</h2>
-      <div class="plans">${plans.map((p, i) => `<div class="plan ${i === 1 ? "featured" : ""}"><b>${e(p.name)}</b><div class="price num">${U.money(p.price)}<small>/mês</small></div><p class="muted small">Até ${p.limit} oportunidades únicas por mês. Vagas repetidas não contam duas vezes.</p><button class="btn ${i === 1 ? "btn-primary" : "btn-ghost"}" data-go="signup">Escolher ${e(p.name)}</button></div>`).join("")}</div>
+      <div class="plans" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr))">${plans.map((p, i) => `<div class="plan ${p.key === "max" ? "featured" : ""}"><b>${e(p.name)}</b><div class="price num">${p.price ? U.money(p.price) + "<small>/mês</small>" : "R$ 0"}</div><p class="muted small">${e(Plans.pitch(p))}</p><button class="btn ${p.key === "max" ? "btn-primary" : "btn-ghost"}" data-go="signup">${p.price ? "Escolher " + e(p.name) : "Arrumar meu currículo grátis"}</button></div>`).join("")}</div>
       <p class="small muted" style="margin-top:12px">Na fase de testes não há cobrança: a troca de plano é simulada.</p></div></section>
     <footer class="l-foot"><div class="l-wrap stack-sm"><b>O Manda Vaga não é agência de emprego.</b><span>Não representamos empresas contratantes e não garantimos entrevista ou contratação. A aderência é uma estimativa explicável, não uma previsão. Marcas de plataformas de recrutamento citadas pertencem aos seus donos e não indicam parceria.</span><span>Protótipo local · ${new Date().getFullYear()}</span></div></footer></div>`;
 };
@@ -1244,6 +1251,7 @@ const ResumeViews = {
 /* ---------------- Vagas (Etapas 2 e 3) ---------------- */
 Views["cand.jobs"] = (s) => {
   if (!Cand.hasResume(s)) return `${C.head("Etapa 2", "Vagas para você")}${C.empty("O currículo vem primeiro", "A curadoria usa o que o seu currículo sustenta. Preencha experiências ou competências para liberar as vagas.", `<button class="btn btn-primary" data-go="cand.resume">Montar currículo</button>`)}`;
+  if (Plans.of(s.id).limit === 0) return `${C.head("Etapas 2 e 3", "Vagas para você")}<div class="card">${C.empty("Seu currículo é grátis. As vagas vêm com um plano.", `No plano Grátis você arruma o currículo e deixa ele pronto para recrutadores e sistemas de IA. Para receber vagas escolhidas pelo seu currículo, todas de uma vez, escolha um plano: ${Plans.list().filter(p => p.limit).map(p => `<b>${e(p.name)}</b> ${U.money(p.price)}, até ${p.limit} vagas`).join(" · ")}.`, `<button class="btn btn-primary" data-go="cand.plan">Ver planos</button>`)}</div>`;
   const tab = App.ui.jobsTab || "rec"; const f = App.ui.jobFilter || {};
   const prof = Cand.profile(s); const plan = Plans.of(s.id);
   const recs = Cand.recommendations(s); const used = Plans.used(s.id);
@@ -1347,6 +1355,7 @@ function AppModal(s, a) {
   </div>
   <div id="ap-proof" class="${NEEDS_PROOF.includes(a.status) && !a.confirmed ? "" : "hidden"} notice warn"><span class="ic">!</span><div class="stack-sm"><b>Confirmação obrigatória</b><label class="check"><input type="checkbox" id="ap-proof-ok"> O portal mostrou confirmação de envio ou forneceu protocolo. Só marque se isso aconteceu.</label><span class="small">Preencha a evidência acima.</span></div></div>
   <div id="ap-int" class="${a.status === "Entrevista agendada" ? "" : "hidden"} form-grid sunken">${C.field("ap-int-date", "Data da entrevista", C.input("ap-int-date", a.interview?.date || "", 'type="date"'))}${C.field("ap-int-time", "Horário", C.input("ap-int-time", a.interview?.time || "", 'type="time"'))}<div class="full">${C.field("ap-int-place", "Local ou link", C.input("ap-int-place", a.interview?.place || ""))}</div></div>
+  ${EnvioPanel(s, a)}
   ${C.field("ap-notes", "Observações", C.textarea("ap-notes", a.notes, 'rows="3"'))}
   <div><div class="label" style="margin-bottom:8px">Histórico</div><div class="timeline">${(a.history || []).slice().reverse().map(h => `<div class="t"><b>${e(h.status)}</b> <span class="muted xs">${U.fmtDateTime(h.at)}</span>${h.note ? `<div class="xs muted">${e(h.note)}</div>` : ""}</div>`).join("")}</div></div>`;
 }
@@ -1363,8 +1372,9 @@ Views["cand.plan"] = (s) => {
   const cur = Plans.of(s.id); const used = Plans.used(s.id);
   const hist = Repo.find("usage_events", u => u.userId === s.id).sort((a, b) => b.createdAt.localeCompare(a.createdAt)).slice(0, 12);
   return `${C.head("Conta", "Plano e consumo", "Uma oportunidade única é uma vaga diferente entregue a você no mês. Rever a mesma vaga ou vagas duplicadas não consomem de novo.")}
-  ${C.notice("Pagamento real ainda não conectado: a troca de plano é simulada e não gera cobrança.", "warn", "!")}
-  <div class="grid g-main" style="margin-top:14px"><div class="plans" style="grid-template-columns:repeat(auto-fit,minmax(190px,1fr))">${Plans.list().map(p => `<div class="plan ${p.key === cur.key ? "featured" : ""}"><div class="row-between"><b>${e(p.name)}</b>${p.key === cur.key ? C.pill("Atual", "ok") : ""}</div><div class="price num">${U.money(p.price)}<small>/mês</small></div><p class="small muted">Até ${p.limit} oportunidades únicas/mês</p>${p.key === cur.key ? "" : `<button class="btn btn-primary btn-sm" data-act="changePlan" data-v="${e(p.key)}">Mudar para ${e(p.name)}</button>`}</div>`).join("")}</div>
+  ${(() => { const pend = Repo.one("subscriptions", x => x.userId === s.id && x.status === "aguardando pagamento"); return pend ? C.notice(`<b>Pagamento do plano ${e(Plans.list().find(p => p.key === pend.plan)?.name || "")} aguardando confirmação.</b> <button class="btn-link" data-act="payInfo">Abrir pagamento</button> · <button class="btn-link" data-act="checkPayment">Verificar pagamento</button>`, "warn", "!") : ""; })()}
+  ${C.notice("Neste ambiente de demonstração a troca de plano é simulada. No site publicado com a Asaas configurada, a assinatura gera uma cobrança real.", "info")}
+  <div class="grid g-main" style="margin-top:14px"><div class="plans" style="grid-template-columns:repeat(auto-fit,minmax(190px,1fr))">${Plans.list().map(p => `<div class="plan ${p.key === cur.key ? "featured" : ""}"><div class="row-between"><b>${e(p.name)}</b>${p.key === cur.key ? C.pill("Atual", "ok") : ""}</div><div class="price num">${p.price ? U.money(p.price) + "<small>/mês</small>" : "R$ 0"}</div><p class="small muted">${e(Plans.pitch(p))}</p>${p.key === cur.key ? "" : `<button class="btn btn-primary btn-sm" data-act="changePlan" data-v="${e(p.key)}">Mudar para ${e(p.name)}</button>`}</div>`).join("")}</div>
   <div class="card stack"><h2>Este mês</h2><div class="stat"><span class="v num">${used}<span class="muted" style="font-size:16px"> / ${cur.limit}</span></span></div>${C.meter(used, cur.limit, "", true)}<h3 style="margin-top:8px">Últimas entregas</h3>${hist.map(h => { const j = Repo.get("jobs", h.jobId); return `<div class="row-between small"><span>${e(j ? j.title : "Vaga")}</span><span class="muted num">${U.fmtDate(h.createdAt)}</span></div>`; }).join("") || '<p class="small muted">Nada ainda.</p>'}</div></div>`;
 };
 
@@ -1412,6 +1422,11 @@ const Assistant = {
     if (!st.has) {
       out.push({ text: `${Assistant.hello()}, ${first}. Eu sou o assistente do Manda Vaga. Antes de buscar vagas, preciso conhecer o seu currículo: é ele que define o que eu vou trazer para você.` });
       out.push({ text: "Como prefere começar?", chips: [["go", "cand.resume:import", "Colar meu currículo"], ["go", "cand.resume:editor", "Preencher do zero"], ["intent", "how", "Como funciona?"]] });
+      return out;
+    }
+    if (st.plan.limit === 0) {
+      out.push({ html: `${Assistant.hello()}, ${e(first)}. Seu currículo está com nota <b>${st.diag.score}/100</b>${st.sugg.length ? ` e tem <b>${pl(st.sugg.length, "ajuste sugerido", "ajustes sugeridos")}</b>` : ""}. No plano Grátis você deixa o currículo pronto para recrutadores e sistemas de IA.` });
+      out.push({ html: `Quando quiser receber vagas escolhidas pelo seu currículo: ${Plans.list().filter(p => p.limit).map(p => `<b>${e(p.name)}</b>, até ${p.limit} vagas de uma vez`).join(", ")}. O Max inclui envio facilitado e a Central de Respostas.`, chips: [["go", "cand.resume:diag", "Melhorar meu currículo"], ["go", "cand.plan", "Ver planos"]] });
       return out;
     }
     const facts = [];
@@ -1503,6 +1518,47 @@ Views["cand.home"] = (s) => {
       <div class="card stack-sm"><div class="row-between small"><b>Plano ${e(st.plan.name)}</b><span class="num muted">${st.used}/${st.plan.limit}</span></div>${C.meter(st.used, st.plan.limit, "", true)}<span class="xs muted">Oportunidades únicas entregues este mês</span></div>
       ${C.notice("O assistente usa regras locais e só fala do que está nos seus dados. Ele não envia candidaturas nem mensagens.", "info")}
     </aside></div>`;
+};
+
+/* =====================================================================
+   RECURSOS DO PLANO MAX: envio facilitado e Central de Respostas
+   ===================================================================== */
+const MaxFeat = {
+  cover(s, a) {
+    const j = Repo.get("jobs", a.jobId) || {}; const r = Cand.resume(s); const d = r?.data || Resume.empty();
+    const ev = Cand.ev(s); const m = j.title ? Match.score(Cand.profile(s), ev, j) : { matched: [] };
+    const first = String(d.summary || "").split(/(?<=\.)\s/)[0] || "";
+    return `Olá, equipe de recrutamento${j.company ? " da " + j.company : ""}.\n\nMeu nome é ${s.name} e tenho interesse na vaga de ${j.title || a.jobTitle || "a vaga anunciada"}.${first ? " " + first : ""}\n\n${m.matched.length ? `Destaco experiência em ${m.matched.slice(0, 3).join(", ").toLowerCase()}.\n\n` : ""}Envio meu currículo em anexo e fico à disposição para conversar.\n\nAtenciosamente,\n${s.name}\n${s.email}`;
+  },
+  replyDraft(s, a, type) {
+    const j = Repo.get("jobs", a.jobId) || {}; const who = j.company ? `equipe da ${j.company}` : "equipe";
+    const t = { convite: `Olá, ${who}.\n\nObrigado pelo convite para a entrevista da vaga de ${j.title || "a vaga"}. Confirmo minha participação na data e horário indicados.\n\nAtenciosamente,\n${s.name}`, docs: `Olá, ${who}.\n\nObrigado pelo retorno. Segue o que foi solicitado para a vaga de ${j.title || "a vaga"}. Se precisarem de mais alguma informação, fico à disposição.\n\nAtenciosamente,\n${s.name}`, recusa: `Olá, ${who}.\n\nObrigado pelo retorno sobre a vaga de ${j.title || "a vaga"}. Fico à disposição para futuras oportunidades.\n\nAtenciosamente,\n${s.name}`, outra: `Olá, ${who}.\n\nObrigado pelo contato sobre a vaga de ${j.title || "a vaga"}.\n\nAtenciosamente,\n${s.name}` };
+    return t[type] || t.outra;
+  },
+};
+const RESP_TYPES = [["convite", "Convite para entrevista"], ["docs", "Pedido de documentos ou teste"], ["recusa", "Recusa"], ["outra", "Outra resposta"]];
+
+function EnvioPanel(s, a) {
+  if (!Plans.has(s.id, "envio")) return `<div class="notice info"><span class="ic">✉</span><div><b>Envio facilitado é do plano Max.</b> Mensagem de apresentação pronta para cada vaga, envio pelo seu e-mail e registro automático da tentativa. <button type="button" class="btn-link" data-go="cand.plan">Ver o Max</button></div></div>`;
+  if (a.confirmed) return "";
+  const j = Repo.get("jobs", a.jobId);
+  return `<div class="sunken stack-sm"><div class="row-between"><b>Envio facilitado</b>${C.pill("Plano Max", "lime")}</div>
+    <p class="small muted">Mensagem de apresentação montada com o seu currículo e a vaga. Revise antes de usar.</p>
+    <textarea id="ap-cover" class="textarea" rows="8">${e(MaxFeat.cover(s, a))}</textarea>
+    <div class="row">${j?.url ? `<a class="btn btn-primary btn-sm" href="${e(j.url)}" target="_blank" rel="noopener noreferrer">Abrir anúncio para enviar ↗</a>` : ""}<button type="button" class="btn btn-soft btn-sm" data-act="copyCover">Copiar mensagem</button><button type="button" class="btn btn-ghost btn-sm" data-act="sendEmail">Enviar pelo meu e-mail</button><button type="button" class="btn btn-ghost btn-sm" data-act="markTried" data-id="${e(a.id)}">Já enviei pelo site</button></div>
+    <p class="xs muted">Nos portais (Gupy, LinkedIn e outros) o envio final é seu: eles não permitem robôs. Depois registre o protocolo para contar como enviada.</p></div>`;
+}
+
+Views["cand.responses"] = (s) => {
+  if (!Plans.has(s.id, "respostas")) return `${C.head("Etapa 3", "Central de Respostas")}<div class="card">${C.empty("A Central de Respostas é do plano Max", "Registre convites, pedidos de documentos e recusas de cada empresa, com sugestão de resposta pronta e o status da candidatura atualizado sozinho.", `<button class="btn btn-primary" data-go="cand.plan">Conhecer o Max</button>`)}</div>`;
+  const apps = Cand.apps(s).filter(a => !["Descartada"].includes(a.status));
+  const all = apps.flatMap(a => (a.responses || []).map(r => ({ ...r, a }))).sort((x, y) => String(y.date).localeCompare(String(x.date)));
+  const label = Object.fromEntries(RESP_TYPES);
+  return `${C.head("Etapa 3", "Central de Respostas", "Cada retorno das empresas ligado à sua candidatura, com o próximo passo e uma sugestão de resposta.", C.pill("Plano Max", "lime"))}
+  ${C.notice("Por enquanto você registra as respostas aqui. A leitura automática do seu e-mail entra quando a integração for conectada, sempre com a sua autorização.", "info")}
+  <div class="grid g-main" style="margin-top:14px"><div class="card"><div class="card-head"><h2>Candidaturas em andamento</h2><span class="pill">${apps.length}</span></div>
+    ${apps.length ? apps.map(a => `<div class="row-between" style="padding:10px 0;border-bottom:1px solid var(--line)"><div class="grow" style="min-width:0"><b>${e(Assistant.jobTitle(a))}</b><div class="xs muted">${e(a.status)}${(a.responses || []).length ? ` · ${a.responses.length} resposta(s) registrada(s)` : " · nenhuma resposta ainda"}</div></div><button class="btn btn-soft btn-sm" data-act="addResponse" data-id="${e(a.id)}">Registrar resposta</button></div>`).join("") : C.empty("Nenhuma candidatura", "Registre uma candidatura para acompanhar as respostas.", `<button class="btn btn-primary btn-sm" data-go="cand.jobs">Ver vagas</button>`)}
+  </div><div class="card"><h2 style="margin-bottom:10px">Últimas respostas</h2>${all.length ? `<div class="timeline">${all.slice(0, 12).map(r => `<div class="t"><b>${e(label[r.type] || r.type)}</b> <span class="xs muted">${U.fmtDate(r.date)} · ${e(r.channel)}</span><div class="xs">${e(Assistant.jobTitle(r.a))}</div>${r.summary ? `<div class="xs muted">${e(r.summary)}</div>` : ""}</div>`).join("")}</div>` : '<p class="small muted">Nada registrado ainda.</p>'}</div></div>`;
 };
 
 /* =====================================================================
@@ -1875,7 +1931,7 @@ const Forms = {
     if (!document.getElementById("su-terms").checked) return App.toast("É preciso aceitar os termos para criar a conta.", true);
     if (Repo.one("users", u => u.email.toLowerCase() === email)) return App.toast("Já existe conta com esse e-mail. Entre ou recupere a senha.", true);
     const u = Repo.insert("users", { name, email, passwordHash: await passHash(pass), role: "candidate", status: "ativo", city: val("su-city"), uf: val("su-uf"), origin: val("su-origin") || null, area: null, ageRange: null, consents: { terms: true, termsAt: U.now(), marketing: document.getElementById("su-mkt").checked, whatsapp: document.getElementById("su-wa").checked }, lastActiveAt: U.now() });
-    Repo.insert("subscriptions", { userId: u.id, plan: "inicial", status: "ativa", startedAt: U.now(), simulated: true });
+    Repo.insert("subscriptions", { userId: u.id, plan: "gratis", status: "ativa", startedAt: U.now(), simulated: true });
     Repo.insert("notification_preferences", { userId: u.id, inApp: true, email: false, whatsapp: document.getElementById("su-wa").checked, frequency: "diária" });
     Cand.profile(u);
     notify(u.id, "Bem-vindo ao Manda Vaga", "Comece pelo currículo: é ele que define as vagas que você vai receber.", "ok", "cand.resume");
@@ -1907,7 +1963,7 @@ const Forms = {
     saveResumeData(s, d, r ? "Edição manual: " + ch.map(c => c.field).join(", ") : "Versão inicial (preenchimento manual)", ch);
     App.ui.resumeDraft = null; App.toast("Currículo salvo. Nova versão no histórico."); App.render();
   },
-  plans(f) { const fd = new FormData(f); const plans = Plans.list().map((p, i) => ({ ...p, price: Math.max(0, +fd.get(`pl-price-${i}`) || p.price), limit: Math.max(1, Math.round(+fd.get(`pl-limit-${i}`) || p.limit)) })); Repo.setSetting("plans", plans); audit("Planos alterados", "", plans.map(p => `${p.name}:${p.limit}`).join(", ")); App.toast("Planos salvos."); App.render(); },
+  plans(f) { const fd = new FormData(f); const plans = Plans.list().map((p, i) => ({ ...p, price: Math.max(0, +fd.get(`pl-price-${i}`) || p.price), limit: p.key === "gratis" ? 0 : Math.max(1, Math.round(+fd.get(`pl-limit-${i}`) || p.limit)) })); Repo.setSetting("plans", plans); audit("Planos alterados", "", plans.map(p => `${p.name}:${p.limit}`).join(", ")); App.toast("Planos salvos."); App.render(); },
   weights(f) { const fd = new FormData(f); const w = {}; Object.keys(DIM_LABEL).forEach(k => w[k] = +fd.get("w-" + k)); if (!Object.values(w).some(Boolean)) return App.toast("Pelo menos uma dimensão precisa de peso.", true); Repo.setSetting("weights", w); audit("Pesos de aderência alterados", "", JSON.stringify(w)); App.toast("Pesos salvos. As pontuações já foram recalculadas."); App.render(); },
 };
 
@@ -1962,6 +2018,82 @@ Forms.chat = (f) => {
   document.getElementById("chat-text")?.focus();
 };
 (function () { const base = App.render.bind(App); App.render = function () { base(); const log = document.getElementById("chat-log"); if (log) log.scrollTop = log.scrollHeight; }; })();
+
+/* Ações do plano Max e do pagamento */
+Object.assign(Actions, {
+  copyCover() { const t = document.getElementById("ap-cover"); if (!t) return; navigator.clipboard?.writeText(t.value).then(() => App.toast("Mensagem copiada.")).catch(() => { t.select(); App.toast("Selecionada. Use Ctrl+C."); }); },
+  sendEmail() { App.toast(Integrations.call("email").reason + " Copie a mensagem e envie pelo seu e-mail.", true); },
+  markTried(el) { const a = Repo.get("applications", el.dataset.id); if (!a) return; const hist = a.history || []; hist.push({ status: "Envio tentado — sem confirmação", at: U.now(), note: "Envio facilitado: candidato informou que enviou pelo site" }); Repo.update("applications", a.id, { status: "Envio tentado — sem confirmação", next: "Registrar o protocolo ou a confirmação recebida", history: hist }); App.closeModal(); App.toast("Registrado como envio tentado. Quando chegar a confirmação, registre o protocolo."); App.render(); },
+  addResponse(el) {
+    const s = me(); const a = Repo.get("applications", el.dataset.id); if (!a || a.userId !== s.id) return;
+    App.modal({ title: "Registrar resposta da empresa", body: `<p class="small muted">${e(Assistant.jobTitle(a))}</p><div class="form-grid">${C.field("rp-type", "Tipo", C.select("rp-type", RESP_TYPES, "convite", 'data-change="rpType"'))}${C.field("rp-channel", "Canal", C.select("rp-channel", ["E-mail", "WhatsApp", "Telefone", "Portal da vaga", "LinkedIn"], "E-mail"))}${C.field("rp-date", "Data da resposta", C.input("rp-date", U.today(), 'type="date"'))}<div class="full">${C.field("rp-summary", "Resumo do que disseram", C.textarea("rp-summary", "", 'rows="3"'))}</div></div><div id="rp-int" class="form-grid sunken">${C.field("rp-int-date", "Data da entrevista", C.input("rp-int-date", "", 'type="date"'))}${C.field("rp-int-time", "Horário", C.input("rp-int-time", "", 'type="time"'))}<div class="full">${C.field("rp-int-place", "Local ou link", C.input("rp-int-place", ""))}</div></div>`, actions: [{ key: "cancel", label: "Cancelar" }, { key: "ok", label: "Salvar resposta", cls: "btn-primary" }], onAction: k => {
+      if (k !== "ok") return true;
+      const type = val("rp-type"), date = val("rp-date"), channel = val("rp-channel");
+      if (!date) { App.toast("Informe a data da resposta.", true); return false; }
+      const patch = { responses: [...(a.responses || []), { type, channel, date, summary: val("rp-summary"), at: U.now() }], history: [...(a.history || [])] };
+      let status = "Resposta recebida", next = a.next;
+      if (type === "convite") { const di = val("rp-int-date"); if (!di) { App.toast("Informe a data da entrevista.", true); return false; } status = "Entrevista agendada"; patch.interview = { date: di, time: val("rp-int-time"), place: val("rp-int-place") }; next = "Preparar a entrevista"; }
+      if (type === "docs") next = "Enviar os documentos ou fazer o teste pedido";
+      if (type === "recusa") { status = "Processo encerrado"; next = ""; }
+      if (!a.confirmed) { patch.confirmed = true; patch.confirmedAt = U.now(); patch.evidence = a.evidence || `Resposta da empresa recebida em ${U.fmtDate(date)} (${channel})`; }
+      patch.status = status; patch.next = next; patch.history.push({ status, at: U.now(), note: `Resposta registrada: ${Object.fromEntries(RESP_TYPES)[type]} (${channel})` });
+      Repo.update("applications", a.id, patch); notify(s.id, "Resposta registrada", `${Assistant.jobTitle(a)}: ${status}`, "ok", "cand.responses");
+      const draft = MaxFeat.replyDraft(s, a, type);
+      setTimeout(() => App.modal({ title: "Sugestão de resposta", body: `<p class="small muted">Revise e envie pelo mesmo canal. Nada é enviado automaticamente.</p><textarea id="rp-draft" class="textarea" rows="9">${e(draft)}</textarea>`, actions: [{ key: "copy", label: "Copiar" }, { key: "close", label: "Concluir", cls: "btn-primary" }], onAction: kk => { if (kk === "copy") { const t = document.getElementById("rp-draft"); navigator.clipboard?.writeText(t.value).then(() => App.toast("Copiado.")).catch(() => { t.select(); }); return false; } return true; } }), 30);
+      App.render(); return true;
+    } });
+  },
+});
+Changes.rpType = el => document.getElementById("rp-int").classList.toggle("hidden", el.value !== "convite");
+
+/* ---------- pagamento real (Asaas) quando o servidor estiver configurado ---------- */
+const Payments = {
+  _cfg: null,
+  async config() {
+    if (this._cfg) return this._cfg;
+    if (!/^https?:$/.test(location.protocol) || /claude\.ai|claudeusercontent/.test(location.hostname)) return (this._cfg = { payments: false });
+    try { const r = await fetch("/api/config", { cache: "no-store" }); this._cfg = r.ok ? await r.json() : { payments: false }; } catch (e) { this._cfg = { payments: false }; }
+    return this._cfg;
+  },
+  ref(s) { if (!s.paymentRef) { const b = new Uint8Array(16); crypto.getRandomValues(b); Repo.update("users", s.id, { paymentRef: [...b].map(x => x.toString(16).padStart(2, "0")).join("") }); } return Repo.get("users", s.id).paymentRef; },
+  pending(s) { return Repo.one("subscriptions", x => x.userId === s.id && x.status === "aguardando pagamento"); },
+  activate(s, pend) { Repo.find("subscriptions", x => x.userId === s.id && x.status === "ativa").forEach(x => { x.status = "encerrada"; x.endedAt = U.now(); }); pend.status = "ativa"; pend.startedAt = U.now(); Repo.save(); audit("Assinatura ativada (Asaas)", s.id, pend.plan); notify(s.id, "Pagamento confirmado", `Plano ${Plans.list().find(p => p.key === pend.plan)?.name} ativo.`, "ok", "cand.plan"); },
+};
+const _simulatedChangePlan = Actions.changePlan;
+Object.assign(Actions, {
+  async changePlan(el) {
+    const s = me(); const p = Plans.list().find(x => x.key === el.dataset.v);
+    const cfg = await Payments.config();
+    if (!cfg.payments || !p.price) return _simulatedChangePlan(el);
+    App.modal({ title: `Assinar o plano ${p.name}`, body: `<p>${U.money(p.price)} por mês. Você paga na página segura da Asaas, com Pix, boleto ou cartão.</p>${C.field("pg-doc", "CPF ou CNPJ (exigido para emitir a cobrança)", C.input("pg-doc", "", 'inputmode="numeric" autocomplete="off"'))}${C.field("pg-phone", "Celular (opcional)", C.input("pg-phone", "", 'inputmode="tel"'))}<p class="xs muted">O plano é ativado assim que a Asaas confirmar o pagamento.</p>`, actions: [{ key: "cancel", label: "Cancelar" }, { key: "ok", label: "Gerar cobrança", cls: "btn-primary" }], onAction: k => {
+      if (k !== "ok") return true;
+      const doc = val("pg-doc").replace(/\D/g, ""); if (![11, 14].includes(doc.length)) { App.toast("Informe um CPF (11 dígitos) ou CNPJ (14 dígitos).", true); return false; }
+      const ref = Payments.ref(s);
+      fetch("/api/checkout", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ plan: p.key, name: s.name, email: s.email, cpfCnpj: doc, phone: val("pg-phone"), ref }) })
+        .then(r => r.json().then(b => ({ ok: r.ok, b })))
+        .then(({ ok, b }) => {
+          if (!ok) return App.toast(b.error || "Não foi possível gerar a cobrança.", true);
+          Repo.remove("subscriptions", x => x.userId === s.id && x.status === "aguardando pagamento");
+          Repo.insert("subscriptions", { userId: s.id, plan: p.key, status: "aguardando pagamento", ref, asaasSubscriptionId: b.subscriptionId, invoiceUrl: b.invoiceUrl || "" });
+          audit("Cobrança criada (Asaas)", s.id, p.name); App.render(); Actions.payInfo();
+        }).catch(() => App.toast("Sem conexão com o servidor de pagamentos.", true));
+      return true;
+    } });
+  },
+  payInfo() { const s = me(); const pend = Payments.pending(s); if (!pend) return; const plan = Plans.list().find(p => p.key === pend.plan); App.modal({ title: `Pagamento do plano ${plan?.name}`, body: `<p>Cobrança criada. Abra a página da Asaas para pagar com Pix, boleto ou cartão.</p>${pend.invoiceUrl ? `<a class="btn btn-primary" href="${e(pend.invoiceUrl)}" target="_blank" rel="noopener noreferrer">Abrir página de pagamento ↗</a>` : `<p class="small muted">O link ainda está sendo gerado. Clique em “Verificar pagamento” em alguns segundos.</p>`}<p class="small muted">Depois de pagar, volte aqui e clique em “Verificar pagamento”. Pix costuma confirmar em minutos; boleto pode levar até 3 dias úteis.</p>`, actions: [{ key: "close", label: "Fechar" }, { key: "check", label: "Verificar pagamento", cls: "btn-primary" }], onAction: k => { if (k === "check") { Actions.checkPayment(); } return true; } }); },
+  async checkPayment() {
+    const s = me(); const pend = Payments.pending(s); if (!pend) return;
+    try {
+      const r = await fetch("/api/subscription?ref=" + encodeURIComponent(pend.ref), { cache: "no-store" }); const b = await r.json();
+      if (!r.ok) return App.toast(b.error || "Não foi possível verificar.", true);
+      if (b.invoiceUrl && !pend.invoiceUrl) { pend.invoiceUrl = b.invoiceUrl; Repo.save(); }
+      if (b.status === "ACTIVE") { Payments.activate(s, pend); App.toast("Pagamento confirmado. Plano ativo!"); }
+      else if (b.status === "CANCELED") { pend.status = "cancelada"; Repo.save(); App.toast("A cobrança foi cancelada.", true); }
+      else App.toast(b.status === "OVERDUE" ? "Cobrança vencida. Abra a página de pagamento para gerar uma nova." : "Ainda aguardando a confirmação da Asaas.");
+      App.render();
+    } catch (e) { App.toast("Sem conexão com o servidor de pagamentos.", true); }
+  },
+});
 
 </script>
 </body></html>

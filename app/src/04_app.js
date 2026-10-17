@@ -72,7 +72,7 @@ const Views = {};
 /* ---------------- shell ---------------- */
 Views.shell = (s, inner) => {
   const unread = Repo.find("notifications", n => n.userId === s.id && !n.read).length;
-  const candNav = [["Etapa 1", [["cand.home", "▦", "Início"], ["cand.resume", "▤", "Currículo"], ["cand.profile", "◎", "Perfil e preferências"]]], ["Etapas 2 e 3", [["cand.jobs", "⌕", "Vagas para você"], ["cand.apps", "↗", "Candidaturas"]]], ["Conta", [["cand.notifications", "◔", "Notificações", unread], ["cand.plan", "◇", "Plano e consumo"], ["cand.privacy", "⚿", "Privacidade"]]]];
+  const candNav = [["Etapa 1", [["cand.home", "▦", "Início"], ["cand.resume", "▤", "Currículo"], ["cand.profile", "◎", "Perfil e preferências"]]], ["Etapas 2 e 3", [["cand.jobs", "⌕", "Vagas para você"], ["cand.apps", "↗", "Candidaturas"], ["cand.responses", "✉", "Respostas"]]], ["Conta", [["cand.notifications", "◔", "Notificações", unread], ["cand.plan", "◇", "Plano e consumo"], ["cand.privacy", "⚿", "Privacidade"]]]];
   const admNav = [["Visão", [["admin.dashboard", "▦", "Métricas"]]], ["Operação", [["admin.users", "◎", "Usuários"], ["admin.jobs", "⌕", "Vagas"], ["admin.sources", "⇄", "Fontes"], ["admin.editorial", "✎", "Editorial"]]], ["Gestão", [["admin.plans", "◇", "Planos e uso"], ["admin.privacy", "⚿", "Privacidade e auditoria"], ["admin.settings", "⚙", "Configurações"]]]];
   const nav = s.role === "admin" ? admNav : candNav;
   const page = App.route.page.split(":")[0];
@@ -114,7 +114,7 @@ Views.landing = () => {
         <div class="l-step"><span class="n">ETAPA 3</span><h3>Entrega na sua área</h3><p class="muted">Cada vaga vem com link do anúncio original e data da verificação. Você salva, dispensa, gera uma versão do currículo e acompanha a candidatura.</p></div>
       </div></div></section>
     <section class="l-sec" style="padding-top:0"><div class="l-wrap"><div class="eyebrow">Planos</div><h2 style="font-size:clamp(24px,3vw,34px);margin:8px 0 18px">Pague pelo volume de oportunidades</h2>
-      <div class="plans">${plans.map((p, i) => `<div class="plan ${i === 1 ? "featured" : ""}"><b>${e(p.name)}</b><div class="price num">${U.money(p.price)}<small>/mês</small></div><p class="muted small">Até ${p.limit} oportunidades únicas por mês. Vagas repetidas não contam duas vezes.</p><button class="btn ${i === 1 ? "btn-primary" : "btn-ghost"}" data-go="signup">Escolher ${e(p.name)}</button></div>`).join("")}</div>
+      <div class="plans" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr))">${plans.map((p, i) => `<div class="plan ${p.key === "max" ? "featured" : ""}"><b>${e(p.name)}</b><div class="price num">${p.price ? U.money(p.price) + "<small>/mês</small>" : "R$ 0"}</div><p class="muted small">${e(Plans.pitch(p))}</p><button class="btn ${p.key === "max" ? "btn-primary" : "btn-ghost"}" data-go="signup">${p.price ? "Escolher " + e(p.name) : "Arrumar meu currículo grátis"}</button></div>`).join("")}</div>
       <p class="small muted" style="margin-top:12px">Na fase de testes não há cobrança: a troca de plano é simulada.</p></div></section>
     <footer class="l-foot"><div class="l-wrap stack-sm"><b>O Manda Vaga não é agência de emprego.</b><span>Não representamos empresas contratantes e não garantimos entrevista ou contratação. A aderência é uma estimativa explicável, não uma previsão. Marcas de plataformas de recrutamento citadas pertencem aos seus donos e não indicam parceria.</span><span>Protótipo local · ${new Date().getFullYear()}</span></div></footer></div>`;
 };

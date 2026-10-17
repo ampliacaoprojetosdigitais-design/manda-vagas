@@ -81,7 +81,7 @@ function buildSeed(hashes) {
     const name = `${first[i % first.length]} ${last[(i * 7) % last.length]}`;
     const u = { id: "usr_s" + i, name, email: `demo${i}@exemplo.invalid`, role: "candidate", status: "ativo", city, uf, area: areas[i % areas.length], origin: origins[i % origins.length], ageRange: ages[i % ages.length], synthetic: true, createdAt: iso(created), lastActiveAt: iso(active), resumeComplete: i % 3 !== 0, appsCount: i % 3 !== 0 ? (i * 3) % 7 : 0 };
     data.users.push(u);
-    data.subscriptions.push({ id: "sub_s" + i, userId: u.id, plan: ["inicial", "inicial", "plus", "max"][i % 4], status: "ativa", startedAt: u.createdAt, simulated: true, createdAt: u.createdAt });
+    data.subscriptions.push({ id: "sub_s" + i, userId: u.id, plan: ["gratis", "inicial", "gratis", "plus", "inicial", "max"][i % 6], status: "ativa", startedAt: u.createdAt, simulated: true, createdAt: u.createdAt });
   }
 
   // contas de demonstração para entrar
@@ -89,7 +89,7 @@ function buildSeed(hashes) {
   const raf = { id: "usr_rafael", name: "Rafael Moreira", email: "rafael@demo.mandavaga", passwordHash: hashes.demo, role: "candidate", status: "ativo", city: "Guarulhos", uf: "SP", area: null, origin: "Instagram", ageRange: null, demoAccount: true, createdAt: iso(1), lastActiveAt: iso(1), consents: { terms: true, marketing: false, whatsapp: false } };
   const adm = { id: "usr_admin", name: "Equipe Manda Vaga", email: "admin@demo.mandavaga", passwordHash: hashes.demo, role: "admin", status: "ativo", city: "São Paulo", uf: "SP", demoAccount: true, createdAt: iso(90), lastActiveAt: iso(0) };
   data.users.push(cam, raf, adm);
-  data.subscriptions.push({ id: "sub_cam", userId: cam.id, plan: "inicial", status: "ativa", startedAt: iso(20), simulated: true, createdAt: iso(20) }, { id: "sub_raf", userId: raf.id, plan: "inicial", status: "ativa", startedAt: iso(1), simulated: true, createdAt: iso(1) });
+  data.subscriptions.push({ id: "sub_cam", userId: cam.id, plan: "inicial", status: "ativa", startedAt: iso(20), simulated: true, createdAt: iso(20) }, { id: "sub_raf", userId: raf.id, plan: "gratis", status: "ativa", startedAt: iso(1), simulated: true, createdAt: iso(1) });
 
   data.profiles.push(
     { id: "pro_cam", userId: cam.id, city: "São Paulo", uf: "SP", city2: "Guarulhos", targetRoles: ["Estágio em Direito", "Assistente jurídico", "Controladoria jurídica"], families: ["juridico", "processual", "adm"], modalities: ["Presencial", "Híbrido", "Remoto"], levels: ["Estágio", "Assistente/Auxiliar", "Júnior"], semester: 3, course: "Direito", availability: "Manhã e tarde", careerStage: "Transição de carreira", salaryMin: null, minScore: 45, createdAt: iso(20) },

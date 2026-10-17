@@ -31,6 +31,11 @@ const Assistant = {
       out.push({ text: "Como prefere começar?", chips: [["go", "cand.resume:import", "Colar meu currículo"], ["go", "cand.resume:editor", "Preencher do zero"], ["intent", "how", "Como funciona?"]] });
       return out;
     }
+    if (st.plan.limit === 0) {
+      out.push({ html: `${Assistant.hello()}, ${e(first)}. Seu currículo está com nota <b>${st.diag.score}/100</b>${st.sugg.length ? ` e tem <b>${pl(st.sugg.length, "ajuste sugerido", "ajustes sugeridos")}</b>` : ""}. No plano Grátis você deixa o currículo pronto para recrutadores e sistemas de IA.` });
+      out.push({ html: `Quando quiser receber vagas escolhidas pelo seu currículo: ${Plans.list().filter(p => p.limit).map(p => `<b>${e(p.name)}</b>, até ${p.limit} vagas de uma vez`).join(", ")}. O Max inclui envio facilitado e a Central de Respostas.`, chips: [["go", "cand.resume:diag", "Melhorar meu currículo"], ["go", "cand.plan", "Ver planos"]] });
+      return out;
+    }
     const facts = [];
     facts.push(`<b>${pl(st.recs.length, "vaga compatível", "vagas compatíveis")}</b> acima de ${st.prof.minScore}%`);
     if (st.pending.length) facts.push(`<b>${pl(st.pending.length, "candidatura", "candidaturas")}</b> esperando ação sua`);

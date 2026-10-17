@@ -220,7 +220,7 @@ const Forms = {
     if (!document.getElementById("su-terms").checked) return App.toast("É preciso aceitar os termos para criar a conta.", true);
     if (Repo.one("users", u => u.email.toLowerCase() === email)) return App.toast("Já existe conta com esse e-mail. Entre ou recupere a senha.", true);
     const u = Repo.insert("users", { name, email, passwordHash: await passHash(pass), role: "candidate", status: "ativo", city: val("su-city"), uf: val("su-uf"), origin: val("su-origin") || null, area: null, ageRange: null, consents: { terms: true, termsAt: U.now(), marketing: document.getElementById("su-mkt").checked, whatsapp: document.getElementById("su-wa").checked }, lastActiveAt: U.now() });
-    Repo.insert("subscriptions", { userId: u.id, plan: "inicial", status: "ativa", startedAt: U.now(), simulated: true });
+    Repo.insert("subscriptions", { userId: u.id, plan: "gratis", status: "ativa", startedAt: U.now(), simulated: true });
     Repo.insert("notification_preferences", { userId: u.id, inApp: true, email: false, whatsapp: document.getElementById("su-wa").checked, frequency: "diária" });
     Cand.profile(u);
     notify(u.id, "Bem-vindo ao Manda Vaga", "Comece pelo currículo: é ele que define as vagas que você vai receber.", "ok", "cand.resume");
@@ -252,7 +252,7 @@ const Forms = {
     saveResumeData(s, d, r ? "Edição manual: " + ch.map(c => c.field).join(", ") : "Versão inicial (preenchimento manual)", ch);
     App.ui.resumeDraft = null; App.toast("Currículo salvo. Nova versão no histórico."); App.render();
   },
-  plans(f) { const fd = new FormData(f); const plans = Plans.list().map((p, i) => ({ ...p, price: Math.max(0, +fd.get(`pl-price-${i}`) || p.price), limit: Math.max(1, Math.round(+fd.get(`pl-limit-${i}`) || p.limit)) })); Repo.setSetting("plans", plans); audit("Planos alterados", "", plans.map(p => `${p.name}:${p.limit}`).join(", ")); App.toast("Planos salvos."); App.render(); },
+  plans(f) { const fd = new FormData(f); const plans = Plans.list().map((p, i) => ({ ...p, price: Math.max(0, +fd.get(`pl-price-${i}`) || p.price), limit: p.key === "gratis" ? 0 : Math.max(1, Math.round(+fd.get(`pl-limit-${i}`) || p.limit)) })); Repo.setSetting("plans", plans); audit("Planos alterados", "", plans.map(p => `${p.name}:${p.limit}`).join(", ")); App.toast("Planos salvos."); App.render(); },
   weights(f) { const fd = new FormData(f); const w = {}; Object.keys(DIM_LABEL).forEach(k => w[k] = +fd.get("w-" + k)); if (!Object.values(w).some(Boolean)) return App.toast("Pelo menos uma dimensão precisa de peso.", true); Repo.setSetting("weights", w); audit("Pesos de aderência alterados", "", JSON.stringify(w)); App.toast("Pesos salvos. As pontuações já foram recalculadas."); App.render(); },
 };
 

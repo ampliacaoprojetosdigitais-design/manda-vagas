@@ -313,13 +313,20 @@ const Match = {
 
 /* ---------------- planos e consumo ---------------- */
 const PLANS_DEFAULT = [
+  { key: "gratis", name: "Grátis", price: 0, limit: 0 },
   { key: "inicial", name: "Inicial", price: 19.9, limit: 100 },
   { key: "plus", name: "Plus", price: 29.9, limit: 200 },
-  { key: "max", name: "Max", price: 39.9, limit: 500 },
+  { key: "max", name: "Max", price: 39.9, limit: 500, features: ["envio", "respostas"] },
 ];
 const Plans = {
-  list() { return Repo.setting("plans", PLANS_DEFAULT); },
-  of(userId) { const s = Repo.one("subscriptions", x => x.userId === userId && x.status === "ativa"); const p = Plans.list().find(p => p.key === (s?.plan || "inicial")) || Plans.list()[0]; return { ...p, sub: s }; },
+  list() { const saved = Repo.setting("plans", PLANS_DEFAULT); return PLANS_DEFAULT.map(d => ({ ...d, ...(saved.find(x => x.key === d.key) || {}), features: d.features || [] })); },
+  pitch(p) {
+    if (!p.limit) return "Currículo revisado e pronto para recrutadores e sistemas de IA. Sem vagas.";
+    const base = `Até ${p.limit} vagas por mês, entregues de uma vez, escolhidas pelo seu currículo`;
+    return (p.features || []).includes("envio") ? base + ", com envio facilitado para as empresas e Central de Respostas." : base + ".";
+  },
+  has(userId, feature) { return (Plans.of(userId).features || []).includes(feature); },
+  of(userId) { const s = Repo.one("subscriptions", x => x.userId === userId && x.status === "ativa"); const p = Plans.list().find(p => p.key === (s?.plan || "gratis")) || Plans.list()[0]; return { ...p, sub: s }; },
   used(userId, month = U.month()) { return new Set(Repo.find("usage_events", e => e.userId === userId && e.type === "oportunidade_entregue" && e.month === month).map(e => e.jobId)).size; },
   deliver(userId, jobId) {
     const month = U.month(); const key = `${userId}|${jobId}|${month}`;

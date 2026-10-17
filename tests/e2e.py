@@ -27,8 +27,10 @@ with sync_playwright() as p:
     pg.click("form[data-form=signup] button[type=submit]"); pg.wait_for_timeout(200)
     check("AUTH-1", "Cadastro sem aceitar termos é bloqueado", not ev("!!App.session()"))
     pg.check("#su-terms"); pg.click("form[data-form=signup] button[type=submit]"); pg.wait_for_timeout(400)
-    check("AUTH-2", "Cadastro com termos cria conta, plano Inicial e entra", ev("App.session()?.email") == "teste@exemplo.com" and ev("Plans.of(App.session().id).key") == "inicial")
+    check("AUTH-2", "Cadastro com termos cria conta no plano Grátis e entra", ev("App.session()?.email") == "teste@exemplo.com" and ev("Plans.of(App.session().id).key") == "gratis")
     nav("cand.jobs")
+    check("PLAN-0", "Plano Grátis: vagas pedem um plano e mostram a conta por dia", "cerca de 3 por dia" in pg.inner_text("#view") or "O currículo vem primeiro" in pg.inner_text("#view"))
+    ev("Repo.find('subscriptions',s=>s.userId===App.session().id).forEach(s=>s.plan='inicial');Repo.save()"); nav("cand.jobs")
     check("FLOW-1", "Vagas bloqueadas antes do currículo (currículo primeiro)", "O currículo vem primeiro" in pg.inner_text("#view"))
     nav("cand.resume"); pg.click("[data-act=resumeTab][data-v=import]")
     txt = """RESUMO PROFISSIONAL
@@ -192,7 +194,7 @@ Inglês — Básico"""
     nav("admin.sources"); pg.click("[data-act=syncSource][data-id=src_adzuna]"); pg.wait_for_timeout(80)
     check("INT-1", "Integração não conectada aparece como indisponível, nunca como sucesso", "não conectada" in pg.inner_text("#toasts"))
     nav("admin.plans")
-    pg.fill("input[name=pl-limit-1]", "3"); pg.click("form[data-form=plans] button[type=submit]"); pg.wait_for_timeout(100)
+    pg.fill("input[name=pl-limit-2]", "3"); pg.click("form[data-form=plans] button[type=submit]"); pg.wait_for_timeout(100)
     # candidata no Plus com limite 3
     login("candidate"); ev("Repo.find('subscriptions',s=>s.userId==='usr_camila'&&s.status==='ativa').forEach(s=>s.plan='plus');Repo.remove('usage_events',u=>u.userId==='usr_camila')"); nav("cand.jobs")
     check("PLAN-3", "Limite do plano bloqueia entregas além do contratado", ev("Plans.used('usr_camila')") == 3 and "limite do plano" in pg.inner_text("#view"))
